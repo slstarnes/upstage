@@ -56,9 +56,9 @@ optional-dependencies.test = [
   "ruff",
   "ssort",
 ]
-urls."Bug Tracker" = "https://gitlab.gtri.gatech.edu/elsys-bitbucket/SERD-MADB/upstage/-/issues"
-urls.Documentation = "https://elsys-bitbucket.gitlab-pages.gtri.gatech.edu/SERD-MADB/upstage/index.html"
-urls."Source" = "https://gitlab.gtri.gatech.edu/elsys-bitbucket/SERD-MADB/upstage/"
+urls."Bug Tracker" = "https://github.com/gtri/upstage/issues"
+urls.Documentation = ""
+urls."Source" = "https://github.com/gtri/upstage"
 
 [tool.flit.sdist]
 exclude = [
