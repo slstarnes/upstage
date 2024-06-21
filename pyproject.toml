@@ -1,0 +1,182 @@
+[build-system]
+build-backend = "flit_core.buildapi"
+requires = [
+  "flit-core<4,>=3.7.1",
+]
+
+[project]
+name = "upstage"
+version = "1.0.0"
+description = "A library for behavior-driven discrete event simulation."
+readme = "README.md"
+keywords = [
+  "agent based modeling",
+  "agents",
+  "behavior modeling",
+  "discrete event simulation",
+  "modeling",
+  "operations",
+  "simpy",
+  "simulation",
+]
+license = { file = "LICENSE" }
+authors = [
+  { name = "James Arruda", email = "James.Arruda@gtri.gatech.edu" },
+]
+requires-python = ">=3.11"
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Education",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: BSD License",
+  "Natural Language :: English",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+  "simpy>=4",
+]
+optional-dependencies.docs = [
+  "myst-parser",
+  "pydata-sphinx-theme",
+  "sphinx>=7",
+]
+optional-dependencies.test = [
+  "mypy",
+  "pyproject-fmt!=0.9.1",
+  "pytest-cov",
+  "pytest-html",
+  "pytest-json-report",
+  "pytest-xdist",
+  "ruff",
+  "ssort",
+]
+urls."Bug Tracker" = "https://gitlab.gtri.gatech.edu/elsys-bitbucket/SERD-MADB/upstage/-/issues"
+urls.Documentation = "https://elsys-bitbucket.gitlab-pages.gtri.gatech.edu/SERD-MADB/upstage/index.html"
+urls."Source" = "https://gitlab.gtri.gatech.edu/elsys-bitbucket/SERD-MADB/upstage/"
+
+[tool.flit.sdist]
+exclude = [
+  ".gitignore",
+]
+
+[tool.pytest.ini_options]
+junit_family = "xunit2"
+cache_dir = "build/.pytest_cache"
+addopts = [
+  "--pyargs",
+  "upstage",
+  # for contributors
+  "--cov-report=term-missing:skip-covered",
+  "--color=yes",
+  # for review
+  "--html=build/reports/pytest.html",
+  "--self-contained-html",
+  "--cov-report=html:build/reports/htmlcov",
+  "--cov-report=xml:build/reports/coverage.xml",
+  "--cov-context=test",
+  # coverage
+  "--cov=upstage",
+  "--no-cov-on-fail",
+  # for robots
+  "--junitxml=build/reports/pytest.xunit.xml",
+  "--json-report",
+  # misc
+  "-vv",
+  "--ff",
+]
+
+[tool.coverage.run]
+data_file = "build/reports/.coverage"
+omit = [
+  "*/test/test*.py",
+  "*/test/test_nucleus_state_share/*.py",
+  "*/upstage/utils.py",
+]
+
+[tool.coverage.html]
+show_contexts = true
+
+[tool.coverage.paths]
+upstage = [
+  "src/upstage",
+  "*/src/upstage",
+]
+
+[tool.coverage.report]
+exclude_also = [
+  "raise UpstageError*",
+  "raise SimulationError*",
+  "raise NotImplementedError*",
+  "except LookupError",
+  "except RuntimeError",
+  "except SimulationError",
+  "raise TypeError",
+  "except TypeError",
+  "raise MotionAndDetectionError",
+  "except MotionAndDetectionError",
+]
+
+[tool.doit]
+backend = "sqlite3"
+verbosity = 2
+par_type = "thread"
+
+[tool.doit.commands.list]
+status = true
+subtasks = true
+
+[tool.mypy]
+# broken by ipywidgetsplugins = "pydantic.mypy"
+cache_dir = "build/.mypy_cache"
+sqlite_cache = true
+python_version = "3.11"
+allow_redefinition = true
+check_untyped_defs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+show_error_codes = true
+warn_return_any = true
+warn_unused_ignores = true
+disable_error_code = "type-abstract"
+# disallow_any_unimported = true
+exclude = [
+  "^.+/upstage/test.+\\.py$",
+]
+
+[[tool.mypy.overrides]]
+module = [
+  "importlib.metadata",
+]
+ignore_missing_imports = true
+
+[tool.lint]
+select = [
+  "E",
+  "F",
+  "I",
+  "PLE",
+  "W",
+  "UP",
+  "D",
+]
+ignore = [
+  "E501",
+]
+cache-dir = "build/.ruff_cache"
+
+[tool.lint.per-file-ignores]
+"src/upstage/test/test*.py" = [
+  "D",
+]
+"src/upstage/test/__*.py" = [
+  "D",
+]
+
+[tool.lint.pydocstyle]
+convention = "google"
