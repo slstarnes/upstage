@@ -77,6 +77,10 @@ Unless you're adding to the codebase, you won't need to run the `sphinx-apidoc` 
 user_guide/index
 ```
 
+## Contributing
+
+To contribute to UPSTAGE, or to learn the steps for building documentation and running tests, see [CONTRIBUTING.MD]([https://](https://github.com/gtri/upstage/blob/main/CONTRIBUTING.md))
+
 ## License and Attribution
 
 This software is licensed under the BSD 3-Clause. Please see the `LICENSE` file in the repository for details.

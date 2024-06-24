@@ -71,6 +71,14 @@ html_theme_options = {
         "text": "UPSTAGE",
     },
   "show_toc_level": 1,
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/gtri/upstage/",
+            "icon": "fa-brands fa-square-github",
+            "type": "fontawesome",
+        },
+    ]
 }
 
 

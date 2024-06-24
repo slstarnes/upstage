@@ -28,6 +28,8 @@ Additional features include:
 1. Numerous runtime checks and error handling for typical DES pitfalls: based on years of custom DES-building experience.
 1. And more!
 
+See the [documentation](https://gtri.github.io/upstage) for tutorials and details.
+
 ## Requirements
 
 UPSTAGE only requires Python 3.11+ and Simpy 4+.
@@ -61,7 +63,7 @@ pytest
 
 ## Documentation
 
-Pending ReadTheDocs.
+See the [documentation](https://gtri.github.io/upstage) for tutorials and details.
 
 ## How do I report an issue?
 
