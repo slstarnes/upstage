@@ -19,7 +19,8 @@ jobs:
       - name: Build autodocs
         run: |
           pwd
-          sphinx-apidoc -o .\docs\source\ .\src\upstage\ .\src\upstage\test\
+          ls
+          sphinx-apidoc -o docs\source src\upstage src\upstage\test
       - name: Sphinx build
         run: |
           sphinx-build -b html docs\source _build
