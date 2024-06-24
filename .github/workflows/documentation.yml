@@ -14,9 +14,11 @@ jobs:
       - name: Install dependencies
         run: |
           pip install sphinx myst-parser pydata-sphinx-theme
-      - name: Sphinx build
+      - name: Build autodocs
         run: |
           sphinx-apidoc -o docs\source\ src\upstage\ src\upstage\test\
+      - name: Sphinx build
+        run: |
           sphinx-build -b html docs\source _build
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
