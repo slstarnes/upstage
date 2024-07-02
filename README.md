@@ -13,7 +13,7 @@ UPSTAGE - which is built on the `SimPy`_ library - contains two primary componen
 The components are `Actor` - which contain `State` - and `Task`, which can be assembled into a `TaskNetwork`. Actors can have multiple networks running on them, their states can be shared, and there are features for interactions between task networks running on the same actor. Those tasks modify the states on their actor, with features for
 real-time states that update on request without requiring time-stepping or modifying the existing events.
 
-[image](docs/source/_static/upstage-flow.png)
+![image](docs/source/_static/upstage-flow.png)
 
 Additional features include:
 
