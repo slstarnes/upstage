@@ -56,9 +56,9 @@ optional-dependencies.test = [
   "ruff",
   "ssort",
 ]
-urls."Bug Tracker" = "https://github.com/gtri/upstage/issues"
-urls.Documentation = ""
-urls."Source" = "https://github.com/gtri/upstage"
+urls."Bug Tracker" = "https://github.com/JamesArruda/upstage/issues"
+urls.Documentation = "https://JamesArruda.github.io/upstage"
+urls."Source" = "https://github.com/JamesArruda/upstage"
 
 [tool.flit.sdist]
 exclude = [
