@@ -3,10 +3,12 @@
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for license terms.
 
-from typing import Generator, Any
-import upstage.api as UP
+from collections.abc import Generator
+from typing import Any
+
 import simpy as SIM
 
+import upstage.api as UP
 from upstage.task import InterruptStates
 
 TASK_GEN = Generator[UP.Event, Any, None]

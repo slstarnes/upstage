@@ -4,8 +4,8 @@
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
 import pytest
-import upstage.api as UP
 
+import upstage.api as UP
 from upstage.utils import waypoint_time_and_dist
 
 

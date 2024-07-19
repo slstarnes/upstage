@@ -3,9 +3,11 @@
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
-import pytest
-from upstage.units.convert import unit_convert, CONVERSIONS
 from itertools import combinations
+
+import pytest
+
+from upstage.units.convert import CONVERSIONS, unit_convert
 
 
 def test_convert_fail():

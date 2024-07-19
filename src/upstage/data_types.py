@@ -6,11 +6,11 @@
 """Data types for common operations. Currently just locations."""
 
 from dataclasses import FrozenInstanceError
+from math import degrees, radians, sqrt
 from typing import Any
-from math import sqrt, radians, degrees
 
 from upstage.base import UpstageBase
-from upstage.math_utils import _vector_subtract, _vector_norm
+from upstage.math_utils import _vector_norm, _vector_subtract
 from upstage.units import unit_convert
 
 __all__ = ("CartesianLocation", "GeodeticLocation", "Location")

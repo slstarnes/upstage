@@ -6,21 +6,22 @@
 """Base classes and exceptions for UPSTAGE."""
 
 from collections import defaultdict
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from contextvars import ContextVar, Token
 from functools import wraps
 from math import floor
-from time import gmtime, strftime
-from typing import TYPE_CHECKING, Any, Protocol, Union, Callable, Optional
-from warnings import warn
 from random import Random
+from time import gmtime, strftime
+from typing import TYPE_CHECKING, Any, Protocol, Union
+from warnings import warn
 
 from simpy import Environment as SimpyEnv
-from upstage.geography import CrossingCondition, LAT_LON_ALT
+
+from upstage.geography import LAT_LON_ALT, CrossingCondition
 from upstage.units import unit_convert
 
 if TYPE_CHECKING:
-    from upstage.data_types import Location, GeodeticLocation, CartesianLocation
+    from upstage.data_types import CartesianLocation, GeodeticLocation, Location
 
 
 class EarthProtocol(Protocol):
@@ -38,7 +39,7 @@ class EarthProtocol(Protocol):
         loc2: tuple[float, float],
         units: str,
     ) -> tuple[float, float]:
-        """get the distance between two lat/lon (degrees) points"""
+        """Get the distance between two lat/lon (degrees) points"""
 
     def point_from_bearing_dist(
         self,
@@ -64,8 +65,8 @@ INTERSECTION_LOCATION_CALLABLE = Callable[
         float,
         str,
         EarthProtocol,
-        Optional[float],
-        Optional[list[int]],
+        float | None,
+        list[int] | None,
     ],
     list[CrossingCondition],
 ]
@@ -438,8 +439,8 @@ class EnvironmentContext:
     def __init__(
         self,
         initial_time: float = 0.0,
-        random_seed: Optional[int] = None,
-        random_gen: Optional[Any] = None,
+        random_seed: int | None = None,
+        random_gen: Any | None = None,
     ):
         self.env_ctx = ENV_CONTEXT_VAR
         self.actor_ctx = ACTOR_CONTEXT_VAR

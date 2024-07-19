@@ -13,9 +13,9 @@ from simpy import Container, Store
 
 from upstage.base import SimulationError, UpstageError
 from upstage.data_types import CartesianLocation, GeodeticLocation
+from upstage.math_utils import _vector_add, _vector_subtract
 from upstage.resources.monitoring import SelfMonitoringStore
 from upstage.task import Task
-from upstage.math_utils import _vector_subtract, _vector_add
 
 if TYPE_CHECKING:
     from upstage.actor import Actor

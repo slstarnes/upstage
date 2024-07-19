@@ -9,11 +9,11 @@ from upstage.base import MotionAndDetectionError
 from upstage.data_types import CartesianLocation
 from upstage.math_utils import (
     _col_mat_mul,
-    _vector_subtract,
+    _roots,
     _vector_add,
     _vector_dot,
     _vector_norm,
-    _roots,
+    _vector_subtract,
 )
 
 XY = tuple[float, float]
@@ -39,7 +39,6 @@ def ray_intersection(
     Returns:
         tuple[list[XY] | list[XYZ], list[float]]: Intersecting positions and times.
     """
-
     n_dim = len(start)
     for compare in [toward, center]:
         assert len(compare) == n_dim, "Mismatched dimensions in ray intersection."

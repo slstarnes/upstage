@@ -3,9 +3,10 @@
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
-from math import sin, cos, tan, atan, atan2, radians, sqrt, degrees
+from math import atan, atan2, cos, degrees, radians, sin, sqrt, tan
 
 from upstage.units import unit_convert
+
 from .conversions import WGS84_A, WGS84_B, WGS84_F, WGS84Conversions
 from .spherical import LAT_LON, POSITIONS
 
@@ -87,7 +88,6 @@ class WGS84(WGS84Conversions):
         Returns:
             tuple[float, float]: Distance and Bearing
         """
-
         if loc1[0] == loc2[0] and loc1[1] == loc2[1]:
             return 0.0, 0.0
         # reduced latitudes

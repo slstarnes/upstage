@@ -4,6 +4,7 @@
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
 import pytest
+
 from upstage.geography import WGS84
 
 

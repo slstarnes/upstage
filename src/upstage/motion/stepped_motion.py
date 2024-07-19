@@ -3,15 +3,16 @@
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
-from typing import Any, Callable, Generator, cast
+from collections.abc import Callable, Generator
+from typing import Any, cast
 
 from simpy import Event as SimpyEvent
 
 from upstage.actor import Actor
 from upstage.base import SimulationError, UpstageBase
-from upstage.states import GeodeticLocationChangingState, CartesianLocationChangingState
+from upstage.motion.motion import LOC_TYPES, SensorType
+from upstage.states import CartesianLocationChangingState, GeodeticLocationChangingState
 from upstage.task import process
-from upstage.motion.motion import SensorType, LOC_TYPES
 
 
 class SteppedMotionManager(UpstageBase):

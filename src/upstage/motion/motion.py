@@ -3,21 +3,22 @@
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
+from collections.abc import Generator
+from typing import Any, Protocol
 from warnings import warn
-from typing import Any, Generator, Protocol
 
-from simpy import Interrupt, Process, Event as SimpyEvent
+from simpy import Event as SimpyEvent
+from simpy import Interrupt, Process
 
 from upstage.actor import Actor
 from upstage.base import (
+    INTERSECTION_TIMING_CALLABLE,
     MotionAndDetectionError,
     SimulationError,
     UpstageBase,
-    INTERSECTION_TIMING_CALLABLE,
 )
-from upstage.states import CartesianLocationChangingState, GeodeticLocationChangingState
 from upstage.data_types import CartesianLocation, GeodeticLocation
-
+from upstage.states import CartesianLocationChangingState, GeodeticLocationChangingState
 
 VALID = [
     ("ENTER", "END_INSIDE"),

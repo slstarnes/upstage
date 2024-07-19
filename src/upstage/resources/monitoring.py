@@ -5,10 +5,12 @@
 
 #!/usr/bin/python
 # -*- coding: iso-8859-15 -*-
-from typing import Callable, Any
-from simpy import Container, FilterStore, Store, Environment, Event
-from simpy.resources.store import StorePut, StoreGet, FilterStoreGet
-from simpy.resources.container import ContainerPut, ContainerGet
+from collections.abc import Callable
+from typing import Any
+
+from simpy import Container, Environment, Event, FilterStore, Store
+from simpy.resources.container import ContainerGet, ContainerPut
+from simpy.resources.store import FilterStoreGet, StoreGet, StorePut
 
 from .container import ContinuousContainer
 from .reserve import ReserveStore

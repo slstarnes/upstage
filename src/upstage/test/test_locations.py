@@ -6,9 +6,9 @@
 import pytest
 
 from upstage.actor import Actor
-from upstage.geography import Spherical
 from upstage.api import EnvironmentContext, SimulationError, add_stage_variable
 from upstage.data_types import GeodeticLocation
+from upstage.geography import Spherical
 from upstage.states import GeodeticLocationChangingState
 
 # example lat lon alts

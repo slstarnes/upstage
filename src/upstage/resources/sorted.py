@@ -6,7 +6,7 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-15 -*-
 from collections.abc import Callable
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from simpy import Store
 from simpy.resources.base import BoundClass, Get

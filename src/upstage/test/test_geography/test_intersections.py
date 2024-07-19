@@ -4,7 +4,8 @@
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
 import pytest
-from upstage.geography import get_intersection_locations, WGS84, Spherical
+
+from upstage.geography import WGS84, Spherical, get_intersection_locations
 from upstage.motion.cartesian_model import ray_intersection
 
 

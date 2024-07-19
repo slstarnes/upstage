@@ -4,6 +4,7 @@
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
 import pytest
+from simpy import Store
 
 from upstage.actor import Actor
 from upstage.base import EnvironmentContext
@@ -15,7 +16,6 @@ from upstage.resources.monitoring import (
     SelfMonitoringSortedFilterStore,
     SelfMonitoringStore,
 )
-from simpy import Store
 from upstage.resources.reserve import ReserveStore
 from upstage.resources.sorted import SortedFilterGet, SortedFilterStore
 

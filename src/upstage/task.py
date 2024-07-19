@@ -11,17 +11,17 @@ from functools import wraps
 from typing import TYPE_CHECKING, Any, TypeVar
 from warnings import warn
 
+from simpy import Environment as SimpyEnv
 from simpy import Event as SimpyEvent
-from simpy import Interrupt, Process, Environment as SimpyEnv
+from simpy import Interrupt, Process
 
 if TYPE_CHECKING:
     from .actor import Actor
     from .task_network import TaskNetwork
 
-from .base import ENV_CONTEXT_VAR, MockEnvironment, SimulationError, SettableEnv
+from .base import ENV_CONTEXT_VAR, MockEnvironment, SettableEnv, SimulationError
 from .constants import PLANNING_FACTOR_OBJECT
 from .events import BaseEvent, Event
-
 
 TASK_TYPE = Generator[BaseEvent | Process, Any, None]
 

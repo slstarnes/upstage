@@ -15,9 +15,9 @@ from upstage.base import (
     STAGE_CONTEXT_VAR,
     EnvironmentContext,
     NamedUpstageEntity,
+    UpstageBase,
     UpstageError,
     add_stage_variable,
-    UpstageBase,
 )
 
 

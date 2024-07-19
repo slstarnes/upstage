@@ -4,8 +4,8 @@
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
 from dataclasses import FrozenInstanceError
+from math import radians, sqrt
 
-from math import sqrt, radians
 import pytest
 
 import upstage.api as UP

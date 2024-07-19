@@ -5,8 +5,7 @@
 
 """Geodetic frame conversions."""
 
-from math import sqrt, sin, cos, degrees, radians, atan2
-
+from math import atan2, cos, degrees, radians, sin, sqrt
 
 POSITION = tuple[float, float, float]
 POSITIONS = list[POSITION]

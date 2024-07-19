@@ -3,10 +3,12 @@
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
-from ..task import process
-from simpy import Environment, Event
-from typing import Any, Generator
+from collections.abc import Generator
+from typing import Any
 
+from simpy import Environment, Event
+
+from ..task import process
 
 __all__ = ("ReserveStore",)
 

@@ -11,9 +11,8 @@ the web. The overall algorithms have been slightly modified to support UPSTAGE.
 """
 
 from functools import lru_cache
+from math import acos, asin, atan2, cos, pi, sin, sqrt
 from typing import cast
-
-from math import sqrt, pi, cos, sin, asin, acos, atan2
 
 from upstage.data_types import GeodeticLocation
 

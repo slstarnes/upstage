@@ -16,8 +16,8 @@ from upstage.api import (
     Wait,
     add_stage_variable,
 )
-from upstage.geography import Spherical
 from upstage.data_types import CartesianLocation, GeodeticLocation
+from upstage.geography import Spherical
 
 
 class _Mover(Actor):

@@ -5,13 +5,14 @@
 
 """Functions for finding intersections in geodetics."""
 
-from typing import Optional
-from upstage.units import unit_convert
+from dataclasses import dataclass
+
 from upstage.math_utils import _vector_norm, _vector_subtract
+from upstage.units import unit_convert
+
 from .conversions import POSITION, POSITIONS
 from .spherical import Spherical
 from .wgs84 import WGS84
-from dataclasses import dataclass
 
 LAT_LON_ALT = POSITION
 
@@ -20,7 +21,7 @@ LAT_LON_ALT = POSITION
 class CrossingCondition:
     kind: str
     begin: LAT_LON_ALT
-    end: Optional[LAT_LON_ALT] = None
+    end: LAT_LON_ALT | None = None
 
 
 def _preprocess(
@@ -153,7 +154,7 @@ def _split_down(
     radius: float,
     earth: Spherical | WGS84,
     distance_between: float,
-    subdivide_levels: Optional[list[int]] = None,
+    subdivide_levels: list[int] | None = None,
 ) -> CrossingCondition:
     """Find an intersection point from a sphere to a great circle.
 
@@ -215,7 +216,7 @@ def get_intersection_locations(
     radius_units: str,
     earth: WGS84 | Spherical,
     dist_between: float | None = None,
-    subdivide_levels: Optional[list[int]] = None,
+    subdivide_levels: list[int] | None = None,
 ) -> list[CrossingCondition]:
     """Get the locations and kinds of intersections of a path to a sphere.
 

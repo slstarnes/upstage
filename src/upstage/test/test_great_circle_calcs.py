@@ -3,6 +3,10 @@
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
+from math import degrees, pi, radians
+
+import pytest
+
 import upstage.api as UP
 from upstage.motion.great_circle_calcs import (
     get_course_rad,
@@ -10,8 +14,6 @@ from upstage.motion.great_circle_calcs import (
     get_great_circle_points,
     get_pos_from_points_and_distance,
 )
-import pytest
-from math import pi, degrees, radians
 
 
 def test_distance():

@@ -6,9 +6,9 @@
 from collections.abc import Callable, Generator
 from typing import Any
 
-from simpy import Process, Store, Event
+from simpy import Event, Process, Store
 
-from upstage.communications.comms import CommsManager, MessageContent, Message
+from upstage.communications.comms import CommsManager, Message, MessageContent
 from upstage.task import process
 
 

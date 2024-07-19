@@ -7,11 +7,11 @@
 
 from collections.abc import Generator
 from dataclasses import dataclass
+from typing import Any
 from uuid import uuid4
 
 from simpy import Event as SimpyEvent
 from simpy import Store
-from typing import Any
 
 from upstage.actor import Actor
 from upstage.base import ENV_CONTEXT_VAR, SimulationError, UpstageBase

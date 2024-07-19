@@ -9,26 +9,27 @@ from collections import defaultdict
 from collections.abc import Callable, Iterable
 from copy import copy, deepcopy
 from inspect import Parameter, signature
-from typing import Any, Optional, TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from simpy import Process
+
 from upstage.events import Event
 
 from .base import (
     MockEnvironment,
     NamedUpstageEntity,
+    SettableEnv,
     SimulationError,
     UpstageError,
-    SettableEnv,
 )
-from .data_types import GeodeticLocation, CartesianLocation
+from .data_types import CartesianLocation, GeodeticLocation
 from .states import (
+    ActiveState,
+    CartesianLocationChangingState,
     DetectabilityState,
+    GeodeticLocationChangingState,
     ResourceState,
     State,
-    GeodeticLocationChangingState,
-    CartesianLocationChangingState,
-    ActiveState,
 )
 from .task import Task
 from .task_network import TaskNetwork, TaskNetworkFactory
@@ -752,8 +753,8 @@ class Actor(SettableEnv, NamedUpstageEntity):
         self,
         network_name: str,
         task_name_list: list[str],
-        knowledge: Optional[dict[str, Any]] = None,
-        end_task: Optional[str] = None,
+        knowledge: dict[str, Any] | None = None,
+        end_task: str | None = None,
     ) -> "Actor":
         """Rehearse a network on this actor.
 

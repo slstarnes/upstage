@@ -3,11 +3,12 @@
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
-from math import degrees, atan, atan2, sin, cos, radians, sqrt, asin, acos
+from math import acos, asin, atan, atan2, cos, degrees, radians, sin, sqrt
 
-from upstage.units import unit_convert
 from upstage.math_utils import _vector_dot
-from .conversions import spherical_radius, SphericalConversions, POSITION, POSITIONS
+from upstage.units import unit_convert
+
+from .conversions import POSITION, POSITIONS, SphericalConversions, spherical_radius
 
 LAT_LON = tuple[float, float]
 

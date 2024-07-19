@@ -3,14 +3,15 @@
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 from math import sqrt
+
 from upstage.base import INTERSECTION_LOCATION_CALLABLE
-from upstage.geography import (
-    Spherical,
-    CrossingCondition,
-)
-from upstage.units import unit_convert
 from upstage.data_types import GeodeticLocation
+from upstage.geography import (
+    CrossingCondition,
+    Spherical,
+)
 from upstage.motion.great_circle_calcs import get_dist_rad, get_great_circle_points
+from upstage.units import unit_convert
 
 
 def _to_tuple(loc: GeodeticLocation) -> tuple[float, float, float]:
