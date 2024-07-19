@@ -156,9 +156,7 @@ class CommsManager(UpstageBase):
     def store_from_actor(self, actor: Actor) -> Store:
         if actor not in self.connected:
             try:
-                msg_store_name = actor._get_matching_state(
-                    CommunicationStore, {"_mode": self.mode}
-                )
+                msg_store_name = actor._get_matching_state(CommunicationStore, {"_mode": self.mode})
             except SimulationError as e:
                 e.add_note(f"No comms destination on actor {actor}")
                 raise e

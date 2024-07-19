@@ -58,9 +58,7 @@ class SteppedMotionManager(UpstageBase):
     # TODO: Data structures for efficient distances
     """
 
-    def __init__(
-        self, timestep: float, max_empty_events: int = 3, debug: bool = False
-    ) -> None:
+    def __init__(self, timestep: float, max_empty_events: int = 3, debug: bool = False) -> None:
         """Create the Stepped motion manager.
 
         Args:
@@ -69,9 +67,7 @@ class SteppedMotionManager(UpstageBase):
             debug (bool, optional): Record data or not. Defaults to False.
         """
         super().__init__()
-        self._sensors: dict[
-            SensorType, tuple[Callable[[], float], Callable[[], LOC_TYPES]]
-        ] = {}
+        self._sensors: dict[SensorType, tuple[Callable[[], float], Callable[[], LOC_TYPES]]] = {}
         self._detectables: dict[Actor, Callable[[], LOC_TYPES]] = {}
         self._in_view: set[tuple[SensorType, Actor]] = set()
         self._timestep = timestep
@@ -80,9 +76,7 @@ class SteppedMotionManager(UpstageBase):
         self._debug_log: list[Any] = []
         self._is_running = False
 
-    def _update_awareness(
-        self, sensor: SensorType, object: Actor, visible: bool
-    ) -> None:
+    def _update_awareness(self, sensor: SensorType, object: Actor, visible: bool) -> None:
         """Modify sensor/object awareness.
 
         Args:
@@ -145,9 +139,7 @@ class SteppedMotionManager(UpstageBase):
                 else:
                     visible = sensor.detection_checker(d_loc)
                 if self._debug:
-                    self._debug_log.append(
-                        (self.env.now, sensor, loc, detectable, d_loc)
-                    )
+                    self._debug_log.append((self.env.now, sensor, loc, detectable, d_loc))
                 self._update_awareness(sensor, detectable, visible)
 
     def _only_event_test(self) -> bool:
@@ -182,9 +174,7 @@ class SteppedMotionManager(UpstageBase):
                 n_empty = 0
 
     @process
-    def run_particular(
-        self, rate: float, detectable: Actor
-    ) -> Generator[SimpyEvent, None, None]:
+    def run_particular(self, rate: float, detectable: Actor) -> Generator[SimpyEvent, None, None]:
         """Run detections against a single target at a faster rate.
 
         Args:
@@ -214,14 +204,10 @@ class SteppedMotionManager(UpstageBase):
         required_attrs = [radius_attr_name, location_attr_name]
         for req in required_methods:
             if not hasattr(sensor, req):
-                raise NotImplementedError(
-                    f"Sensor {sensor} does not have '{req}' method!"
-                )
+                raise NotImplementedError(f"Sensor {sensor} does not have '{req}' method!")
         for attr in required_attrs:
             if not hasattr(sensor, attr):
-                raise SimulationError(
-                    f"Sensor {sensor} doesn't have" f"attribute {attr}"
-                )
+                raise SimulationError(f"Sensor {sensor} doesn't have" f"attribute {attr}")
 
         def get_radius() -> float:
             return cast(float, getattr(sensor, radius_attr_name))
@@ -239,17 +225,18 @@ class SteppedMotionManager(UpstageBase):
     ) -> None:
         """Add an object that is detectable to the manager.
 
-        The object must have an attribute that performs distance calculations. See the class docstring for more.
+        The object must have an attribute that performs distance calculations.
+        See the class docstring for more.
 
         Args:
             detectable (Actor): An object that has a location attribute
             location_attr_name (str): Name of the location attribute. Defaults to "location".
-            new_rate (float | None): Optional new rate for a detectable (if it needs faster, most likely)
+            new_rate (float | None): Optional new rate for a detectable
+            (if it needs faster, most likely)
         """
         if not hasattr(detectable, location_attr_name):
             raise SimulationError(
-                f"Detectable {detectable} doesn't have"
-                f"attribute {location_attr_name}"
+                f"Detectable {detectable} doesn't have" f"attribute {location_attr_name}"
             )
         try:
             self._test_detect(detectable)
@@ -283,9 +270,7 @@ class SteppedMotionManager(UpstageBase):
         """
         self._run_detectable(detectable_req=[detectable])
 
-    def _start_mover(
-        self, mover: Actor, speed: float, waypoints: list[LOC_TYPES]
-    ) -> None:
+    def _start_mover(self, mover: Actor, speed: float, waypoints: list[LOC_TYPES]) -> None:
         # we don't need this method, except to hook into motion states
         if not self._is_running:
             self.run()

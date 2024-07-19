@@ -339,9 +339,7 @@ def test_start_inside_end_inside():
 
         assert env.now == 0
 
-        assert (
-            len(sensor.data) == 1
-        ), f"Only need to see the start recorded: {sensor.data}"
+        assert len(sensor.data) == 1, f"Only need to see the start recorded: {sensor.data}"
         assert sensor.data[0][2] == "detect"
         assert sensor in motion._in_view[mover]
 
@@ -500,9 +498,7 @@ def test_interrupt_clean():
         sensor = DummySensor(env, loc, radius=10.0)
 
         mover_start = UP.CartesianLocation(*[8, 8, 2])
-        mover = RealMover(
-            name="A Mover", loc=mover_start, speed=1, detect=True, debug_log=True
-        )
+        mover = RealMover(name="A Mover", loc=mover_start, speed=1, detect=True, debug_log=True)
         waypoints = [
             mover_start,
             UP.CartesianLocation(*[-8, 8, 2]),
@@ -551,9 +547,7 @@ def test_undetectable_cli():
         sensor = DummySensor(env, loc, radius=10.0)
 
         mover_start = UP.CartesianLocation(*[8, 8, 2])
-        mover = RealMover(
-            name="A Mover", loc=mover_start, speed=1, debug_log=True, detect=True
-        )
+        mover = RealMover(name="A Mover", loc=mover_start, speed=1, debug_log=True, detect=True)
         waypoints = [
             mover_start,
             UP.CartesianLocation(*[-8, 8, 2]),
@@ -585,9 +579,7 @@ def test_redetectable():
         sensor = DummySensor(env, loc, radius=10.0)
 
         mover_start = UP.CartesianLocation(*[8, 8, 2])
-        mover = RealMover(
-            name="A Mover", loc=mover_start, speed=1, debug_log=True, detect=False
-        )
+        mover = RealMover(name="A Mover", loc=mover_start, speed=1, debug_log=True, detect=False)
         waypoints = [
             mover_start,
             UP.CartesianLocation(*[-8, 8, 2]),
@@ -601,9 +593,7 @@ def test_redetectable():
         motion.add_sensor(sensor)
         # no need to start the mover this time
         env.run(until=25)
-        with pytest.warns(
-            UserWarning, match="Setting DetectabilityState to True while*"
-        ):
+        with pytest.warns(UserWarning, match="Setting DetectabilityState to True while*"):
             mover.detect = True
 
 
@@ -616,9 +606,7 @@ def test_undetectable_after():
         sensor = DummySensor(env, loc, radius=10.0)
 
         mover_start = UP.CartesianLocation(*[8, 8, 2])
-        mover = RealMover(
-            name="A Mover", loc=mover_start, speed=1, debug_log=True, detect=True
-        )
+        mover = RealMover(name="A Mover", loc=mover_start, speed=1, debug_log=True, detect=True)
         waypoints = [
             mover_start,
             UP.CartesianLocation(*[-8, 8, 2]),
@@ -719,9 +707,7 @@ def test_motion_coordination_gi():
 
         t = 2
         geo_mover_start = UP.GeodeticLocation(*[t, t, 4000])
-        geo_mover = RealGeodeticMover(
-            name="Mover", loc=geo_mover_start, speed=1, detect=True
-        )
+        geo_mover = RealGeodeticMover(name="Mover", loc=geo_mover_start, speed=1, detect=True)
 
         waypoints = [
             geo_mover_start,
@@ -825,9 +811,7 @@ def test_motion_coordination_agi():
 
         t = 2
         geo_mover_start = UP.GeodeticLocation(*[t, t, 4000])
-        geo_mover = RealGeodeticMover(
-            name="Mover", loc=geo_mover_start, speed=1, detect=True
-        )
+        geo_mover = RealGeodeticMover(name="Mover", loc=geo_mover_start, speed=1, detect=True)
 
         waypoints = [
             geo_mover_start,

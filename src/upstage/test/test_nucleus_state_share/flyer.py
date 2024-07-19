@@ -29,9 +29,7 @@ class MissionPlanning(UP.Task):
         actor.approach = True
 
 
-mission_plan_net = UP.TaskNetworkFactory.from_single_terminating(
-    "plan", MissionPlanning
-)
+mission_plan_net = UP.TaskNetworkFactory.from_single_terminating("plan", MissionPlanning)
 
 
 class ApproachWait(UP.Task):

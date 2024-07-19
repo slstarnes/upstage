@@ -353,9 +353,7 @@ class Base:
         self.maintenance_queue = sp_store(self.env)
         self.parking = sp_store(self.env, parking_max)
         self.parking_tokens = sp_store(self.env, parking_max)
-        self.parking_tokens.items = [
-            (self, self.parking_tokens, i) for i in range(parking_max)
-        ]
+        self.parking_tokens.items = [(self, self.parking_tokens, i) for i in range(parking_max)]
         self.operational = True
 
         # yes, this is weird

@@ -143,9 +143,7 @@ class ContinuousContainer:
     ):
         self._capacity = capacity
         if init < 0 or capacity < 0:
-            raise ValueError(
-                "Initial and capacity cannot be negative."
-            )  # pragma: no cover
+            raise ValueError("Initial and capacity cannot be negative.")  # pragma: no cover
         self._level = init
         self.error_empty = error_empty
         self.error_full = error_full

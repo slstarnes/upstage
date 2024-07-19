@@ -219,12 +219,8 @@ class SensorMotionManager(UpstageBase):
 
         # pair off the in/out
         if len(inter_data) % 2 != 0:
-            raise SimulationError(
-                f"Intersections should pair in/out or in/in, found: {inter_data}"
-            )
-        pairs = [
-            (inter_data[i], inter_data[i + 1]) for i in range(0, len(inter_data), 2)
-        ]
+            raise SimulationError(f"Intersections should pair in/out or in/in, found: {inter_data}")
+        pairs = [(inter_data[i], inter_data[i + 1]) for i in range(0, len(inter_data), 2)]
         if not all((a[0], b[0]) in VALID for a, b in pairs):
             raise SimulationError(f"Bad pairing of intersections: {pairs}")
         return pairs
@@ -253,13 +249,9 @@ class SensorMotionManager(UpstageBase):
             sensor (Actor): Sensor
         """
         if mover not in self._in_view:
-            raise MotionAndDetectionError(
-                f"{mover} isn't in view of anything to remove."
-            )
+            raise MotionAndDetectionError(f"{mover} isn't in view of anything to remove.")
         if sensor not in self._in_view[mover]:
-            raise MotionAndDetectionError(
-                f"{mover} isn't in view of {sensor} to allow clearing."
-            )
+            raise MotionAndDetectionError(f"{mover} isn't in view of {sensor} to allow clearing.")
         self._in_view[mover].remove(sensor)
 
     def _end_notify(self, mover: Actor, sensor: SensorType, event: str) -> None:
@@ -323,9 +315,7 @@ class SensorMotionManager(UpstageBase):
 
         end_time_from_now = second_time - self.env.now
         if end_time_from_now <= 0:
-            raise MotionAndDetectionError(
-                "Detection end time is less than detection start"
-            )
+            raise MotionAndDetectionError("Detection end time is less than detection start")
 
         try:
             yield self.env.timeout(end_time_from_now)
@@ -382,9 +372,7 @@ class SensorMotionManager(UpstageBase):
             self._debug_log.append(msg)
 
         proc = self.env.process(
-            self._notify(
-                mover, sensor, first_time, second_time, first_kind, second_kind
-            )
+            self._notify(mover, sensor, first_time, second_time, first_kind, second_kind)
         )
         if mover not in self._events:
             self._events[mover] = [
@@ -414,9 +402,7 @@ class SensorMotionManager(UpstageBase):
                 for pair in inter_pairs:
                     self._schedule(m, s, pair)
 
-    def _start_mover(
-        self, mover: Actor, speed: float, waypoints: list[LOC_TYPES]
-    ) -> None:
+    def _start_mover(self, mover: Actor, speed: float, waypoints: list[LOC_TYPES]) -> None:
         """Start a mover's motion and find intersections with sensors.
 
         Args:
@@ -466,9 +452,7 @@ class SensorMotionManager(UpstageBase):
         required_methods = ["entity_entered_range", "entity_exited_range"]
         for req in required_methods:
             if not hasattr(sensor, req):
-                raise NotImplementedError(
-                    f"Sensor {sensor} does not have '{req}' method!"
-                )
+                raise NotImplementedError(f"Sensor {sensor} does not have '{req}' method!")
         for attr in [location_attr_name, radius_attr_name]:
             _attr = getattr(sensor, attr, None)
             if _attr is None:

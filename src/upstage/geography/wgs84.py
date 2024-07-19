@@ -105,8 +105,7 @@ class WGS84(WGS84Conversions):
             sin_lambda = sin(lambda_lon)
             cos_lambda = cos(lambda_lon)
             sin_sigma = sqrt(
-                (cos_u2 * sin_lambda) ** 2
-                + (cos_u1 * sin_u2 - sin_u1 * cos_u2 * cos_lambda) ** 2
+                (cos_u2 * sin_lambda) ** 2 + (cos_u1 * sin_u2 - sin_u1 * cos_u2 * cos_lambda) ** 2
             )
 
             cos_sigma = sin_u1 * sin_u2 + cos_u1 * cos_u2 * cos_lambda
@@ -120,10 +119,7 @@ class WGS84(WGS84Conversions):
             c = WGS84_F / 16 * cos_sq_alpha * (4 + WGS84_F * (4 - 3 * cos_sq_alpha))
             _lambdaPrev = lambda_lon
             lambda_lon = delta_lon + (1 - c) * WGS84_F * sin_alpha * (
-                sigma
-                + c
-                * sin_sigma
-                * (cos2_sigma_m + c * cos_sigma * (-1 + 2 * cos2_sigma_m**2))
+                sigma + c * sin_sigma * (cos2_sigma_m + c * cos_sigma * (-1 + 2 * cos2_sigma_m**2))
             )
             if abs(lambda_lon - _lambdaPrev) < tol:
                 break  # successful convergence
@@ -142,11 +138,7 @@ class WGS84(WGS84Conversions):
                 / 4
                 * (
                     cos_sigma * (-1 + 2 * cos2_sigma_m**2)
-                    - b
-                    / 6
-                    * cos2_sigma_m
-                    * (-3 + 4 * sin_sigma**2)
-                    * (-3 + 4 * cos2_sigma_m**2)
+                    - b / 6 * cos2_sigma_m * (-3 + 4 * sin_sigma**2) * (-3 + 4 * cos2_sigma_m**2)
                 )
             )
         )
@@ -242,10 +234,7 @@ class WGS84(WGS84Conversions):
         )
         C = f / 16 * cos_sq_alpha * (4 + f * (4 - 3 * cos_sq_alpha))
         L = lam - (1 - C) * f * sin_alpha * (
-            sigma
-            + C
-            * sin_alpha
-            * (cos2_sigma_m + C * cos_sigma * (-1 + 2 * cos2_sigma_m**2))
+            sigma + C * sin_alpha * (cos2_sigma_m + C * cos_sigma * (-1 + 2 * cos2_sigma_m**2))
         )
         lambda_2 = lambda_1 + L
 
@@ -399,7 +388,5 @@ class WGS84(WGS84Conversions):
         latlons = cls.geo_linspace(start, finish, num_segments=segments)
         delta_alt = finish_alt - start_alt
         alts = [start_alt + delta_alt * i / segments for i in range(segments + 1)]
-        lla: POSITIONS = [
-            (latlon[0], latlon[1], alt) for latlon, alt in zip(latlons, alts)
-        ]
+        lla: POSITIONS = [(latlon[0], latlon[1], alt) for latlon, alt in zip(latlons, alts)]
         return cls.lla2ecef(lla), lla

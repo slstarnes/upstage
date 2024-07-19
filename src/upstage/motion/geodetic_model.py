@@ -52,7 +52,8 @@ def subdivide_intersection(
         sensor_radius (float): Radius of sensor line of sight.
 
     Returns:
-        tuple[list[GeodeticLocation], list[float], list[str], float]: intersections, times, types, path_time
+        tuple[list[GeodeticLocation], list[float], list[str], float]: intersections,
+        times, types, path_time
     """
     STAGE = start.stage
     alt_units: str = STAGE.altitude_units
@@ -101,7 +102,8 @@ def analytical_intersection(
 ) -> tuple[list[GeodeticLocation], list[float], list[str], float]:
     """Calculate the intersection of a great circle.
 
-    The circle is defined by start & finish and the sphere defined by sensor_location and sensor_radius.
+    The circle is defined by start & finish and the sphere defined by
+    sensor_location and sensor_radius.
 
     This function mimics the above `subdivide_intersection`, but uses analytical
     equations that run much faster.
@@ -118,7 +120,8 @@ def analytical_intersection(
         sensor_radius (float): the radius of the sensor (in STAGE units)
 
     Returns:
-        tuple[list[GeodeticLocation], list[float], list[str], float]: intersections, times, types, path_time
+        tuple[list[GeodeticLocation], list[float], list[str], float]:
+        intersections, times, types, path_time
     """
     STAGE = start.stage
     dist_units: str = STAGE.distance_units
@@ -131,9 +134,7 @@ def analytical_intersection(
 
     # modify the sensor's radius to account for the altitude of the mover
     average_path_height = (start.alt + finish.alt) / 2.0
-    average_path_height_dist_units = unit_convert(
-        average_path_height, altitude_units, dist_units
-    )
+    average_path_height_dist_units = unit_convert(average_path_height, altitude_units, dist_units)
     adjusted_sensor_radius = sqrt(sensor_radius**2 - average_path_height_dist_units**2)
     sensor_radius_rad = adjusted_sensor_radius / earth_rad
 
@@ -156,9 +157,7 @@ def analytical_intersection(
     intersections = []
     times = []
     types = []
-    alt_change_per_dist = (
-        finish.alt - start.alt
-    ) / path_dist  # altitude change per radian
+    alt_change_per_dist = (finish.alt - start.alt) / path_dist  # altitude change per radian
 
     # check for start in the sensor range
     if dist_start < sensor_radius_rad:
@@ -172,8 +171,7 @@ def analytical_intersection(
         alt_1 = start.alt + (distances[0] / path_dist) * alt_change_per_dist
         # adjust distance to account for average altitude from start to first intersection
         d1_m = distances[0] * (
-            earth_rad
-            + unit_convert(0.5 * (start.alt + alt_1), altitude_units, dist_units)
+            earth_rad + unit_convert(0.5 * (start.alt + alt_1), altitude_units, dist_units)
         )
 
         intersections.append(
@@ -198,13 +196,10 @@ def analytical_intersection(
         alt_2 = start.alt + (distances[1] / path_dist) * alt_change_per_dist
         # adjust distance to account for average altitude from start to first intersection
         d2_m = distances[1] * (
-            earth_rad
-            + unit_convert(0.5 * (start.alt + alt_2), altitude_units, dist_units)
+            earth_rad + unit_convert(0.5 * (start.alt + alt_2), altitude_units, dist_units)
         )
 
-        intersections.append(
-            GeodeticLocation(*points[1], alt=alt_2, in_radians=True).to_degrees()
-        )
+        intersections.append(GeodeticLocation(*points[1], alt=alt_2, in_radians=True).to_degrees())
         times.append(d2_m / speed)
 
     return intersections, times, types, path_time

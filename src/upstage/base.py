@@ -105,9 +105,7 @@ class dotdict(dict):
             Any: The value
         """
         if key not in self:
-            raise AttributeError(
-                f"No key `{key}` found in stage. Use `UP.add_stage_variable`"
-            )
+            raise AttributeError(f"No key `{key}` found in stage. Use `UP.add_stage_variable`")
         return self.get(key)
 
     def __setattr__(self, key: str, value: Any) -> None:
@@ -216,9 +214,7 @@ class MockEnvironment:
 
 ENV_CONTEXT_VAR: ContextVar[SimpyEnv] = ContextVar("Environment")
 ACTOR_CONTEXT_VAR: ContextVar[list["NamedUpstageEntity"]] = ContextVar("Actors")
-ENTITY_CONTEXT_VAR: ContextVar[dict[str, list["NamedUpstageEntity"]]] = ContextVar(
-    "Entities"
-)
+ENTITY_CONTEXT_VAR: ContextVar[dict[str, list["NamedUpstageEntity"]]] = ContextVar("Entities")
 STAGE_CONTEXT_VAR: ContextVar[dotdict] = ContextVar("Stage")
 
 
@@ -335,9 +331,7 @@ class NamedUpstageEntity(UpstageBase):
         old_init = cls.__init__
 
         @wraps(old_init)
-        def the_actual_init(
-            inst: NamedUpstageEntity, *args: Any, **kwargs: Any
-        ) -> None:
+        def the_actual_init(inst: NamedUpstageEntity, *args: Any, **kwargs: Any) -> None:
             inst._add_entity(entity_group)
             old_init(inst, *args, **kwargs)
 
@@ -370,9 +364,7 @@ class NamedUpstageEntity(UpstageBase):
                 ans = ENTITY_CONTEXT_VAR.get()
                 ans.setdefault(group_name, [])
                 if self in ans[group_name]:
-                    raise UpstageError(
-                        f"Entity: {self} already recorded in the environment"
-                    )
+                    raise UpstageError(f"Entity: {self} already recorded in the environment")
                 ans[group_name].append(self)
             except LookupError:
                 entity_groups = {group_name: [self]}

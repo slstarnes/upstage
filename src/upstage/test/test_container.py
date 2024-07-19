@@ -186,9 +186,7 @@ def test_complex_behavior():
                 yield env.timeout(wait)
 
                 rate = uniform(1.0, 2.0)
-                until = 0.5 * min(
-                    tank.time_until_done(rate * 0.99), uniform(20.0, 30.0)
-                )
+                until = 0.5 * min(tank.time_until_done(rate * 0.99), uniform(20.0, 30.0))
                 # print(f"{env.now:5.1f} - Random Draw (rate: {rate:.1f}, "
                 #       f"until={until:.1f})")
                 tank.get(rate=rate, time=until)
@@ -209,9 +207,7 @@ def test_complex_behavior():
                 wait = uniform(40.0, 60.0)
                 yield env.timeout(wait)
 
-                getter = tank.get(
-                    rate=10.0, time=1_000, custom_callbacks=[tank_is_empty]
-                )
+                getter = tank.get(rate=10.0, time=1_000, custom_callbacks=[tank_is_empty])
                 # print("{:5.1f} - Restarted constant getting".format(env.now))
 
         def simulate():
@@ -274,8 +270,6 @@ def test_checking_monitoring():
 def test_self_monitoring_container():
     """Test self-monitoring container"""
     with EnvironmentContext() as env:
-        con = SelfMonitoringContainer(
-            env=env, capacity=CONTAINER_CAPACITY, init=INITIAL_LEVEL
-        )
+        con = SelfMonitoringContainer(env=env, capacity=CONTAINER_CAPACITY, init=INITIAL_LEVEL)
 
         assert len(con._quantities) == 1

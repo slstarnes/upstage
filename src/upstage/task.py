@@ -60,7 +60,8 @@ def process(
     >>>     generator()
 
     Args:
-        func (Callable[..., Generator[BaseEvent, None, None]]): The process function that is a generator of simpy events.
+        func (Callable[..., Generator[BaseEvent, None, None]]): The process function that is a
+        generator of simpy events.
 
     Returns:
         Process: The generator as a ``simpy`` process.
@@ -107,9 +108,7 @@ class Task(SettableEnv):
 
     def task(self, *, actor: "Actor") -> TASK_TYPE:
         """Define the process this task follows."""
-        raise NotImplementedError(
-            "User must define the actions performed when executing this task"
-        )
+        raise NotImplementedError("User must define the actions performed when executing this task")
 
     def on_interrupt(self, *, actor: "Actor", **kwargs: Any) -> InterruptStates | None:
         """Define any actions to take on the actor if this task is interrupted.
@@ -135,7 +134,8 @@ class Task(SettableEnv):
 
         Args:
             marker (str): String for the marker.
-            interrupt_action (InterruptStates, optional): Action to take on interrupt. Defaults to InterruptStates.END.
+            interrupt_action (InterruptStates, optional): Action to take on interrupt.
+            Defaults to InterruptStates.END.
         """
         self._marker = marker
         self._marked_time = self.env.now
@@ -182,9 +182,7 @@ class Task(SettableEnv):
             network_name (str): Network name
         """
         if self._network_name is not None:
-            raise SimulationError(
-                "Setting task network name on task that already has a network"
-            )
+            raise SimulationError("Setting task network name on task that already has a network")
         self._network_name = network_name
 
     def clear_actor_task_queue(self, actor: "Actor") -> None:
@@ -262,9 +260,7 @@ class Task(SettableEnv):
         actor.clear_knowledge(name, caller=cname)
 
     @staticmethod
-    def get_actor_knowledge(
-        actor: "Actor", name: str, must_exist: bool = False
-    ) -> Any | None:
+    def get_actor_knowledge(actor: "Actor", name: str, must_exist: bool = False) -> Any | None:
         """Get knowledge from the actor.
 
         Args:
@@ -336,8 +332,7 @@ class Task(SettableEnv):
                     returned_item = None
                 if not issubclass(next_event.__class__, BaseEvent):
                     raise SimulationError(
-                        f"Task {self} event {next_event} must "
-                        f"be a subclass of BaseEvent!"
+                        f"Task {self} event {next_event} must " f"be a subclass of BaseEvent!"
                     )
                 time_advance, returned_item = next_event.rehearse()
                 mocked_env.now += time_advance
@@ -447,9 +442,7 @@ class Task(SettableEnv):
                         # that way we can return it as a more useful object
                     except AttributeError as exc:
                         if "as_event" in exc.args[0]:
-                            raise SimulationError(
-                                "Task is yielding objects without `as_event`"
-                            )
+                            raise SimulationError("Task is yielding objects without `as_event`")
                         else:
                             raise exc
                     except StopIteration:
@@ -481,15 +474,11 @@ class DecisionTask(Task):
 
     def rehearse_decision(self, *, actor: "Actor") -> None:
         """Define the process this task follows."""
-        raise NotImplementedError(
-            "User must define the actions performed when executing this task"
-        )
+        raise NotImplementedError("User must define the actions performed when executing this task")
 
     def make_decision(self, *, actor: "Actor") -> None:
         """Define the process this task follows."""
-        raise NotImplementedError(
-            "User must define the actions performed when executing this task"
-        )
+        raise NotImplementedError("User must define the actions performed when executing this task")
 
     def rehearse(
         self,
@@ -559,8 +548,7 @@ class TerminalTask(Task):
             actor (Actor): The actor
         """
         raise SimulationError(
-            f"Cannot interrupt a terminal task {self} on {actor}. "
-            f"Kwargs sent: {kwargs}"
+            f"Cannot interrupt a terminal task {self} on {actor}. " f"Kwargs sent: {kwargs}"
         )
 
     def task(self, *, actor: "Actor") -> TASK_TYPE:

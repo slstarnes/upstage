@@ -70,9 +70,7 @@ def test_cartesian():
         assert point_3 != point_2
 
         point_2a = UP.CartesianLocation(1, 2, 3.000000001)
-        assert (
-            point_2 == point_2a
-        ), f"Nearly equal points are still {point_2 - point_2a} too far"
+        assert point_2 == point_2a, f"Nearly equal points are still {point_2 - point_2a} too far"
 
 
 def test_geodetic():

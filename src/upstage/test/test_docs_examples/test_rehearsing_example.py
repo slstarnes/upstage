@@ -96,9 +96,7 @@ class Planner(UP.DecisionTask):
             task_queue = ["Fly", "Land"]
         else:  # pop a location from the plan
             dests = next_dests.pop(0)
-            self.set_actor_knowledge(
-                actor, "destination_plan", next_dests, overwrite=True
-            )
+            self.set_actor_knowledge(actor, "destination_plan", next_dests, overwrite=True)
             task_queue = ["Fly", "Search"]
 
         self.set_actor_knowledge(actor, "destination", dests, overwrite=True)

@@ -86,9 +86,7 @@ class CPUProcess(UP.Task):
             )
             perc = actor.left_from_partial(process_data, start_time, self.env.now)
             process_data["percent complete"] = perc
-            self.set_actor_knowledge(
-                actor, knowledge_name, process_data, overwrite=True
-            )
+            self.set_actor_knowledge(actor, knowledge_name, process_data, overwrite=True)
 
             return self.INTERRUPT.RESTART
 

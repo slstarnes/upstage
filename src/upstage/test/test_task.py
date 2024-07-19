@@ -202,9 +202,7 @@ def test_running():
         env.run()
         assert env.now == 3, "Environment time must increase"
         assert actor.dummy == 3, "Actor state must change"
-        assert isinstance(
-            task_process, Process
-        ), "Task process is not an instance of simpy.Process"
+        assert isinstance(task_process, Process), "Task process is not an instance of simpy.Process"
 
 
 def test_interrupting():

@@ -53,7 +53,8 @@ def ray_intersection(
         _radii = radii
         if len(start) != len(radii):
             raise MotionAndDetectionError(
-                "Radius for a sensor must be a single float or the same dimensionality as the locations."
+                "Radius for a sensor must be a single float or the same dimensionality as the "
+                "locations."
             )
     for i in range(n_dim):
         M[i][i] = 1 / _radii[i]
@@ -126,9 +127,7 @@ def cartesian_linear_intersection(
 
     # filter out intersections beyond the path length
     idxs = sorted(range(len(times)), key=lambda i: times[i])
-    inters = [
-        CartesianLocation(*intersections[i]) for i in idxs if times[i] <= path_time
-    ]
+    inters = [CartesianLocation(*intersections[i]) for i in idxs if times[i] <= path_time]
     times = [times[i] for i in idxs if times[i] <= path_time]
     type_start = "START_INSIDE" if start_inside else "ENTER"
     type_end = "END_INSIDE" if finish_inside else "EXIT"

@@ -26,9 +26,7 @@ class ReserveStore:
 
     """
 
-    def __init__(
-        self, env: Environment, init: float = 0.0, capacity: float = float("inf")
-    ) -> None:
+    def __init__(self, env: Environment, init: float = 0.0, capacity: float = float("inf")) -> None:
         self.capacity = capacity
         self._env = env
         self._level = init
@@ -48,9 +46,7 @@ class ReserveStore:
         return list(self._queued.keys())
 
     @process
-    def _expire_request(
-        self, requester: Any, time: float
-    ) -> Generator[Event, None, None]:
+    def _expire_request(self, requester: Any, time: float) -> Generator[Event, None, None]:
         """Expire the request after an expiration period or at a specific time.
 
         :param request: the Request namedtuple object
@@ -63,9 +59,7 @@ class ReserveStore:
         yield self._env.timeout(time)
         self.cancel_request(requester)
 
-    def reserve(
-        self, requester: Any, quantity: float, expiration: float | None = None
-    ) -> bool:
+    def reserve(self, requester: Any, quantity: float, expiration: float | None = None) -> bool:
         """Reserve a quantity of storage."""
         if self.available < quantity:
             return False

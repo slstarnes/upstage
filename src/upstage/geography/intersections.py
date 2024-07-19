@@ -50,9 +50,7 @@ def _preprocess(
     while points <= 2:
         dist_between = dist_between / 2.0
         if dist_between < 100:
-            raise Exception(
-                f"Intersetion Segment {start_lla} -> {finish_lla} is too small!"
-            )
+            raise Exception(f"Intersetion Segment {start_lla} -> {finish_lla} is too small!")
         points = int(dist / dist_between) + 1
     ecef_point = earth.lla2ecef([point_lla])[0]
     assert len(ecef_point) == 3
@@ -190,13 +188,10 @@ def _split_down(
         )
         if len(split_data) != 3:
             raise ValueError(
-                "A subdivide split shouldn't have 2 crossovers"
-                " in intersections with a sphere"
+                "A subdivide split shouldn't have 2 crossovers" " in intersections with a sphere"
             )
         if split_data[1].kind not in ["EXIT", "ENTER"]:
-            raise ValueError(
-                "Subdividing an intersection check gave an invalid Direction"
-            )
+            raise ValueError("Subdividing an intersection check gave an invalid Direction")
         assert split_data[1].end is not None
         begin, end = split_data[1].begin, split_data[1].end
 

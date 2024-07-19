@@ -63,9 +63,7 @@ class Location(UpstageBase):
         """
         if hasattr(self, "_no_override"):
             if name in self._no_override:
-                raise FrozenInstanceError(
-                    f"Locations are disallowed from setting {name}"
-                )
+                raise FrozenInstanceError(f"Locations are disallowed from setting {name}")
         return super().__setattr__(name, value)
 
     def __sub__(self, other: object) -> float:
@@ -143,9 +141,7 @@ class CartesianLocation(Location):
             hor_units = ""
         try:
             alt_units = (
-                self.stage.altitude_units
-                if self.use_altitude_units
-                else self.stage.distance_units
+                self.stage.altitude_units if self.use_altitude_units else self.stage.distance_units
             )
         except AttributeError:
             alt_units = ""
@@ -161,9 +157,7 @@ class CartesianLocation(Location):
             tuple[float, float, float]: A 1-D array of (x, y, z)
         """
         if self.use_altitude_units:
-            height = unit_convert(
-                self.z, self.stage.altitude_units, self.stage.distance_units
-            )
+            height = unit_convert(self.z, self.stage.altitude_units, self.stage.distance_units)
         else:
             height = self.z
         return (self.x, self.y, height)
@@ -208,9 +202,7 @@ class CartesianLocation(Location):
             float: Value at index
         """
         if not 0 <= idx <= 2:
-            raise ValueError(
-                f"CartesianLocation only has 3 indices (x, y, z), not a {idx}th index"
-            )
+            raise ValueError(f"CartesianLocation only has 3 indices (x, y, z), not a {idx}th index")
         return [self.x, self.y, self.z][idx]
 
     def __sub__(self, other: object) -> float:
@@ -225,14 +217,10 @@ class CartesianLocation(Location):
             float: Distance between this and another location.
         """
         if isinstance(other, CartesianLocation):
-            sum_sq = sum(
-                (a - b) ** 2 for a, b in zip(self._as_array(), other._as_array())
-            )
+            sum_sq = sum((a - b) ** 2 for a, b in zip(self._as_array(), other._as_array()))
             return sqrt(sum_sq)
         else:
-            raise ValueError(
-                f"Cannot subtract {other.__class__.__name__} from a CartesianLocation"
-            )
+            raise ValueError(f"Cannot subtract {other.__class__.__name__} from a CartesianLocation")
 
     def __eq__(self, other: object) -> bool:
         """Test if two positions are the same.
@@ -246,9 +234,7 @@ class CartesianLocation(Location):
             bool: Is equal or not
         """
         if not isinstance(other, CartesianLocation):
-            raise ValueError(
-                f"Cannot compare {other.__class__.__name__} to a CartesianLocation"
-            )
+            raise ValueError(f"Cannot compare {other.__class__.__name__} to a CartesianLocation")
         dist = self - other
         return bool(abs(dist) <= 0.00001)
 
@@ -414,9 +400,7 @@ class GeodeticLocation(Location):
             float: Distance
         """
         if not isinstance(other, GeodeticLocation):
-            raise TypeError(
-                f"Cannot subtract a {other.__class__.__name__} from a GeodeticLocation"
-            )
+            raise TypeError(f"Cannot subtract a {other.__class__.__name__} from a GeodeticLocation")
         lat, lon, alt = self.to_degrees()._to_tuple()
         alt = unit_convert(alt, self.stage.altitude_units, "m")
         ecef_self = self.stage.stage_model.lla2ecef([(lat, lon, alt)])[0]
@@ -479,9 +463,7 @@ class GeodeticLocation(Location):
             bool: Close enough or not.
         """
         if not isinstance(other, GeodeticLocation):
-            raise ValueError(
-                f"Cannot compare a {other.__class__.__name__} to a GeodeticLocation"
-            )
+            raise ValueError(f"Cannot compare a {other.__class__.__name__} to a GeodeticLocation")
         if other.in_radians != self.in_radians:
             if self.in_radians:
                 other = other.to_radians()

@@ -15,4 +15,5 @@
 1. Note how [RMT](https://github.com/gtri/rapid-modeling-tools/blob/master/LICENSE) says the license when you view the LICENSE? [Yours](https://github.com/JamesArruda/upstage/blob/main/LICENSE) does not. Can you try and make that work?
 1. It might be worth breaking out a separate `optional-dependencies` for linters/formatters (and not combining with pytest in `test`)
 1. In `.github/workflows/lint.yml`, the line `if: success() || failure()` needs tto be removed before merge. Debug only.
-1. 
+1. As of 7/19, running `ruff check --fix src` found 138 errors.
+1. I experimented with enabling E501 (line-too-long) and changing the line length to 100. I fixed some of the findings. There are 41 left. NOTE: by setting line length to 100 `ruff format` changed a bunch of code to make lines longer.

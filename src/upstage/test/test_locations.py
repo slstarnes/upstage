@@ -112,9 +112,7 @@ def test_active_geodetic_changing():
             waypoints=waypoints,
         )
         assert "loc_state" in tester._active_states
-        assert tester._active_states["loc_state"] == tester.get_active_state_data(
-            "loc_state"
-        )
+        assert tester._active_states["loc_state"] == tester.get_active_state_data("loc_state")
 
         # check the data created
         # ask for the state to update it

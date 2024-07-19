@@ -202,9 +202,7 @@ class Spherical(SphericalConversions):
         a, _, _ = v1
         d, _, _ = v2
         lead = a * alpha + beta * d
-        sqrt_inner = (
-            a**2 * alpha**2 + a**2 + 2 * a * alpha * beta * d + beta**2 * d**2 - d**2
-        )
+        sqrt_inner = a**2 * alpha**2 + a**2 + 2 * a * alpha * beta * d + beta**2 * d**2 - d**2
         if sqrt_inner < 0:
             raise ValueError("geo_linspace fails due to negative sqrt")
         t = 2 * atan((lead + sqrt(sqrt_inner)) / (a + d))
@@ -291,10 +289,7 @@ class Spherical(SphericalConversions):
         """
         positions = [loc1[1], loc1[0], loc2[1], loc2[0]]
         lon1, lat1, lon2, lat2 = map(radians, positions)
-        a = (
-            sin(0.5 * (lat2 - lat1)) ** 2
-            + cos(lat1) * cos(lat2) * sin(0.5 * (lon2 - lon1)) ** 2
-        )
+        a = sin(0.5 * (lat2 - lat1)) ** 2 + cos(lat1) * cos(lat2) * sin(0.5 * (lon2 - lon1)) ** 2
 
         dist_m = spherical_radius * 2 * atan2(sqrt(a), sqrt(1.0 - a))
         return unit_convert(dist_m, "m", units)

@@ -144,9 +144,7 @@ def test_task_with_all_events():
 
         # check that the returned test actor has the expected entries in its state
         assert test_actor.dummy[0] == 2.0, "Wrong result in test actor"
-        assert (
-            test_actor.dummy[1] == 6.0
-        ), "Wrong result in test actor for fake store object"
+        assert test_actor.dummy[1] == 6.0, "Wrong result in test actor for fake store object"
         assert f in store.items, "Item was removed when it shouldn't have been"
         assert f2 in store.items, "Item was removed when it shouldn't have been"
         # run the process for real
@@ -161,9 +159,7 @@ def test_task_with_all_events():
 
         env.run()
         assert actor.dummy[0] == 2.0, "Wrong result in test actor"
-        assert (
-            actor.dummy[1] == f.code * 1.5
-        ), "Wrong result in test actor for fake store object"
+        assert actor.dummy[1] == f.code * 1.5, "Wrong result in test actor for fake store object"
         assert f not in store.items, "Item wasn't removed when it should have been"
         assert f2 in store.items, "Item was removed when it shouldn't have been"
         assert f in store2.items, "Item wasn't moved to the next store"
@@ -189,9 +185,7 @@ def test_task_with_get():
             actor=actor,
         )
 
-        assert isinstance(
-            result[3], MockEnvironment
-        ), f"Not a mock environment: {result[3]}"
+        assert isinstance(result[3], MockEnvironment), f"Not a mock environment: {result[3]}"
         assert result[0] is PLANNING_FACTOR_OBJECT
         assert result[1] == 12.3
         assert result[2].is_complete, "Tested event believes it completed"
@@ -303,6 +297,4 @@ def test_task_with_cancels():
         expected_fuel = 100 - (16.5 * 1.2)
         assert actor.fuel == expected_fuel
         assert len(env._queue) == 1, "End environment queue is too long"
-        assert (
-            env._queue[0][3].callbacks == []
-        ), "Timeout had callbacks that should be cleared"
+        assert env._queue[0][3].callbacks == [], "Timeout had callbacks that should be cleared"

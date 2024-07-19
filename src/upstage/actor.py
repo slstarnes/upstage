@@ -98,9 +98,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
         self._num_clones: int = 0
         self._state_defs: dict[str, State] = getattr(self.__class__, "_state_defs", {})
 
-        self._mimic_states: dict[
-            str, tuple[Actor, str]
-        ] = {}  # has to be before other calls
+        self._mimic_states: dict[str, tuple[Actor, str]] = {}  # has to be before other calls
         self._mimic_states_by_task: dict[Task, set[str]] = defaultdict(set)
 
         self._states_by_task: dict[Task, set[str]] = defaultdict(set)
@@ -201,9 +199,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
         started_at = self.env.now if started_at is None else started_at
         old_data = self._active_states.get(state_name, {})
         new_data = {"started_at": started_at, **data}
-        keep_old = {
-            k: v for k, v in old_data.items() if k not in new_data and "_" == k[0]
-        }
+        keep_old = {k: v for k, v in old_data.items() if k not in new_data and "_" == k[0]}
         new_data.update(keep_old)
         self._active_states[state_name] = new_data
 
@@ -229,9 +225,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
         if state not in self._state_defs:
             raise SimulationError(f"No state named '{state}' to activate")
         self._lock_state(state=state, task=task)
-        self._set_active_state_data(
-            state_name=state, started_at=self.env.now, task=task, **kwargs
-        )
+        self._set_active_state_data(state_name=state, started_at=self.env.now, task=task, **kwargs)
         # any initialization in the state needs to be called via attribute access
         getattr(self, state)
 
@@ -275,8 +269,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
             # be associated with this state
             if task not in self._tasks_by_state[state]:
                 raise SimulationError(
-                    f"State `{state}` isn't locked by '{task}', "
-                    "but it's trying to be unlocked."
+                    f"State `{state}` isn't locked by '{task}', " "but it's trying to be unlocked."
                 )
             self._states_by_task[task].remove(state)
             self._tasks_by_state[state].remove(task)
@@ -284,9 +277,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
             self._states_by_task[task].remove(state)
             self._tasks_by_state[state].remove(task)
         else:
-            raise UpstageError(
-                f"State '{state}' was not activated by '{task}', cannot deactivate"
-            )
+            raise UpstageError(f"State '{state}' was not activated by '{task}', cannot deactivate")
 
     def deactivate_states(self, *, states: str | Iterable[str], task: Task) -> None:
         """Set a list of active states to not active.
@@ -663,9 +654,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
                 {"name": Name, "process": the Process simpy is holding.}
         """
         if network_name not in self._task_networks:
-            raise SimulationError(
-                f"{self} does not have a task networked named {network_name}"
-            )
+            raise SimulationError(f"{self} does not have a task networked named {network_name}")
         net = self._task_networks[network_name]
         if net._current_task_proc is not None:
             assert net._current_task_name is not None
@@ -907,13 +896,9 @@ class Actor(SettableEnv, NamedUpstageEntity):
         Returns:
             None | str: The name of the state (None if none found).
         """
-        detection = [
-            k for k, v in self._state_defs.items() if isinstance(v, DetectabilityState)
-        ]
+        detection = [k for k, v in self._state_defs.items() if isinstance(v, DetectabilityState)]
         if len(detection) > 1:
-            raise NotImplementedError(
-                "Only 1 state of type DetectabilityState allowed for now"
-            )
+            raise NotImplementedError("Only 1 state of type DetectabilityState allowed for now")
         return None if not detection else detection[0]
 
     def _get_matching_state(
@@ -1017,9 +1002,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
             list[Location]: List of waypoints yet to be reached
         """
         loc_state = self._state_defs[location_state]
-        assert isinstance(
-            loc_state, GeodeticLocationChangingState | CartesianLocationChangingState
-        )
+        assert isinstance(loc_state, GeodeticLocationChangingState | CartesianLocationChangingState)
         wypts = loc_state._get_remaining_waypoints(self)
         return wypts
 

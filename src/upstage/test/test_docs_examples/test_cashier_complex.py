@@ -263,14 +263,10 @@ class CashierMessages(UP.Task):
         yield getter
         tasks_needed: list[str] | str = getter.get_value()
         tasks_needed = [tasks_needed] if isinstance(tasks_needed, str) else tasks_needed
-        actor.interrupt_network(
-            "CashierJob", cause=dict(reason="NEW JOB", job_list=tasks_needed)
-        )
+        actor.interrupt_network("CashierJob", cause=dict(reason="NEW JOB", job_list=tasks_needed))
 
 
-cashier_message_net = UP.TaskNetworkFactory.from_single_looping(
-    "Messages", CashierMessages
-)
+cashier_message_net = UP.TaskNetworkFactory.from_single_looping("Messages", CashierMessages)
 
 
 def customer_spawner(
@@ -298,9 +294,7 @@ def manager_process(boss: StoreBoss, cashiers: list[Cashier]):
         # because this is a simpy only process
         yield UP.Wait.from_random_uniform(30.0, 90.0).as_event()
         possible = [
-            cash
-            for cash in cashiers
-            if cash.get_running_task("CashierJob") != "NightBreak"
+            cash for cash in cashiers if cash.get_running_task("CashierJob") != "NightBreak"
         ]
         if not possible:
             return

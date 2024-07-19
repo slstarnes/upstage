@@ -95,7 +95,8 @@ class TaskNetwork:
 
         Args:
             actor (Actor): The actor to run the loop on.
-            init_task_name (Optional[str], optional): Optional task to start running. Defaults to None.
+            init_task_name (Optional[str], optional): Optional task to start running.
+            Defaults to None.
         """
         next_name = actor.get_next_task(self.name)
         if next_name is None:
@@ -173,8 +174,7 @@ class TaskNetwork:
                 follow_on = task_name_list[task_idx + 1]
                 if not self.is_feasible(task_name, follow_on):
                     raise SimulationError(  # pragma: no cover
-                        f"Task {follow_on} not allowed after "
-                        f"'{task_name}' in network"
+                        f"Task {follow_on} not allowed after " f"'{task_name}' in network"
                     )
             task_idx += 1
         # reset the internal parameters
@@ -210,9 +210,7 @@ class TaskNetworkFactory:
         self.task_links = task_links
 
     @classmethod
-    def from_single_looping(
-        cls, name: str, task_class: type[Task]
-    ) -> "TaskNetworkFactory":
+    def from_single_looping(cls, name: str, task_class: type[Task]) -> "TaskNetworkFactory":
         """Create a network factory from a single task that loops.
 
         Args:
@@ -233,9 +231,7 @@ class TaskNetworkFactory:
         return TaskNetworkFactory(name, task_classes, task_links)
 
     @classmethod
-    def from_single_terminating(
-        cls, name: str, task_class: type[Task]
-    ) -> "TaskNetworkFactory":
+    def from_single_terminating(cls, name: str, task_class: type[Task]) -> "TaskNetworkFactory":
         """Create a network factory from a single task that terminates.
 
         Args:
@@ -288,9 +284,7 @@ class TaskNetworkFactory:
         return TaskNetworkFactory(name, task_class, task_links)
 
     @classmethod
-    def from_ordered_loop(
-        cls, name: str, task_classes: list[type[Task]]
-    ) -> "TaskNetworkFactory":
+    def from_ordered_loop(cls, name: str, task_classes: list[type[Task]]) -> "TaskNetworkFactory":
         """Create a network factory from a list of tasks that loops.
 
         Args:

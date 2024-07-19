@@ -25,9 +25,7 @@ def test_base_event():
     init_time = 1.23
     with EnvironmentContext(initial_time=init_time) as env:
         base = BaseEvent()
-        assert (
-            base.created_at == init_time
-        ), "Problem in environment time being stored in event"
+        assert base.created_at == init_time, "Problem in environment time being stored in event"
         assert base.env is env, "Problem in environment being stored in event"
 
         with pytest.raises(NotImplementedError):
@@ -40,9 +38,7 @@ def test_wait_event():
         timeout = 1
 
         wait = Wait(timeout=timeout)
-        assert (
-            wait.created_at == init_time
-        ), "Problem in environment time being stored in event"
+        assert wait.created_at == init_time, "Problem in environment time being stored in event"
         assert wait.env is env, "Problem in environment being stored in event"
         assert wait.timeout == timeout
 
@@ -74,9 +70,7 @@ def test_base_request_event():
     init_time = 1.23
     with EnvironmentContext(initial_time=init_time) as env:
         base = BaseRequestEvent(env)
-        assert (
-            base.created_at == init_time
-        ), "Problem in environment time being stored in event"
+        assert base.created_at == init_time, "Problem in environment time being stored in event"
         assert base.env is env, "Problem in environment being stored in event"
 
         base.cancel()
@@ -88,9 +82,7 @@ def test_put_event_with_stores():
         put_object = ("A Test Object", 1.0)
         put_event = Put(store, put_object)
 
-        assert (
-            put_event.calculate_time_to_complete() == 0.0
-        ), "Incorrect time to complete"
+        assert put_event.calculate_time_to_complete() == 0.0, "Incorrect time to complete"
         returned_object = put_event.as_event()
         assert issubclass(
             returned_object.__class__, base.Put
@@ -117,9 +109,7 @@ def test_put_event_with_containers():
         put_arg = 1.0
         put_event = Put(container, put_arg)
 
-        assert (
-            put_event.calculate_time_to_complete() == 0.0
-        ), "Incorrect time to complete"
+        assert put_event.calculate_time_to_complete() == 0.0, "Incorrect time to complete"
         returned_object = put_event.as_event()
         assert issubclass(
             returned_object.__class__, base.Put
@@ -212,9 +202,7 @@ def test_resource_events():
         env.run()
 
         assert request_object._stage == "release", "Request object in wrong state"
-        assert (
-            a_resource.users[0] is request_object._request
-        ), "The user is the request object"
+        assert a_resource.users[0] is request_object._request, "The user is the request object"
 
         new_request = ResourceHold(a_resource)
         assert new_request._stage == "request", "Request object in wrong state"
@@ -223,9 +211,7 @@ def test_resource_events():
 
         # TODO: A better name might be needed, since this request hasn't succeeded yet
         assert new_request._stage == "release", "Request object in wrong state"
-        assert (
-            not new_request._request.processed
-        ), "Request went through when it shouldn't"
+        assert not new_request._request.processed, "Request went through when it shouldn't"
 
         # put the old one back
         request_object.as_event()
@@ -239,9 +225,7 @@ def test_resource_events():
 
         # cancel it
         assert newest_request._stage == "release", "Request object in wrong state"
-        assert (
-            not newest_request._request.processed
-        ), "Request went through when it shouldn't"
+        assert not newest_request._request.processed, "Request went through when it shouldn't"
 
         assert (
             newest_request._request in a_resource.put_queue

@@ -105,9 +105,7 @@ class SelfMonitoringFilterStore(FilterStore):
 class SelfMonitoringContainer(Container):
     """A self-monitoring version of the SimPy Container."""
 
-    def __init__(
-        self, env: Environment, capacity: float = float("inf"), init: float = 0.0
-    ) -> None:
+    def __init__(self, env: Environment, capacity: float = float("inf"), init: float = 0.0) -> None:
         super().__init__(env, capacity=capacity, init=init)
         self._quantities: list[tuple[float, float]] = [(self._env.now, self._level)]
 
@@ -170,9 +168,7 @@ class SelfMonitoringSortedFilterStore(SortedFilterStore, SelfMonitoringStore):
 class SelfMonitoringReserveStore(ReserveStore):
     """A self-monitoring version of the ReserveStore."""
 
-    def __init__(
-        self, env: Environment, capacity: float = float("inf"), init: float = 0.0
-    ) -> None:
+    def __init__(self, env: Environment, capacity: float = float("inf"), init: float = 0.0) -> None:
         super().__init__(env, init, capacity)
         self._quantities = [(env.now, init)]
 

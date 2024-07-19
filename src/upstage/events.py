@@ -175,18 +175,12 @@ class Wait(BaseEvent):
 
         """
         if not isinstance(timeout, float | int):
-            raise SimulationError(
-                "Bad timeout. Did you mean to use from_random_uniform?"
-            )
+            raise SimulationError("Bad timeout. Did you mean to use from_random_uniform?")
         self._time_to_complete = timeout
         self.timeout = timeout
         if self._time_to_complete < 0:
             raise SimulationError(f"Negative timeout in Wait: {self._time_to_complete}")
-        rehearse = (
-            timeout
-            if rehearsal_time_to_complete is None
-            else rehearsal_time_to_complete
-        )
+        rehearse = timeout if rehearsal_time_to_complete is None else rehearsal_time_to_complete
         super().__init__(rehearsal_time_to_complete=rehearse)
 
     @classmethod
@@ -290,7 +284,8 @@ class Put(BaseRequestEvent):
         Args:
             put_location (SIM.Container | SIM.Store): Any container, store, or subclass.
             put_object (float | int | Any): The amount (float | int) or object (Any) to put.
-            rehearsal_time_to_complete (float, optional): Estimated time for the put to finish. Defaults to 0.0.
+            rehearsal_time_to_complete (float, optional): Estimated time for the put to finish.
+            Defaults to 0.0.
         """
         super().__init__(rehearsal_time_to_complete=rehearsal_time_to_complete)
 
@@ -405,9 +400,7 @@ class MultiEvent(BaseEvent):
         Args:
             return_sub_events (bool, Optional): Whether to return all times or not. Defaults to False.
         """
-        event_times = {
-            event: event.calculate_time_to_complete() for event in self.events
-        }
+        event_times = {event: event.calculate_time_to_complete() for event in self.events}
 
         time_to_complete = self.aggregation_function(list(event_times.values()))
 
@@ -419,9 +412,7 @@ class MultiEvent(BaseEvent):
         Returns:
             tuple[float, dict[BaseEvent, float]]: Aggregate and individual times.
         """
-        event_times = {
-            event: event.calculate_time_to_complete() for event in self.events
-        }
+        event_times = {event: event.calculate_time_to_complete() for event in self.events}
         time_to_complete = self.aggregation_function(list(event_times.values()))
 
         return time_to_complete, event_times
@@ -539,10 +530,7 @@ class Get(BaseRequestEvent):
         if self.__is_store:
             if self.rehearsing and self.done_rehearsing:
                 return PLANNING_FACTOR_OBJECT
-            if (
-                self._request_event is not None
-                and self._request_event.value is not None
-            ):
+            if self._request_event is not None and self._request_event.value is not None:
                 return self._request_event.value
             else:
                 raise SimulationError("Requested item from an unfinished Get request.")
@@ -631,9 +619,7 @@ class ResourceHold(BaseRequestEvent):
             Request | Release: The simpy event.
         """
         if self._stage == "request":
-            self._request = self.resource.request(
-                *self.resource_args, **self.resource_kwargs
-            )
+            self._request = self.resource.request(*self.resource_args, **self.resource_kwargs)
 
             self._request_event = self._request
             self._stage = "release"

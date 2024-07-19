@@ -80,8 +80,7 @@ class State:
         env = getattr(instance, "env", None)
         if env is None:
             raise SimulationError(
-                f"Actor {instance} does not have an `env` attribute "
-                f"for state {self.name}"
+                f"Actor {instance} does not have an `env` attribute " f"for state {self.name}"
             )
         # get the instance time here
         to_append = (env.now, value)
@@ -135,9 +134,7 @@ class State:
                 )
 
         if self._types and not isinstance(value, self._types):
-            raise TypeError(
-                f"{value} is of type {type(value)} not of type {self._types}"
-            )
+            raise TypeError(f"{value} is of type {type(value)} not of type {self._types}")
 
         instance.__dict__[self.name] = value
 
@@ -433,9 +430,7 @@ class CartesianLocationChangingState(ActiveState):
                     [data["value"]] + waypoints,
                 )
 
-    def _get_index(
-        self, path_data: dict[str, Any], time_elapsed: float
-    ) -> tuple[int, float]:
+    def _get_index(self, path_data: dict[str, Any], time_elapsed: float) -> tuple[int, float]:
         """Find out how far along waypoints the state is.
 
         Args:
@@ -498,9 +493,7 @@ class CartesianLocationChangingState(ActiveState):
         elapsed = current_time - path_start_time
         if elapsed < 0:
             # Can probably only happen if active state is set incorrectly
-            raise SimulationError(
-                f"Cannot set state '{self.name}' start time in the future!"
-            )
+            raise SimulationError(f"Cannot set state '{self.name}' start time in the future!")
         elif elapsed == 0:
             return_value: CartesianLocation = data["value"]  # pragma: no cover
         else:
@@ -636,9 +629,7 @@ class GeodeticLocationChangingState(ActiveState):
                     [data["value"]] + waypoints,
                 )
 
-    def _get_index(
-        self, path_data: dict[str, Any], time_elapsed: float
-    ) -> tuple[int, float]:
+    def _get_index(self, path_data: dict[str, Any], time_elapsed: float) -> tuple[int, float]:
         """Get the index of the waypoint the path is on.
 
         Args:
@@ -656,7 +647,8 @@ class GeodeticLocationChangingState(ActiveState):
             if time_elapsed <= (sum_t + 1e-4):  # near one second allowed
                 return i, sum_t - t
         raise SimulationError(
-            f"GeodeticLocation active state exceeded travel time: Elapsed: {time_elapsed}, Actual: {sum_t}"
+            f"GeodeticLocation active state exceeded travel time: Elapsed: {time_elapsed}, "
+            "Actual: {sum_t}"
         )
 
     def _get_remaining_waypoints(self, instance: "Actor") -> list[GeodeticLocation]:
@@ -705,9 +697,7 @@ class GeodeticLocationChangingState(ActiveState):
 
         if elapsed < 0:
             # Can probably only happen if active state is set incorrectly
-            raise SimulationError(
-                f"Cannot set state '{self.name}' start time in the future!"
-            )
+            raise SimulationError(f"Cannot set state '{self.name}' start time in the future!")
         elif elapsed == 0:
             return_value: GeodeticLocation = data["value"]  # pragma: no cover
         else:
@@ -849,30 +839,24 @@ class ResourceState(State):
         if not isinstance(value, dict):
             # we've been passed an actual resource, so save it and leave
             if not isinstance(value, self._types):
-                raise UpstageError(
-                    f"Resource object: '{value}' is not an expected type."
-                )
+                raise UpstageError(f"Resource object: '{value}' is not an expected type.")
             instance.__dict__[self.name] = value
             self._been_set.add(instance)
             return
 
         resource_type = value.get("kind", self._default)
         if resource_type is None:
-            raise UpstageError(
-                f"No resource type (Store, e.g.) specified for {instance}"
-            )
+            raise UpstageError(f"No resource type (Store, e.g.) specified for {instance}")
 
         if self._types and not issubclass(resource_type, self._types):
             raise UpstageError(
-                f"{resource_type} is of type {type(resource_type)} "
-                f"not of type {self._types}"
+                f"{resource_type} is of type {type(resource_type)} " f"not of type {self._types}"
             )
 
         env = getattr(instance, "env", None)
         if env is None:
             raise UpstageError(
-                f"Actor {instance} does not have an `env` attribute "
-                f"for state {self.name}"
+                f"Actor {instance} does not have an `env` attribute " f"for state {self.name}"
             )
         kwargs = {k: v for k, v in value.items() if k != "kind"}
         try:
@@ -895,9 +879,7 @@ class ResourceState(State):
     def _set_default(self, instance: "Actor") -> None:
         self.__set__(instance, {})
 
-    def __get__(
-        self, instance: "Actor", owner: type | None = None
-    ) -> Store | Container:
+    def __get__(self, instance: "Actor", owner: type | None = None) -> Store | Container:
         if instance is None:
             # instance attribute accessed on class, return self
             return self  # pragma: no cover
