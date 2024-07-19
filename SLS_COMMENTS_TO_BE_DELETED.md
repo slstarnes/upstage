@@ -14,3 +14,5 @@
     But, you are not using `doctest`. It does look like there is some test code in your doc strings so maybe you should be?
 1. Note how [RMT](https://github.com/gtri/rapid-modeling-tools/blob/master/LICENSE) says the license when you view the LICENSE? [Yours](https://github.com/JamesArruda/upstage/blob/main/LICENSE) does not. Can you try and make that work?
 1. It might be worth breaking out a separate `optional-dependencies` for linters/formatters (and not combining with pytest in `test`)
+1. In `.github/workflows/lint.yml`, the line `if: success() || failure()` needs tto be removed before merge. Debug only.
+1. 
