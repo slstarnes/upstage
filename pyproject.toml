@@ -155,13 +155,13 @@ module = [
 ]
 ignore_missing_imports = true
 
-[tool.lint]
+[tool.ruff]
 select = [
   "E",
   "F",
   "I",
   "PLE",
-  "W",
+  "PLW",
   "UP",
   "D",
 ]
@@ -170,7 +170,7 @@ ignore = [
 ]
 cache-dir = "build/.ruff_cache"
 
-[tool.lint.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "src/upstage/test/test*.py" = [
   "D",
 ]
@@ -178,5 +178,5 @@ cache-dir = "build/.ruff_cache"
   "D",
 ]
 
-[tool.lint.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "google"
