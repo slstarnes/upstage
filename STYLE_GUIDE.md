@@ -478,10 +478,12 @@ Docstrings must follow the ``google`` documentation [style guide](https://google
 
 More information can be found [here](https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html).
 
-## Testing
+## Linting
 
 The project uses ``flake8`` to check for style in code and docstrings.  Please review the output of the style report in the pipeline before submitting a pull request.
 
 The ``flake8`` report is not a guarantee that the style of the code and the documentation abides by the rules of this style guide.
+
+## Testing
 
 Style errors are considered unit test errors, this includes tests for the examples in docstrings.  Docstring example code tests are executed using [doctest](https://docs.python.org/3/library/doctest.html).
