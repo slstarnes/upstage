@@ -65,6 +65,28 @@ exclude = [
   ".gitignore",
 ]
 
+[tool.ruff]
+line-length = 100
+cache-dir = "build/.ruff_cache"
+
+format.docstring-code-line-length = 100
+lint.select = [
+  "D",
+  "E",
+  "F",
+  "I",
+  "PLE",
+  "PLW",
+  "UP",
+]
+lint.per-file-ignores."src/upstage/test/__*.py" = [
+  "D",
+]
+lint.per-file-ignores."src/upstage/test/test*.py" = [
+  "D",
+]
+lint.pydocstyle.convention = "google"
+
 [tool.pytest.ini_options]
 junit_family = "xunit2"
 cache_dir = "build/.pytest_cache"
@@ -154,30 +176,3 @@ module = [
   "importlib.metadata",
 ]
 ignore_missing_imports = true
-
-[tool.ruff]
-line-length = 100
-lint.select = [
-  "E",
-  "F",
-  "I",
-  "PLE",
-  "PLW",
-  "UP",
-  "D",
-]
-cache-dir = "build/.ruff_cache"
-
-[tool.ruff.format]
-docstring-code-line-length = 100
-
-[tool.ruff.lint.per-file-ignores]
-"src/upstage/test/test*.py" = [
-  "D",
-]
-"src/upstage/test/__*.py" = [
-  "D",
-]
-
-[tool.ruff.lint.pydocstyle]
-convention = "google"
