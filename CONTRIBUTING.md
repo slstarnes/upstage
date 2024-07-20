@@ -41,7 +41,7 @@ cd upstage
 Install UPSTAGE to your environment with
 
 ```bash
-pip install -e .[docs,test]
+pip install -e '.[docs,test]'
 ```
 
 ### Style Guide
@@ -61,11 +61,11 @@ These tools are run as follows:
 
 ```bash
 # formatters
-pyproject-fmt .\pyproject.toml
-ssort .\src\
-ruff format .\src\
+pyproject-fmt pyproject.toml
+ssort src
+ruff format src
 # linters
-ruff check --fix .\src\
+ruff check --fix src
 mypy --show-error-codes -p upstage
 ```
 
@@ -79,7 +79,7 @@ pytest
 
 from the top level of the repo.
 
-Test reports will be in `.\build\reports`
+Test reports will be in `./build/reports`
 
 ### Building the documentation
 
@@ -88,11 +88,11 @@ Documentation is built from autodocs first, then the source build.
 From the top level of the repo:
 
 ```bash
-sphinx-apidoc -o .\docs\source\ .\src\upstage\ .\src\upstage\test\
-sphinx-build -b html .\docs\source .\build\docs
+sphinx-apidoc -o ./docs/source ./src/upstage ./src/upstage/test
+sphinx-build -b html ./docs/source ./build/docs
 ```
 
-Then the docs can be loaded from `.\build\docs\index.html`
+Then the docs can be loaded from `./build/docs/index.html`
 
 ## Making Pull Requests
 
