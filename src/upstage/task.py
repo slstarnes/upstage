@@ -266,7 +266,8 @@ class Task(SettableEnv):
         Args:
             actor (Actor): The actor to get knowledge from.
             name (str): Name of the knowledge
-            must_exist (bool, optional): Raise errors if the knowledge doesn't exist. Defaults to False.
+            must_exist (bool, optional): Raise errors if the knowledge doesn't exist.
+            Defaults to False.
 
         Returns:
             Any | None: The knowledge value or None

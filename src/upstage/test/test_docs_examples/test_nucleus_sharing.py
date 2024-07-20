@@ -67,7 +67,8 @@ class CPUProcess(UP.Task):
         self.set_marker("RUNNING")
         time = actor.time_from_data(process_data)
         print(
-            f"{self.env.now:.2f}: Starting: {knowledge_name}\n\tAllocated: {allocate_amount:.2f}\n\tTime Left: {time:.2f}"
+            f"{self.env.now:.2f}: Starting: {knowledge_name}\n\tAllocated: {allocate_amount:.2f}"
+            f"\n\tTime Left: {time:.2f}"
         )
         yield UP.Wait(time)
         self.clear_actor_knowledge(actor, knowledge_name)
