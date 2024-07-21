@@ -52,7 +52,7 @@ class WGS84(WGS84Conversions):
         tol: float = 1e-12,
         max_iter: int = 200,
     ) -> float:
-        """Calculate the forward bearing (in degrees) from loc1 to loc2
+        """Calculate the forward bearing (in degrees) from loc1 to loc2.
 
         Args:
             loc1 (LAT_LON): Starting point (degrees)

@@ -638,7 +638,7 @@ class ResourceHold(BaseRequestEvent):
 
 
 class FilterGet(Get):
-    """A Get for a FilterStore"""
+    """A Get for a FilterStore."""
 
     def __init__(
         self,
@@ -646,7 +646,7 @@ class FilterGet(Get):
         filter: Callable[[tyAny], bool],
         rehearsal_time_to_complete: float = 0.0,
     ) -> None:
-        """Create a Get request on a FilterStore
+        """Create a Get request on a FilterStore.
 
         The filter function returns a boolean (in/out of consideration).
 

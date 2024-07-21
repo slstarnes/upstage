@@ -90,6 +90,7 @@ INTERSECTION_TIMING_CALLABLE = Callable[
 
 class dotdict(dict):
     """A dictionary that supports dot notation as well as dictionary access notation.
+    
     Usage: d = dotdict({'val1':'first'})
     set attributes: d.val2 = 'second' or d['val2'] = 'second'
     get attributes: d.val2 or d['val2'] would both produce 'second'
@@ -133,19 +134,19 @@ class dotdict(dict):
 class StageProtocol(Protocol):
     @property
     def altitude_units(self) -> str:
-        """Units of altitude"""
+        """Units of altitude."""
 
     @property
     def distance_units(self) -> str:
-        """Units of distance"""
+        """Units of distance."""
 
     @property
     def stage_model(self) -> EarthProtocol:
-        """Model for geodetics"""
+        """Model for geodetics."""
 
     @property
     def intersection_model(self) -> INTERSECTION_LOCATION_CALLABLE:
-        """Callable for geodetic intersections"""
+        """Callable for geodetic intersections."""
 
     @property
     def time_unit(self) -> str:
@@ -153,7 +154,7 @@ class StageProtocol(Protocol):
 
     @property
     def random(self) -> Random:
-        """Random number generator"""
+        """Random number generator."""
 
     if TYPE_CHECKING:
 
