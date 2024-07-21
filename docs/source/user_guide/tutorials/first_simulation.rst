@@ -147,7 +147,7 @@ Let's also make an Actor for the checkout lane, so we have a simple location to 
 
 Here we use the built-in |ResourceState| to use a |SelfMonitoringStore| as an Actor state. The self-monitoring store is a subclass of the SimPy ``Store`` that records the number of items
 in the store whenever there is a get or put. The ``ResourceState`` could accept a default and not require a definition in the instantiation, but here we are demonstrating how to instantiate 
-a ``ResourceState`` in a way that lets you paramterize the store's values (in this case, the kind and the capacity). Other resources, such as containers, will have capacities and initial values.
+a ``ResourceState`` in a way that lets you parameterize the store's values (in this case, the kind and the capacity). Other resources, such as containers, will have capacities and initial values.
 
 Actors also have ``knowledge``, which is a simple dictionary attached to the actor that has an interface through the actor and tasks. This allows actors to hold runtime-dependent information
 that isn't tied to a state. Knowledge can be set and accessed with error-throwing checks for its existence, or for checks that it doesn't already have a value. An example is given later.

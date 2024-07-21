@@ -4,7 +4,7 @@ Task Networks
 
 Task Networks have been demonstrated in :doc:`First Simulation </user_guide//tutorials/first_simulation>`, and this document will add some details to the usage of Task Networks.
 
-In general, once an Actor has recieved a Task Network instance, all introspection or modifications of that network goes through the actor.
+In general, once an Actor has received a Task Network instance, all introspection or modifications of that network goes through the actor.
 
 Defining a Network
 ==================

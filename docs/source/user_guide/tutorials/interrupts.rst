@@ -54,7 +54,7 @@ The work in that process is very simple, but the cancelling and code required to
 to explain exactly what it's trying to do, and we can handle interrupts separately without clouding the business logic of the task.
 
 In addition, if interrupts are sent by another process, we don't want the other process to have to know about introspecting the actor or the task network to know if it can/should do the
-interrut. It's preferable to let the interrupting process ask for an interrupt (with some data) and let the actor/task decide if it's a good idea or not. Finally, if the simulation builder
+interrupt. It's preferable to let the interrupting process ask for an interrupt (with some data) and let the actor/task decide if it's a good idea or not. Finally, if the simulation builder
 does not remember to always cancel events (especially get and put), then you may end up with a get request that takes from a store without going anywhere.
 
 Here's how those interrupts would look in SimPy:

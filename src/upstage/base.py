@@ -393,7 +393,7 @@ class SettableEnv(UpstageBase):
 
 
 class EnvironmentContext:
-    """A context manager to create a safe, globally (in context) referencable environment and data.
+    """A context manager to create a safe, globally (in context) referenceable environment and data.
 
     The environment created is of type simpy.Environment
 
