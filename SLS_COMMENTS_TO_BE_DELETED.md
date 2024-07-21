@@ -26,10 +26,10 @@
     ```
 
     After some trial and error -- seems you need to put single quotes around `.[docs,test]`.
-1. I noticed that `sphinx-apidoc` has as an option specific to GitHub, `--ext-githubpages` (https://www.sphinx-doc.org/en/master/usage/extensions/githubpages.html) -- just FYI.
+1. I noticed that `sphinx-apidoc` has as an option specific to GitHub, `--ext-githubpages` (<https://www.sphinx-doc.org/en/master/usage/extensions/githubpages.html>) -- just FYI.
 1. In CI, you have things set to only run `pytest` when on `main` or when you have a PR targeted to `main`. You say that contributors should target `dev` so this means tests will not run for those PRs. The tests seem fast. Maybe just always run them?
 1. Docs
-    1. first page - why is `STAGE` in all caps? seems to be only word (except UPSTAGE) in all caps.
+    1. first page - why is `STAGE` in all caps? seems to be only word (except UPSTAGE) in all caps. (this is in README the same way)
 1. This is probably a future thing... but you are going to need the ability for users to look at the docs for different versions of the tool. See:
 
     - <https://stackoverflow.com/questions/47643881/github-pages-maintaining-multiple-versions>
@@ -39,4 +39,4 @@
 
 1. When you get ready for initial release, be sure to do a [GH release](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository)
 1. I would consider releasing as `0.1.0` rather than `1.0.0`. `1.0` is supposed to signify stability in your API (per https://semver.org/).
-1. Given that you have your version in 2 places (`src/upstage/_version.py` and `pyproject.toml`) plus you probably need it in the README and in the docs, I recommend https://github.com/callowayproject/bump-my-version
+1. Given that you have your version in 2 places (`src/upstage/_version.py` and `pyproject.toml`) plus you probably need it in the README and in the docs, I recommend <https://github.com/callowayproject/bump-my-version>
