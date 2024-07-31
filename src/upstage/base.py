@@ -90,7 +90,7 @@ INTERSECTION_TIMING_CALLABLE = Callable[
 
 class dotdict(dict):
     """A dictionary that supports dot notation as well as dictionary access notation.
-    
+
     Usage: d = dotdict({'val1':'first'})
     set attributes: d.val2 = 'second' or d['val2'] = 'second'
     get attributes: d.val2 or d['val2'] would both produce 'second'
@@ -257,7 +257,7 @@ class UpstageBase:
 
     def get_actors(self) -> list["NamedUpstageEntity"]:
         """Return all actors that the director knows."""
-        ans: list["NamedUpstageEntity"] = []
+        ans: list[NamedUpstageEntity] = []
         try:
             ans = ACTOR_CONTEXT_VAR.get()
         except LookupError:
@@ -265,16 +265,16 @@ class UpstageBase:
         return ans
 
     def get_entity_group(self, group_name: str) -> list["NamedUpstageEntity"]:
-        ans: list["NamedUpstageEntity"] = []
+        ans: list[NamedUpstageEntity] = []
         try:
-            grps: dict[str, list["NamedUpstageEntity"]] = ENTITY_CONTEXT_VAR.get()
+            grps: dict[str, list[NamedUpstageEntity]] = ENTITY_CONTEXT_VAR.get()
             ans = grps.get(group_name, [])
         except LookupError:
             raise UpstageError("Undefined context variable: use EnvironmentContext")
         return ans
 
     def get_all_entity_groups(self) -> dict[str, list["NamedUpstageEntity"]]:
-        grps: dict[str, list["NamedUpstageEntity"]] = {}
+        grps: dict[str, list[NamedUpstageEntity]] = {}
         try:
             grps = ENTITY_CONTEXT_VAR.get()
         except LookupError:

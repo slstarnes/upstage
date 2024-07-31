@@ -2,6 +2,7 @@
 
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
+"""Fixtures for testing."""
 
 import pytest
 
@@ -10,6 +11,11 @@ import upstage.api as UP
 
 @pytest.fixture
 def base_actors() -> tuple[tuple[UP.State, ...], tuple[UP.Actor, ...]]:
+    """State and Actor classes for testing.
+
+    Returns:
+        tuple[tuple[UP.State, ...], tuple[UP.Actor, ...]]: States and Actors.
+    """
     first_state = UP.State()
     second_state = UP.State()
     third_state = UP.State()
@@ -37,6 +43,12 @@ def base_actors() -> tuple[tuple[UP.State, ...], tuple[UP.Actor, ...]]:
 
 @pytest.fixture
 def task_objects() -> tuple[UP.Task, UP.Task, UP.Actor]:
+    """Example task objects for testing.
+
+    Returns:
+        tuple[UP.Task, UP.Task, UP.Actor]: The task objects.
+    """
+
     class EndPoint(UP.TerminalTask):
         def log_message(self, *, actor):
             return "The Message"

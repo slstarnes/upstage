@@ -2,7 +2,7 @@
 
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
-
+"""This file contains a Store that allows reservations."""
 from collections.abc import Generator
 from typing import Any
 
@@ -17,16 +17,26 @@ class ReserveStore:
     """A store that allows requests to be scheduled in advance.
 
     This is not a true store (you can't yield on a reserve slot!).
-
-    :param env: simpy environment
-    :param capacity: capacity of the store
-
-    :type env: :class:`simpy.Environment`
-    :type capacity: int
-
     """
 
-    def __init__(self, env: Environment, init: float = 0.0, capacity: float = float("inf")) -> None:
+    def __init__(
+        self,
+        env: Environment,
+        init: float = 0.0,
+        capacity: float = float("inf"),
+    ) -> None:
+        """Create a store-like object that allows reservations.
+
+        Note that this store doesn't actually yield to SimPy when requesting.
+
+        Use it to determine if anything is avaiable for reservation, but there is no
+        queue for getting a reservation.
+
+        Args:
+            env (Environment): The SimPy Environment
+            init (float, optional): Initial amount available. Defaults to 0.0.
+            capacity (float, optional): Total capacity. Defaults to float("inf").
+        """
         self.capacity = capacity
         self._env = env
         self._level = init
@@ -35,14 +45,29 @@ class ReserveStore:
 
     @property
     def remaining(self) -> float:
+        """Return the amount remaining in the store.
+
+        Returns:
+            float: Amount remaining
+        """
         return self._level
 
     @property
     def available(self) -> float:
+        """Return the amount remaining in the store.
+
+        Returns:
+            float: Amount remaining.
+        """
         return self.remaining
 
     @property
     def queued(self) -> list[Any]:
+        """Get the queued requesters.
+
+        Returns:
+            list[Any]: List of requesters.
+        """
         return list(self._queued.keys())
 
     @process

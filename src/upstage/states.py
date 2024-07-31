@@ -52,6 +52,28 @@ class State:
         recording: bool = False,
         default_factory: Callable[[], type] | None = None,
     ) -> None:
+        """Create a state descriptor for an Actor.
+
+        The default can be set either with the value or the factory. Use the factory if
+        the default needs to be a list, dict, or similar type of object. The default
+        is used if both are present (not the factory).
+
+        Setting frozen to True will throw an error if the value of the state is changed.
+
+        The valid_types input will type-check when you initialize an actor.
+
+        Recording enables logging the values of the state whenever they change, along
+        with the simulation time. This value isn't deepcopied, so it may behave poorly
+        for mutable types.
+
+        Args:
+            default (Any | None, optional): Default value of the state. Defaults to None.
+            frozen (bool, optional): If the state is allowed to change. Defaults to False.
+            valid_types (type | tuple[type, ...] | None, optional): Types allowed. Defaults to None.
+            recording (bool, optional): If the state records itself. Defaults to False.
+            default_factory (Callable[[], type] | None, optional): Default from function.
+                Defaults to None.
+        """
         if default is None and default_factory is not None:
             default = default_factory()
 
@@ -179,7 +201,7 @@ class State:
         self._recording_callbacks[source] = callback
 
     def _remove_callback(self, source: Any) -> None:
-        """Remove a callback
+        """Remove a callback.
 
         Args:
             source (Any): The callback's key
@@ -741,7 +763,7 @@ class GeodeticLocationChangingState(ActiveState):
         return return_value
 
     def deactivate(self, instance: "Actor", task: Task | None = None) -> bool:
-        """Deactivate the state
+        """Deactivate the state.
 
         Args:
             instance (Actor): The owning actor
@@ -821,10 +843,10 @@ class ResourceState(State):
             recording=False,
             valid_types=valid_types,
         )
-        self._been_set: set["Actor"] = set()
+        self._been_set: set[Actor] = set()
 
     def __set__(self, instance: "Actor", value: dict | Any) -> None:
-        """Set the state value
+        """Set the state value.
 
         Args:
             instance (Actor): The actor instance

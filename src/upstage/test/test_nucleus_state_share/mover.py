@@ -7,7 +7,7 @@ import upstage.api as UP
 
 
 class Mover(UP.Actor):
-    fuel = UP.SharedLinearChangingState(valid_types=(float,), recording=True)
+    fuel = UP.SharedLinearChangingState(recording=True)
     fuel_burn = UP.State(valid_types=(float,), frozen=True)
     location = UP.CartesianLocationChangingState(recording=True)
     speed = UP.State(valid_types=(float, int), recording=True)

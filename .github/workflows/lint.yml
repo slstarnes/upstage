@@ -17,19 +17,14 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install .[test]
+        pip install .[lint]
     - name: Verify pyproject format ran
-      if: success() || failure()
       run: pyproject-fmt --check pyproject.toml 
     - name: Verify ssort ran
-      if: success() || failure()
       run: ssort --check src
     - name: Verify Ruff Formatter ran
-      if: success() || failure()
       run: ruff format --check src
     - name: Run Ruff linter
-      if: success() || failure()
       run: ruff check --output-format=github src
     - name: Run mypy
-      if: success() || failure()
       run: mypy --show-error-codes -p upstage

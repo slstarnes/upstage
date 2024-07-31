@@ -668,7 +668,7 @@ def test_no_interaction_gi():
         UP.add_stage_variable("altitude_units", "ft")
         UP.add_stage_variable("distance_units", "nmi")
         UP.add_stage_variable("intersection_model", get_intersection_locations)
-        env = env
+
         motion = UP.SensorMotionManager(gi)
         loc = UP.GeodeticLocation(*[90, 40, 0])
         sensor = DummySensor(env, loc, 1.0)
@@ -772,7 +772,6 @@ def test_no_interaction_agi():
         UP.add_stage_variable("intersection_model", get_intersection_locations)
         UP.add_stage_variable("motion_manager", motion)
 
-        env = env
         motion = UP.SensorMotionManager(agi)
         sensor = DummySensor(env, UP.GeodeticLocation(0, 0, 0))
         UP.GeodeticLocation(*[0, 0, 0])

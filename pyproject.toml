@@ -46,15 +46,17 @@ optional-dependencies.docs = [
   "pydata-sphinx-theme",
   "sphinx>=7",
 ]
-optional-dependencies.test = [
+optional-dependencies.lint = [
   "mypy",
   "pyproject-fmt!=0.9.1",
+  "ruff",
+  "ssort",
+]
+optional-dependencies.test = [
   "pytest-cov",
   "pytest-html",
   "pytest-json-report",
   "pytest-xdist",
-  "ruff",
-  "ssort",
 ]
 urls."Bug Tracker" = "https://github.com/JamesArruda/upstage/issues"
 urls.Documentation = "https://JamesArruda.github.io/upstage"
@@ -78,6 +80,9 @@ lint.select = [
   "PLE",
   "PLW",
   "UP",
+]
+lint.ignore = [
+  "D105",
 ]
 lint.per-file-ignores."src/upstage/test/__*.py" = [
   "D",
@@ -143,15 +148,6 @@ exclude_also = [
   "raise MotionAndDetectionError",
   "except MotionAndDetectionError",
 ]
-
-[tool.doit]
-backend = "sqlite3"
-verbosity = 2
-par_type = "thread"
-
-[tool.doit.commands.list]
-status = true
-subtasks = true
 
 [tool.mypy]
 # broken by ipywidgetsplugins = "pydantic.mypy"

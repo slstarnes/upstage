@@ -100,7 +100,7 @@ class Task(SettableEnv):
         super().__init__()
         self._proc: TASK_TYPE | None = None
         self._network_name: str | None = None
-        self._network_ref: "TaskNetwork" | None = None
+        self._network_ref: TaskNetwork | None = None
         self._marker: str | None = None
         self._marked_time: float | None = None
         self._interrupt_action: InterruptStates | None = InterruptStates.END
@@ -142,7 +142,7 @@ class Task(SettableEnv):
         self._interrupt_action = interrupt_action
 
     def get_marker(self) -> str | None:
-        """Get the current marker
+        """Get the current marker.
 
         Returns:
             str | None: Marker (or None if cleared)
@@ -305,7 +305,8 @@ class Task(SettableEnv):
         Args:
             actor (Actor): The actor to rehearse in the task
             knowledge (dict[str, Any], optional): Knowledge to add to the actor. Defaults to None.
-            cloned_actor (bool, optional): If the actor is already a clone or not. Defaults to False.
+            cloned_actor (bool, optional): If the actor is a clone or not. Defaults to False.
+            kwargs (Any): Optional args to send to the task.
 
         Returns:
             Actor: The cloned actor with a state reflecting the task flow.
@@ -487,7 +488,6 @@ class DecisionTask(Task):
         actor: "Actor",
         knowledge: dict[str, Any] | None = None,
         cloned_actor: bool = False,
-        **kwargs: Any,
     ) -> "Actor":
         """Rehearse the task to evaluate its feasibility.
 
@@ -515,6 +515,14 @@ class DecisionTask(Task):
 
     @process
     def run(self, *, actor: "Actor") -> Generator[SimpyEvent, None, None]:
+        """Run the decision task.
+
+        Args:
+            actor (Actor): The actor making decisions
+
+        Yields:
+            Generator[SimpyEvent, None, None]: Generator for SimPy event queue.
+        """
         self.make_decision(actor=actor)
         assert isinstance(self.env, SimpyEnv)
         yield self.env.timeout(0.0)
@@ -547,6 +555,7 @@ class TerminalTask(Task):
 
         Args:
             actor (Actor): The actor
+            kwargs (Any): Additional data sent to the interrupt.
         """
         raise SimulationError(
             f"Cannot interrupt a terminal task {self} on {actor}. " f"Kwargs sent: {kwargs}"

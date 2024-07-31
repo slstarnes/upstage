@@ -18,6 +18,8 @@ from upstage.task import Task, TerminalTask, process
 
 
 class TaskLinks(TypedDict):
+    """Type hinting for task link dictionaries."""
+
     default: str | None
     allowed: list[str]
 
@@ -139,7 +141,7 @@ class TaskNetwork:
             actor (Actor): The actor to perform the task rehearsal withs
             task_name_list (list[str]): The tasks to be performed in order
             knowledge (dict[str, Any], optional): Knowledge to give to the cloned/rehearsing actor
-            end_task- (str, optional): A task name to end on
+            end_task (str, optional): A task name to end on
 
         Returns:
             Actor: A copy of the original actor with state changes associated with the network.
@@ -188,6 +190,8 @@ class TaskNetwork:
 
 
 class TaskNetworkFactory:
+    """A factory for creating task network instances."""
+
     def __init__(
         self,
         name: str,

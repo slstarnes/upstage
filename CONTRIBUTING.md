@@ -16,13 +16,11 @@ If you wish to contribute to UPSTAGE, we ask that you follow these steps to ensu
 
 ### Development Environment Setup
 
-First, get Python 3.11 or 3.12 through your preferred means (conda, mamba, venv, e.g.).
-We prefer [Mambaforge](https://github.com/conda-forge/miniforge).
+First, create a Python 3.11 or 3.12 environment through your preferred means (conda, mamba, venv, e.g.).
 
-> When installing `mambaforge` on Windows, try to install it on `C:\mf`.
-This will minimize the path length to avoid issues with the Windows
-maximum path restriction. You may need to create the folder first if you
-do not have administrator permissions.
+```bash
+python -m venv /path/to/upstage_dev/.venv
+```
 
 Ensure that the pip version is >= `21.3` to allow editable installations with just `pyproject.toml`
 and the `flit` backend.
@@ -31,9 +29,10 @@ and the `flit` backend.
 python -m pip install --upgrade pip
 ```
 
-Next, clone the repo locally
+Next, clone the repo locally:
 
 ```bash
+cd /path/to/upstage_dev
 git clone https://github.com/gtri/upstage.git
 cd upstage
 ```
@@ -41,7 +40,7 @@ cd upstage
 Install UPSTAGE to your environment with
 
 ```bash
-pip install -e '.[docs,test]'
+pip install -e '.[docs,lint,test]'
 ```
 
 ### Style Guide
@@ -57,14 +56,14 @@ Code quality is enforced using the following tools:
 3. [`ruff`](https://docs.astral.sh/ruff/) - linter and code formatter
 4. [`mypy`](https://mypy-lang.org/) - static type checker
 
-These tools are run as follows:
+These tools are run as follows, allowing for auto-fixing:
 
 ```bash
 # formatters
 pyproject-fmt pyproject.toml
 ssort src
 ruff format src
-# linters
+# linting and type checking
 ruff check --fix src
 mypy --show-error-codes -p upstage
 ```

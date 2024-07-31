@@ -139,7 +139,6 @@ class Loiter(Task):
             state="fuel",
             task=self,
         )
-        # TODO: Do we say here what action comes next, or do we let that be a part of the command structure?
 
 
 class Mission(Task):
