@@ -2,6 +2,7 @@
 
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
+"""This file contains a motion manager that does time-stepping."""
 
 from collections.abc import Callable, Generator
 from typing import Any, cast
@@ -23,10 +24,12 @@ class SteppedMotionManager(UpstageBase):
     Use this manager when the sensing entities are not static. If they are
     static, use `SensorMotionManager`.
 
-    Detectable objects and sensor objects must have an attribute that is a GeodeticLocationState OR CartesianLocationState
+    Detectable objects and sensor objects must have an attribute that is a GeodeticLocationState
+    OR CartesianLocationState
 
     Detectable objects, if they aren't Actors, could implement _get_detection_state() -> bool:`
-    to allow this class to ignore them sometimes. The default way is to use a `DetectabilityState` on the actor.
+    to allow this class to ignore them sometimes. The default way is to use a `DetectabilityState`
+    on the actor.
 
     Sensor objects MUST implement these two methods:
     1. `entity_entered_range(object)`
@@ -63,7 +66,8 @@ class SteppedMotionManager(UpstageBase):
 
         Args:
             timestep (float): Timestep to do all pairs distance checks.
-            max_empty_events (int, optional): How many timesteps where no events causes a shutdown. Defaults to 3.
+            max_empty_events (int, optional): How many timesteps where no events causes a shutdown.
+                Defaults to 3.
             debug (bool, optional): Record data or not. Defaults to False.
         """
         super().__init__()

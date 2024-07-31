@@ -3,6 +3,7 @@
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 """Stores that monitor/record their items over time."""
+
 from collections.abc import Callable
 from typing import Any
 
@@ -174,7 +175,7 @@ class SelfMonitoringContinuousContainer(ContinuousContainer):
         error_full: bool = True,
     ) -> None:
         """A monitoring version of the Continuous container.
-        
+
         The container allows continuous gets and puts.
 
         Args:
@@ -190,7 +191,7 @@ class SelfMonitoringContinuousContainer(ContinuousContainer):
 
     def _set_level(self) -> float:
         """Set the level of the container based on the active gets/puts.
-        
+
         Returns:
             float: The current level.
         """

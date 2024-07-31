@@ -2,6 +2,7 @@
 
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
+"""A model of the geodetic earth and intersecting paths/spheres."""
 from math import sqrt
 
 from upstage.base import INTERSECTION_LOCATION_CALLABLE

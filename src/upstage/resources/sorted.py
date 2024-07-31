@@ -3,6 +3,7 @@
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 """Filter stores that allow sorting of items."""
+
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 

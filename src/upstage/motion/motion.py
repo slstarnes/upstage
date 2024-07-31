@@ -2,6 +2,7 @@
 
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
+"""This file contains a queueing motion manager for sensor/mover intersections."""
 
 from collections.abc import Generator
 from typing import Any, Protocol
@@ -31,6 +32,8 @@ LOC_TYPES = CartesianLocation | GeodeticLocation
 
 
 class SensorType(Protocol):
+    """Protocol class for sensor typing."""
+
     def entity_exited_range(
         self,
         entity: Actor,
@@ -70,6 +73,13 @@ class SensorMotionManager(UpstageBase):
     def __init__(
         self, intersection_model: INTERSECTION_TIMING_CALLABLE, debug: bool = False
     ) -> None:
+        """Create a sensor motion manager for queueing intersection events.
+
+        Args:
+            intersection_model (INTERSECTION_TIMING_CALLABLE): The odel to calculate
+                intersections.
+            debug (bool, optional): Allow debug logging to _debug_log. Defaults to False.
+        """
         super().__init__()
         self._sensors: dict[SensorType, tuple[str, str]] = {}
         self._movers: dict[Actor, tuple[float, list[LOC_TYPES], float]] = {}
@@ -89,7 +99,8 @@ class SensorMotionManager(UpstageBase):
 
         Args:
             mover (Actor): The moving actor.
-            from_not_detectable (bool, optional): Is this was called from detectability state. Defaults to False.
+            from_not_detectable (bool, optional): Is this was called from detectability state.
+                Defaults to False.
         """
         detect_state = self._test_detect(mover)
         if detect_state is None:
@@ -391,8 +402,10 @@ class SensorMotionManager(UpstageBase):
         Optionally, use a reduced list of either movers or sensors.
 
         Args:
-            mover_list (list[Actor] | None, optional): Movers to consider. Defaults to None (all movers).
-            sensor_list (list[SensorType] | None, optional): Sensors to consider. Defaults to None (all sensors).
+            mover_list (list[Actor] | None, optional): Movers to consider.
+                Defaults to None (all movers).
+            sensor_list (list[SensorType] | None, optional): Sensors to consider.
+                Defaults to None (all sensors).
         """
         movers = list(self._movers.keys()) if mover_list is None else mover_list
         sensors = list(self._sensors.keys()) if sensor_list is None else sensor_list
@@ -445,7 +458,8 @@ class SensorMotionManager(UpstageBase):
 
         Args:
             sensor (SensorType): The sensor object
-            location_attr_name (str, optional): Name of the location attribute. Defaults to "location".
+            location_attr_name (str, optional): Name of the location attribute.
+                Defaults to "location".
             radius_attr_name (str, optional): Name of the radius attribute. Defaults to "radius".
         """
         # test the sensor for earlier errors about improperly-defined methods

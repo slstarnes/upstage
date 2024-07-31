@@ -3,6 +3,7 @@
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 """This file contains a Store that allows reservations."""
+
 from collections.abc import Generator
 from typing import Any
 
