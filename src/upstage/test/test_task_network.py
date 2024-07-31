@@ -21,6 +21,7 @@ from upstage.api import (
     State,
     Task,
     TaskNetworkFactory,
+    TaskLinks,
     Wait,
 )
 from upstage.data_types import CartesianLocation, Location
@@ -482,7 +483,7 @@ task_links = {
 }
 # quick fix for new task network link style
 for k, v in task_links.items():
-    new = {"default": v[0] if v else None, "allowed": v}
+    new = TaskLinks(default=v[0] if v else None, allowed=v)
     task_links[k] = new
 
 
@@ -804,7 +805,7 @@ def test_rehearsal_time() -> None:
 
     with EnvironmentContext():
         tasks = {"ThingWait": ThingWait}
-        task_links = {"ThingWait": {"default": "ThingWait", "allowed": ["ThingWait"]}}
+        task_links = {"ThingWait": TaskLinks(default="ThingWait", allowed=["ThingWait"])}
         factory = TaskNetworkFactory("fact", tasks, task_links)
 
         thing = Thing(name="Actor", the_time=0)

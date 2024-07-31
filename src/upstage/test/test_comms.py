@@ -4,37 +4,39 @@
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
 from simpy import Store
-
+from typing import Any
 import upstage.api as UP
 from upstage.api import (
+    Actor,
     CommsManager,
     EnvironmentContext,
     Get,
     Message,
     MessageContent,
+    State,
     Task,
-    UpstageBase,
+    ResourceState,
     Wait,
 )
 from upstage.communications.processes import generate_comms_wait
+from upstage.type_help import SIMPY_GEN, TASK_GEN
 
 
-class ReceiveSend(UpstageBase):
-    # A mock 'actor' to do the tasks of either sending or receiving
-    def __init__(self):
-        super().__init__()
-        self.incoming = Store(env=self.env)
-        self.result = None
+class ReceiveSend(Actor):
+    incoming = ResourceState[Store](default=Store)
+    result = State[Any](default="None")
 
 
 class ReceiveTask(Task):
-    def task(self, *, actor):
+    def task(self, *, actor: ReceiveSend) -> TASK_GEN:
         item = yield Get(actor.incoming)
         actor.result = item
 
 
 class SendTask(Task):
-    def task(self, *, actor):
+    comms: CommsManager
+    receiver: ReceiveSend
+    def task(self, *, actor: ReceiveSend) -> TASK_GEN:
         yield Wait(1.0)
         content = MessageContent(data=dict(action="move", thought="good"))
         message = Message(actor, content, self.receiver)
@@ -43,8 +45,8 @@ class SendTask(Task):
 
 def test_send_receive() -> None:
     with EnvironmentContext() as env:
-        receiver = ReceiveSend()
-        sender = ReceiveSend()
+        receiver = ReceiveSend(name="recv")
+        sender = ReceiveSend(name="send")
 
         rec_task = ReceiveTask()
         sen_task = SendTask()
@@ -64,7 +66,7 @@ def test_send_receive() -> None:
         env.run()
 
         assert env.now == 1.0, "Wrong simulation end time for comms"
-        assert receiver.result is not None, "No result for comms"
+        assert receiver.result != "None", "No result for comms"
         assert isinstance(receiver.result, Message), "Wrong result format"
         content = receiver.result.content.data
         assert content["action"] == "move"
@@ -73,8 +75,8 @@ def test_send_receive() -> None:
 
 def test_send_receive_delayed() -> None:
     with EnvironmentContext() as env:
-        receiver = ReceiveSend()
-        sender = ReceiveSend()
+        receiver = ReceiveSend(name="recv")
+        sender = ReceiveSend(name="send")
 
         rec_task = ReceiveTask()
         sen_task = SendTask()
@@ -95,7 +97,7 @@ def test_send_receive_delayed() -> None:
         env.run()
 
         assert env.now == 1.25, "Wrong simulation end time for comms"
-        assert receiver.result is not None, "No result for comms"
+        assert receiver.result != "None", "No result for comms"
         assert isinstance(receiver.result, Message), "Wrong result format"
         content = receiver.result.content.data
         assert content["action"] == "move"
@@ -104,8 +106,8 @@ def test_send_receive_delayed() -> None:
 
 def test_degraded() -> None:
     with EnvironmentContext() as env:
-        receiver = ReceiveSend()
-        sender = ReceiveSend()
+        receiver = ReceiveSend(name="recv")
+        sender = ReceiveSend(name="send")
 
         rec_task = ReceiveTask()
         sen_task = SendTask()
@@ -127,13 +129,13 @@ def test_degraded() -> None:
         env.run(until=4)
         comms.comms_degraded = False
 
-        assert receiver.result is None
+        assert receiver.result == "None"
 
 
 def test_blocked() -> None:
     with EnvironmentContext() as env:
-        receiver = ReceiveSend()
-        sender = ReceiveSend()
+        receiver = ReceiveSend(name="recv")
+        sender = ReceiveSend(name="send")
 
         rec_task = ReceiveTask()
         sen_task = SendTask()
@@ -156,7 +158,7 @@ def test_blocked() -> None:
         env.run(until=4)
         comms.comms_degraded = False
 
-        assert receiver.result is None
+        assert receiver.result == "None"
 
 
 def test_comms_wait() -> None:
@@ -164,7 +166,7 @@ def test_comms_wait() -> None:
         store = Store(env=env)
         data_point = []
 
-        def cback(message):
+        def cback(message: MessageContent) -> None:
             data_point.append(message)
 
         msg = Message(
@@ -199,7 +201,7 @@ def test_worker_talking() -> None:
         evt1 = uhf_comms.make_put("Hello worker", w1, w2)
         evt2 = loudspeaker_comms.make_put("Hello worker", w2, w1)
 
-        def do():
+        def do() -> SIMPY_GEN:
             yield evt1.as_event()
             yield evt2.as_event()
 

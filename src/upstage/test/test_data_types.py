@@ -41,8 +41,8 @@ def test_cartesian() -> None:
         for k, v in STAGE_SETUP.items():
             UP.add_stage_variable(k, v)
 
-        p1 = [10, 10]
-        p2 = [1, 2, 3]
+        p1 = [10., 10.]
+        p2 = [1., 2., 3.]
         origin = UP.CartesianLocation(0, 0)
         point_1 = UP.CartesianLocation(*p1)
         point_2 = UP.CartesianLocation(*p2)

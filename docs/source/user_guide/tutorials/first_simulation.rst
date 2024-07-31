@@ -170,7 +170,7 @@ Let's define the tasks that wait for a customer and check the customer out.
     :linenos:
 
     from typing import Generator
-    TASK_GEN = Generator[UP.Event, Any, None]
+    from upstage.type_help import TASK_GEN
 
 
     class WaitInLane(UP.Task):
@@ -347,34 +347,13 @@ The flow of Tasks is controlled by a TaskNetwork, and the setting of the queue w
     }
 
     task_links = {
-        "GoToWork": {
-                "default": "TalkToBoss",
-                "allowed":["TalkToBoss"],
-            },
-        "TalkToBoss": {
-                "default": "WaitInLane",
-                "allowed":["WaitInLane"],
-            },
-        "WaitInLane": {
-                "default": "DoCheckout",
-                "allowed":["DoCheckot", "Break"],
-            },
-        "DoCheckout": {
-                "default": "WaitInLane",
-                "allowed":["WaitInLane"],
-            },
-        "Break": {
-                "default": "ShortBreak",
-                "allowed":["ShortBreak", "NightBreak"],
-            },
-        "ShortBreak": {
-                "default": "WaitInLane",
-                "allowed":["WaitInLane"],
-            },
-        "NightBreak": {
-                "default": "GoToWork",
-                "allowed":["GoToWork"],
-            },
+        "GoToWork": UP.TaskLinks(default="TalkToBoss",allowed=["TalkToBoss"]),
+        "TalkToBoss": UP.TaskLinks(default="WaitInLane",allowed=["WaitInLane"]),
+        "WaitInLane": UP.TaskLinks(default="DoCheckout",allowed=["DoCheckout", "Break"]),
+        "DoCheckout": UP.TaskLinks(default="WaitInLane",allowed=["WaitInLane"]),
+        "Break": UP.TaskLinks(default="ShortBreak",allowed=["ShortBreak", "NightBreak"]),
+        "ShortBreak": UP.TaskLinks(default="WaitInLane",allowed=["WaitInLane"]),
+        "NightBreak": UP.TaskLinks(default="GoToWork",allowed=["GoToWork"]),
     }
 
     cashier_task_network = UP.TaskNetworkFactory(

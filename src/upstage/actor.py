@@ -9,7 +9,7 @@ from collections import defaultdict
 from collections.abc import Callable, Iterable
 from copy import copy, deepcopy
 from inspect import Parameter, signature
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, cast, Self
 
 from simpy import Process
 
@@ -42,6 +42,7 @@ if TYPE_CHECKING:
 
 LOC_STATE = GeodeticLocationChangingState | CartesianLocationChangingState
 LOCATIONS = GeodeticLocation | CartesianLocation
+LOC_LIST = list[GeodeticLocation] | list[CartesianLocation]
 
 
 class Actor(SettableEnv, NamedUpstageEntity):
@@ -247,14 +248,14 @@ class Actor(SettableEnv, NamedUpstageEntity):
         self.activate_state(state=state, task=task, rate=rate)
 
     def activate_location_state(
-        self, *, state: str, speed: float, waypoints: list[LOCATIONS], task: Task
+        self, *, state: str, speed: float, waypoints: LOC_LIST, task: Task
     ) -> None:
         """Shortcut for activating a (Cartesian|Geodetic)LocationChangingState.
 
         Args:
             state (str): State name
             speed (float): The speed to move at
-            waypoints (list[LOCATIONS]): Waypoints to move over
+            waypoints (LOC_LIST): Waypoints to move over
             task (Task): The task that the state is activated during.
         """
         self.activate_state(
@@ -756,7 +757,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
         task_name_list: list[str],
         knowledge: dict[str, Any] | None = None,
         end_task: str | None = None,
-    ) -> "Actor":
+    ) -> Self:
         """Rehearse a network on this actor.
 
         Supply the network name, the tasks to rehearse from this state, and
@@ -786,8 +787,8 @@ class Actor(SettableEnv, NamedUpstageEntity):
         self,
         new_env: MockEnvironment | None = None,
         knowledge: dict[str, Any] | None = None,
-        **new_states: State,
-    ) -> "Actor":
+        **new_states: Any,
+    ) -> Self:
         """Clones an actor and assigns it a new environment.
 
         Note:
@@ -808,12 +809,12 @@ class Actor(SettableEnv, NamedUpstageEntity):
             new_states (Any): New states to add to the actor when cloning.
 
         Returns:
-            Actor: The cloned actor
+            Actor: The cloned actor of the same type
         """
         knowledge = {} if knowledge is None else knowledge
         new_env = MockEnvironment.mock(self.env) if new_env is None else new_env
 
-        states = {}
+        states: dict[str, Any] = {}
         for state in self.states:
             state_obj = self._state_defs[state]
             if isinstance(state_obj, ResourceState):
@@ -887,6 +888,14 @@ class Actor(SettableEnv, NamedUpstageEntity):
         elif msg is None:
             return self._debug_log
         return None
+    
+    def get_log(self) -> list[str]:
+        """Get the debug log.
+        
+        Returns:
+            list[str]: List of log messages.
+        """
+        return self._debug_log
 
     @property
     def states(self) -> tuple[str, ...]:

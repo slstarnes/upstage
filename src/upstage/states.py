@@ -29,9 +29,9 @@ __all__ = (
 )
 
 CALLBACK_FUNC = Callable[["Actor", Any], None]
+ST = TypeVar("ST")
 
-
-class State:
+class State(Generic[ST]):
     """The particular condition that something is in at a specific time.
 
     The states are implemented as
@@ -41,16 +41,18 @@ class State:
     Note:
         The classes that use this descriptor must contain an ``env`` attribute.
 
+    States are aware 
+
     """
 
     def __init__(
         self,
         *,
-        default: Any | None = None,
+        default: ST | None = None,
         frozen: bool = False,
         valid_types: type | tuple[type, ...] | None = None,
         recording: bool = False,
-        default_factory: Callable[[], type] | None = None,
+        default_factory: Callable[[], ST] | None = None,
     ) -> None:
         """Create a state descriptor for an Actor.
 
@@ -92,12 +94,12 @@ class State:
             self._types = valid_types
         self.IGNORE_LOCK: bool = False
 
-    def _do_record(self, instance: "Actor", value: Any) -> None:
+    def _do_record(self, instance: "Actor", value: ST) -> None:
         """Record the value of the state.
 
         Args:
             instance (Actor): The actor holding the state
-            value (Any): State value
+            value (ST): State value
         """
         env = getattr(instance, "env", None)
         if env is None:
@@ -114,7 +116,7 @@ class State:
             # TODO: The value in to_append is a reference, not a copy
             instance.__dict__[attr_name].append(to_append)
 
-    def _do_callback(self, instance: "Actor", value: Any) -> None:
+    def _do_callback(self, instance: "Actor", value: ST) -> None:
         """Run callbacks for the state change.
 
         Args:
@@ -124,7 +126,7 @@ class State:
         for _, callback in self._recording_callbacks.items():
             callback(instance, value)
 
-    def _broadcast_change(self, instance: "Actor", name: str, value: Any) -> None:
+    def _broadcast_change(self, instance: "Actor", name: str, value: ST) -> None:
         """Send state change values to nucleus.
 
         Args:
@@ -140,7 +142,7 @@ class State:
     # NOTE: A dictionary as a descriptor doesn't work well,
     # because all the operations seem to happen *after* the get
     # NOTE: Lists also have the same issue that
-    def __set__(self, instance: "Actor", value: Any) -> None:
+    def __set__(self, instance: "Actor", value: ST) -> None:
         """Set eh state's value.
 
         Args:
@@ -166,7 +168,7 @@ class State:
 
         self._broadcast_change(instance, self.name, value)
 
-    def __get__(self, instance: "Actor", objtype: type | None = None) -> Any:
+    def __get__(self, instance: "Actor", objtype: type | None = None) -> ST:
         if instance is None:
             # instance attribute accessed on class, return self
             return self  # pragma: no cover
@@ -178,7 +180,8 @@ class State:
             # Just set the value to the default
             # Mutable types will be tricky here, so deepcopy them
             instance.__dict__[self.name] = deepcopy(self._default)
-        return instance.__dict__[self.name]
+        v = instance.__dict__[self.name]
+        return cast(ST, v)
 
     def __set_name__(self, owner: "Actor", name: str) -> None:
         self.name = name
@@ -218,7 +221,7 @@ class State:
         return self._recording
 
 
-class DetectabilityState(State):
+class DetectabilityState(State[bool]):
     """A state whose purpose is to indicate True or False.
 
     For consideration in the motion manager's <>LocationChangingState checks.
@@ -254,7 +257,7 @@ class DetectabilityState(State):
                 mgr._mover_became_detectable(instance)
 
 
-class ActiveState(State):
+class ActiveState(State, Generic[ST]):
     """Base class for states that change over time according to some rules.
 
     This class must be subclasses with an implemented `active` method.
@@ -280,7 +283,7 @@ class ActiveState(State):
         """
         raise NotImplementedError("Method active not implemented.")
 
-    def __get__(self, instance: "Actor", owner: type | None = None) -> Any:
+    def __get__(self, instance: "Actor", owner: type | None = None) -> ST:
         if instance is None:
             # instance attribute accessed on class, return self
             return self  # pragma: no cover
@@ -292,13 +295,13 @@ class ActiveState(State):
             actor, name = instance._mimic_states[self.name]
             value = getattr(actor, name)
             self.__set__(instance, value)
-            return value
+            return cast(ST, value)
         # test if this instance is active or not
         res = self._active(instance)
         # comes back as None (not active), or if it can be obtained from dict
         if res is None:
             res = instance.__dict__[self.name]
-        return res
+        return cast(ST, res)
 
     def get_activity_data(self, instance: "Actor") -> dict[str, Any]:
         """Get the data useful for updating active states.
@@ -327,7 +330,7 @@ class ActiveState(State):
         return False
 
 
-class LinearChangingState(ActiveState):
+class LinearChangingState(ActiveState, Generic[ST]):
     """A state whose value changes linearly over time.
 
     When activating:
@@ -372,7 +375,7 @@ class LinearChangingState(ActiveState):
         return return_value
 
 
-class CartesianLocationChangingState(ActiveState):
+class CartesianLocationChangingState(ActiveState[CartesianLocation]):
     """A state that contains the location in 3-dimensional Cartesian space.
 
     Movement is along straight lines in that space.
@@ -565,7 +568,7 @@ class CartesianLocationChangingState(ActiveState):
         return super().deactivate(instance, task)
 
 
-class GeodeticLocationChangingState(ActiveState):
+class GeodeticLocationChangingState(ActiveState[GeodeticLocation]):
     """A state that contains a location around an ellipsoid that follows great-circle paths.
 
     Requires a distance model class that implements:

@@ -35,10 +35,9 @@ class TaskTwo(Task):
 def test_parallel_looping() -> None:
     with UP.EnvironmentContext() as env:
         net_1_classes = {"Task": TaskOne}
-        net_1_links = {"Task": {"default": "Task", "allowed": ["Task"]}}
-
+        net_1_links = {"Task": UP.TaskLinks(default="Task", allowed=["Task"])}
         net_2_classes = {"Task": TaskTwo}
-        net_2_links = {"Task": {"default": "Task", "allowed": ["Task"]}}
+        net_2_links = {"Task": UP.TaskLinks(default="Task", allowed=["Task"])}
 
         tn1 = UP.TaskNetwork("InternalGet", net_1_classes, net_1_links)
         tn2 = UP.TaskNetwork("ExternalGet", net_2_classes, net_2_links)

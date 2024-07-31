@@ -6,8 +6,8 @@
 """The task network class, and factory classes."""
 
 from collections.abc import Generator
-from typing import TYPE_CHECKING, Any, TypedDict
-
+from typing import TYPE_CHECKING, Any, Sequence
+from dataclasses import dataclass
 if TYPE_CHECKING:
     from upstage.actor import Actor
 
@@ -17,11 +17,12 @@ from upstage.base import SimulationError
 from upstage.task import Task, TerminalTask, process
 
 
-class TaskLinks(TypedDict):
+@dataclass
+class TaskLinks:
     """Type hinting for task link dictionaries."""
 
     default: str | None
-    allowed: list[str]
+    allowed: Sequence[str]
 
 
 class TaskNetwork:
@@ -36,7 +37,7 @@ class TaskNetwork:
         """Create a task network.
 
         Task links are defined as:
-            {task_name: {"default": task_name | None, "allowed": list[task_names]}}
+            {task_name: TaskLinks(default= task_name | None, allowed= list[task_names]}
         where each task has a default next task (or None), and tasks that could follow it.
 
         Args:
@@ -61,7 +62,7 @@ class TaskNetwork:
         Returns:
             bool: If the new task can follow the current.
         """
-        value = self.task_links[curr]["allowed"]
+        value = self.task_links[curr].allowed
         return new in value
 
     def _next_task_name(
@@ -73,7 +74,7 @@ class TaskNetwork:
             str: Task name
         """
         task_from_queue = actor.get_next_task(self.name)
-        default_next_task = self.task_links[curr_task_name]["default"]
+        default_next_task = self.task_links[curr_task_name].default
         if task_from_queue is None:
             if default_next_task is None:
                 raise SimulationError(  # pramga: no cover
@@ -201,7 +202,7 @@ class TaskNetworkFactory:
         """Create a factory for making instances of a task network.
 
         Task links are defined as:
-            {task_name: {"default": task_name | None, "allowed": list[task_names]}}
+            {task_name: TaskLinks(default= task_name | None, allowed= list[task_names]}
         where each task has a default next task (or None), and tasks that could follow it.
 
         Args:
@@ -227,10 +228,7 @@ class TaskNetworkFactory:
         taskname = task_class.__name__
         task_classes = {taskname: task_class}
         task_links: dict[str, TaskLinks] = {
-            taskname: {
-                "default": taskname,
-                "allowed": [taskname],
-            }
+            taskname: TaskLinks(default=taskname, allowed=[taskname])
         }
         return TaskNetworkFactory(name, task_classes, task_links)
 
@@ -249,10 +247,7 @@ class TaskNetworkFactory:
         end_name = f"{taskname}_FINAL"
         task_classes = {taskname: task_class, end_name: TerminalTask}
         task_links: dict[str, TaskLinks] = {
-            taskname: {
-                "default": end_name,
-                "allowed": [end_name],
-            },
+            taskname: TaskLinks(default=end_name, allowed=[end_name])
         }
         return TaskNetworkFactory(name, task_classes, task_links)
 
@@ -281,10 +276,7 @@ class TaskNetworkFactory:
                 nxt = TerminalTask
                 nxt_name = f"{name}_TERMINATING"
                 task_class[nxt_name] = nxt
-            task_links[the_name] = {
-                "default": nxt_name,
-                "allowed": [nxt_name],
-            }
+            task_links[the_name] = TaskLinks(default=nxt_name, allowed=[nxt_name])
         return TaskNetworkFactory(name, task_class, task_links)
 
     @classmethod
@@ -308,10 +300,7 @@ class TaskNetworkFactory:
             except IndexError:
                 nxt = task_classes[0]
             nxt_name = nxt.__name__
-            task_links[the_name] = {
-                "default": nxt_name,
-                "allowed": [nxt_name],
-            }
+            task_links[the_name] = TaskLinks(default=nxt_name, allowed=[nxt_name])
         return TaskNetworkFactory(name, task_class, task_links)
 
     def make_network(self, other_name: str | None = None) -> TaskNetwork:

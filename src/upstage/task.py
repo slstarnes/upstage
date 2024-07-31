@@ -470,15 +470,15 @@ class Task(SettableEnv):
 class DecisionTask(Task):
     """A task used for decision processes."""
 
-    def task(self, *, actor: "Actor") -> TASK_TYPE:
+    def task(self, *, actor: Any) -> TASK_TYPE:
         """Define the process this task follows."""
         raise SimulationError("No need to call `task` on a DecisionTask")
 
-    def rehearse_decision(self, *, actor: "Actor") -> None:
+    def rehearse_decision(self, *, actor: Any) -> None:
         """Define the process this task follows."""
         raise NotImplementedError("User must define the actions performed when executing this task")
 
-    def make_decision(self, *, actor: "Actor") -> None:
+    def make_decision(self, *, actor: Any) -> None:
         """Define the process this task follows."""
         raise NotImplementedError("User must define the actions performed when executing this task")
 

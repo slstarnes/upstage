@@ -16,10 +16,10 @@ def base_actors() -> tuple[tuple[UP.State, ...], tuple[type[UP.Actor], ...]]:
     Returns:
         tuple[tuple[UP.State, ...], tuple[UP.Actor, ...]]: States and Actors.
     """
-    first_state = UP.State()
-    second_state = UP.State()
-    third_state = UP.State()
-    fourth_state = UP.State()
+    first_state = UP.State[Any]()
+    second_state = UP.State[Any]()
+    third_state = UP.State[Any]()
+    fourth_state = UP.State[Any]()
 
     class ActorSubclass(UP.Actor):
         state_one = first_state
@@ -57,6 +57,6 @@ def task_objects() -> tuple[type[UP.Task], type[UP.Task], type[UP.Actor]]:
         pass
 
     class Dummy(UP.Actor):
-        status = UP.State()
+        status = UP.State[Any]()
 
     return EndPoint, EndPointBase, Dummy

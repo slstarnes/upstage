@@ -13,10 +13,10 @@ from .mothership import Mothership
 
 
 class Flyer(Mover):
-    fuel_capacity = UP.State(valid_types=(float,), frozen=True)
-    fuel_draw = UP.State(valid_types=(int, float), frozen=True)
+    fuel_capacity = UP.State[float](valid_types=(float,), frozen=True)
+    fuel_draw = UP.State[float](valid_types=(int, float), frozen=True)
     messages = UP.ResourceState[SIM.Store](default=SIM.Store, valid_types=(SIM.Store,))
-    approach = UP.State(default=False, valid_types=(bool,), recording=True)
+    approach = UP.State[bool](default=False, valid_types=(bool,), recording=True)
 
 
 class MissionPlanning(UP.Task):

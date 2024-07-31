@@ -117,6 +117,7 @@ class CartesianLocation(Location):
         x: float,
         y: float,
         z: float = 0.0,
+        *,
         use_altitude_units: bool = False,
     ) -> None:
         """A Cartesian (3D space) location.
@@ -297,6 +298,7 @@ class GeodeticLocation(Location):
         lat: float,
         lon: float,
         alt: float = 0.0,
+        *,
         in_radians: bool = False,
     ) -> None:
         """A location on a geodetic (Earth).

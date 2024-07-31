@@ -6,10 +6,11 @@
 import simpy as SIM
 
 import upstage.api as UP
+from upstage.type_help import SIMPY_GEN, TASK_GEN
 
 
 class CPU(UP.Actor):
-    n_procs: int = UP.State(default=0, valid_types=int, recording=True)
+    n_procs = UP.State[int](default=0, valid_types=int, recording=True)
     jobs = UP.ResourceState(default=SIM.Store)
 
     @staticmethod
@@ -37,7 +38,7 @@ class CPUProcessStart(UP.DecisionTask):
     def get_name(self) -> str:
         return f"{self._network_name}"
 
-    def make_decision(self, *, actor: CPU):
+    def make_decision(self, *, actor: CPU) -> None:
         knowledge_name = self.get_name()
         process_data: dict[str, float] = self.get_actor_knowledge(
             actor, knowledge_name, must_exist=True
@@ -55,7 +56,7 @@ class CPUProcess(UP.Task):
     def get_name(self) -> str:
         return f"{self._network_name}"
 
-    def task(self, *, actor: CPU):
+    def task(self, *, actor: CPU) -> TASK_GEN:
         knowledge_name = self.get_name()
         process_data: dict[str, float] = self.get_actor_knowledge(
             actor, knowledge_name, must_exist=True
@@ -76,11 +77,12 @@ class CPUProcess(UP.Task):
         actor.n_procs -= 1
         print(f"{self.env.now:.2f}: Done with: {knowledge_name}")
 
-    def on_interrupt(self, *, actor: CPU, cause: str | UP.NucleusInterrupt):
+    def on_interrupt(self, *, actor: CPU, cause: str | UP.NucleusInterrupt) -> UP.InterruptStates:
         if isinstance(cause, UP.NucleusInterrupt):
             assert cause.state_name == "n_procs"
 
             start_time = self.get_marker_time()
+            assert start_time is not None
             knowledge_name = self.get_name()
             process_data: dict[str, float] = self.get_actor_knowledge(
                 actor, knowledge_name, must_exist=True
@@ -90,6 +92,7 @@ class CPUProcess(UP.Task):
             self.set_actor_knowledge(actor, knowledge_name, process_data, overwrite=True)
 
             return self.INTERRUPT.RESTART
+        raise UP.SimulationError("Unexpected interrupt state")
 
 
 cpu_job_factory = UP.TaskNetworkFactory.from_ordered_terminating(
@@ -98,7 +101,7 @@ cpu_job_factory = UP.TaskNetworkFactory.from_ordered_terminating(
 
 
 class CPUJobFarmer(UP.Task):
-    def task(self, *, actor: CPU):
+    def task(self, *, actor: CPU) -> TASK_GEN:
         job = yield UP.Get(actor.jobs)
 
         suggest = actor.suggest_network_name(cpu_job_factory)
@@ -130,7 +133,7 @@ def test_nucleus_sharing() -> None:
         cpu.add_task_network(net)
         cpu.start_network_loop(net.name, "CPUJobFarmer")
 
-        def job_sender():
+        def job_sender() -> SIMPY_GEN:
             for time, delay in zip(job_time_list, job_start_delay):
                 yield env.timeout(delay)
                 yield cpu.jobs.put(time)

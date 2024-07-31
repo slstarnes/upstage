@@ -167,7 +167,7 @@ Here's what the above process would look like as an UPSTAGE Task:
             yield UP.Wait(2.0)
             env_print(env, "Finished work")
 
-        def on_interrupt(self, *, actor: UP.Actor, cause: Any):
+        def on_interrupt(self, *, actor: UP.Actor, cause: Any) -> UP.InterruptStates:
             marker = self.get_marker()
             env_print(self.env, f"INTERRUPT:\n\tGot cause: '{cause}'\n\tDuring marker: '{marker}'")
             return self.INTERRUPT.END
@@ -254,7 +254,7 @@ Let's return to our example, and add more complicated interrupt handling, includ
             actor.deactivate_all_states(task=self)
             env_print(env, "Finished work")
 
-        def on_interrupt(self, *, actor: Worker, cause: Any):
+        def on_interrupt(self, *, actor: Worker, cause: Any) -> UP.InterruptStates:
             marker = self.get_marker()
             marker_time = self.get_marker_time()
             env_print(self.env, f"INTERRUPT:\n\tGot cause: '{cause}'\n\tDuring marker: '{marker}'\nWhich started at: {marker_time}")

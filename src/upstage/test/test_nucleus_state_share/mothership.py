@@ -13,8 +13,8 @@ from .mover import Mover
 
 
 class Mothership(Mover):
-    fuel_ports_in_use = UP.State(valid_types=(int,))
-    fuel_ports_max = UP.State(valid_types=(int,), frozen=True)
+    fuel_ports_in_use = UP.State[int](valid_types=(int,))
+    fuel_ports_max = UP.State[int](valid_types=(int,), frozen=True)
     messages = UP.ResourceState[UP.SelfMonitoringStore](
         default=UP.SelfMonitoringStore, valid_types=(UP.SelfMonitoringStore, SIM.Store)
     )

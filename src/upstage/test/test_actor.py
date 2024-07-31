@@ -4,6 +4,7 @@
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
 from inspect import signature
+from typing import Any
 
 import pytest
 
@@ -30,7 +31,7 @@ def test_actor_creation() -> None:
 
 def test_actor_subclass(
     base_actors: tuple[tuple[UP.State, ...], tuple[type[UP.Actor], ...]],
-):
+) -> None:
     """Test subclasses of actor.
 
     A subclass of actor must have a proper signature and states in its
@@ -57,7 +58,7 @@ def test_actor_subclass(
 
     # test making an instance without arguments raising an error
     with pytest.raises(Exception):
-        ActorSubclass()
+        ActorSubclass()  # type: ignore [call-arg]
 
     with EnvironmentContext():
         # create an instance
@@ -67,7 +68,8 @@ def test_actor_subclass(
             state_two=2,
         )
 
-        assert instance.a_function(123) == (instance, 123)
+        assert instance.a_function(123) == (instance, 123)  # type: ignore [attr-defined]
+
 
         # test the state definitions
         assert hasattr(instance, "_state_defs")
@@ -82,13 +84,13 @@ def test_actor_subclass(
     # Test that copying a state name will cause a failure.
     with pytest.raises(ValueError):
 
-        class _(DoubleSubclass):
-            state_three = UP.State(default=1.2)
+        class _(DoubleSubclass): # type: ignore [valid-type, misc]
+            state_three = UP.State[float](default=1.2)
 
 
 def test_multiple_inheritance(
-    base_actors: tuple[tuple[UP.State, ...], tuple[UP.Actor, ...]],
-):
+    base_actors: tuple[tuple[UP.State, ...], tuple[type[UP.Actor], ...]],
+) -> None:
     """Test actor subclasses but for an additional subclass."""
     states, actors = base_actors
     first_state, second_state, third_state, fourth_state = states
@@ -111,7 +113,7 @@ def test_multiple_inheritance(
             state_three=3,
             state_four=4,
         )
-        assert instance.b_function(123) == (instance, 123)
+        assert instance.b_function(123) == (instance, 123) # type: ignore [attr-defined]
 
         # test the state definitions
         assert hasattr(instance, "_state_defs")
@@ -195,14 +197,12 @@ def test_knowledge_event() -> None:
 def test_actor_copying() -> None:
     class SomeActor(Actor):
         kind = "a simple actor for testing"
-        some_state = State()
+        some_state = State[Any]()
 
     with EnvironmentContext():
         actor = SomeActor(name="some actor", some_state=True)
 
-        mock_env = {"None": None}
-
-        clone = actor.clone(new_env=mock_env, some_state=False)
+        clone = actor.clone(new_env=None, some_state=False)
 
         assert clone.some_state != actor.some_state
 
@@ -218,7 +218,7 @@ def test_actor_copying() -> None:
 def test_actor_copy_with_knowledge() -> None:
     class SomeActor(Actor):
         kind = "a simple actor for testing"
-        some_state = State()
+        some_state = State[Any]()
 
     with EnvironmentContext():
         actor = SomeActor(name="some actor", some_state=True)
@@ -228,9 +228,7 @@ def test_actor_copy_with_knowledge() -> None:
         actor.set_knowledge("new", d_values)
         actor.set_knowledge("other", float_value)
 
-        mock_env = {"None": None}
-
-        clone = actor.clone(new_env=mock_env, some_state=False)
+        clone = actor.clone(new_env=None, some_state=False)
         for name in ["new", "other"]:
             v1 = actor.get_knowledge(name)
             v2 = clone.get_knowledge(name)

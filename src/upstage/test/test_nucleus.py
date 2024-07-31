@@ -30,13 +30,13 @@ class OtherExample(UP.Task):
 fact = UP.TaskNetworkFactory(
     "example",
     {"Runner": Example},
-    {"Runner": {"default": "Runner", "allowed": ["Runner"]}},
+    {"Runner": UP.TaskLinks(default="Runner", allowed=["Runner"])},
 )
 
 fact2 = UP.TaskNetworkFactory(
     "side",
     {"Side": OtherExample},
-    {"Side": {"default": "Side", "allowed": ["Side"]}},
+    {"Side": UP.TaskLinks(default="Side", allowed=["Side"])},
 )
 
 

@@ -25,6 +25,7 @@ class MessageContent:
     """Message content data object."""
 
     data: dict
+    message: str | None = None
 
 
 @dataclass
@@ -32,7 +33,7 @@ class Message:
     """A message data object."""
 
     sender: Actor
-    content: str | MessageContent | dict
+    content: MessageContent
     destination: Actor
 
     header: str | None = None
@@ -134,19 +135,20 @@ class CommsManager(UpstageBase):
         self.debug_logging: bool = debug_logging
 
     @staticmethod
-    def clean_message(message: str | Message) -> str | MessageContent | dict:
+    def clean_message(message: str | Message) -> MessageContent:
         """Test to see if an object is a message.
 
         If it is, return the message contents only. Otherwise return the message.
 
-        Parameters
-        ----------
-        message :
-            The message to clean
+        Args
+            message (str | Message): The message to clean
+
+        Returns
+            MessageContent: The message as a message content object.
         """
         if isinstance(message, Message):
             return message.content
-        return message
+        return MessageContent(data={"message": message})
 
     def connect(self, entity: Actor, comms_store_name: str) -> None:
         """Connect an actor and its comms store to this comms manager.

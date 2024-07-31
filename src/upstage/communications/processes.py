@@ -15,7 +15,7 @@ from upstage.task import process
 
 def generate_comms_wait(
     incoming_store: Store,
-    callback: Callable[[str | MessageContent | dict], Any],
+    callback: Callable[[MessageContent], Any],
 ) -> Callable[[], Process]:
     """Create a process function to transfer communications to a callback.
 

@@ -56,6 +56,7 @@ def test_api() -> None:
         "TerminalTask",
         "TaskNetwork",
         "TaskNetworkFactory",
+        "TaskLinks",
         "CommsManager",
         "Message",
         "MessageContent",
