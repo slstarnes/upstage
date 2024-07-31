@@ -516,7 +516,7 @@ def _build_test(env) -> Aircraft:
     return p
 
 
-def test_plane_bingo():
+def test_plane_bingo() -> None:
     with EnvironmentContext() as env:
         p = _build_test(env)
         bingo_hours = 5.14
@@ -524,7 +524,7 @@ def test_plane_bingo():
         assert pytest.approx(bingo_result, abs=0.01) == bingo_hours
 
 
-def test_creating_network():
+def test_creating_network() -> None:
     with EnvironmentContext():
         task_fact = TaskNetworkFactory(
             "plane_net",
@@ -534,7 +534,7 @@ def test_creating_network():
         _ = task_fact.make_network()
 
 
-def test_rehearsing_network():
+def test_rehearsing_network() -> None:
     with EnvironmentContext() as env:
         actor = _build_test(env)
         task_fact = TaskNetworkFactory(
@@ -581,7 +581,7 @@ def test_rehearsing_network():
         assert task_name == "GroundWait"
 
 
-def test_rehearsing_from_actor():
+def test_rehearsing_from_actor() -> None:
     with EnvironmentContext() as env:
         actor = _build_test(env)
         task_fact = TaskNetworkFactory(
@@ -628,7 +628,7 @@ def test_rehearsing_from_actor():
         assert new_actor.env.now > 2.0, "Cloned actor environment at the wrong time"
 
 
-def test_running_simple_network():
+def test_running_simple_network() -> None:
     with EnvironmentContext() as env:
         actor = _build_test(env)
         task_fact = TaskNetworkFactory(
@@ -666,7 +666,7 @@ def test_running_simple_network():
         assert actor.code == 0, "Wrong MX code"
 
 
-def test_interrupting_network():
+def test_interrupting_network() -> None:
     with EnvironmentContext() as env:
         actor = _build_test(env)
         task_fact = TaskNetworkFactory(
@@ -707,7 +707,7 @@ def test_interrupting_network():
         assert actor.code == 0, "Actor didn't get maintained"
 
 
-def test_interrupting_network_with_cause():
+def test_interrupting_network_with_cause() -> None:
     with EnvironmentContext() as env:
         actor = _build_test(env)
         task_fact = TaskNetworkFactory(
@@ -745,7 +745,7 @@ def test_interrupting_network_with_cause():
         env.run()
 
 
-def test_interrupting_network_with_restart():
+def test_interrupting_network_with_restart() -> None:
     with EnvironmentContext() as env:
         actor = _build_test(env)
         task_fact = TaskNetworkFactory(
@@ -788,7 +788,7 @@ def test_interrupting_network_with_restart():
         assert pytest.approx(env.now, abs=0.0001) == 21.464767
 
 
-def test_rehearsal_time():
+def test_rehearsal_time() -> None:
     class Thing(Actor):
         the_time = LinearChangingState(recording=True)
 

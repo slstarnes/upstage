@@ -32,7 +32,7 @@ class TaskTwo(Task):
         yield UP.Put(actor.internal, other)
 
 
-def test_parallel_looping():
+def test_parallel_looping() -> None:
     with UP.EnvironmentContext() as env:
         net_1_classes = {"Task": TaskOne}
         net_1_links = {"Task": {"default": "Task", "allowed": ["Task"]}}

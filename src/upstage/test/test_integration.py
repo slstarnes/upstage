@@ -52,7 +52,7 @@ class BigTask(Task):
     ):
         # a function to mimic extra code needed to perform a task
         # TODO: This should be wrapped to handle the planning answer
-        def test_flight(flight, planning_answer=3.0):
+        def test_flight(flight, planning_answer=3.0) -> None:
             if flight is PLANNING_FACTOR_OBJECT:
                 return planning_answer
             else:
@@ -87,7 +87,7 @@ def interrupting_task(*, env, time, other_task):
         other_task.interrupt("cancelling")
 
 
-def test_event_store_returns():
+def test_event_store_returns() -> None:
     with EnvironmentContext() as env:
         store = SIM.Store(env, capacity=1)
         put_object = ("A Test Object", 1.0)
@@ -113,7 +113,7 @@ def test_event_store_returns():
         assert actor.dummy[0] is put_object, "Object returned is not the correct object"
 
 
-def test_task_with_all_events():
+def test_task_with_all_events() -> None:
     with EnvironmentContext() as env:
         store = SIM.Store(env, capacity=2)
         store2 = SIM.Store(env, capacity=2)
@@ -165,7 +165,7 @@ def test_task_with_all_events():
         assert f in store2.items, "Item wasn't moved to the next store"
 
 
-def test_task_with_get():
+def test_task_with_get() -> None:
     with EnvironmentContext() as env:
         orders = SIM.Store(env)
         actor = StateActor(name="Airplane", fuel=100, fuel_burn=5.2)
@@ -191,7 +191,7 @@ def test_task_with_get():
         assert result[2].is_complete, "Tested event believes it completed"
 
 
-def test_task_rehearsal_with_cancels():
+def test_task_rehearsal_with_cancels() -> None:
     with EnvironmentContext() as env:
         orders = SIM.Store(env)
         actor = StateActor(name="Airplane", fuel=100, fuel_burn=5.2)
@@ -224,7 +224,7 @@ def test_task_rehearsal_with_cancels():
         assert tested_actor.fuel == 5
 
 
-def test_task_with_cancels():
+def test_task_with_cancels() -> None:
     with EnvironmentContext() as env:
         orders = SIM.Store(env)
         actor = StateActor(name="Airplane", fuel=100, fuel_burn=5.2)

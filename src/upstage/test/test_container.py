@@ -22,7 +22,7 @@ CONTAINER_CAPACITY = 100
 INITIAL_LEVEL = 50
 
 
-def test_basics():
+def test_basics() -> None:
     with EnvironmentContext() as env:
         con = ContinuousContainer(
             capacity=CONTAINER_CAPACITY,
@@ -41,7 +41,7 @@ def test_basics():
         assert err.value.cause == "Container is empty!"
 
 
-def test_error():
+def test_error() -> None:
     with EnvironmentContext() as env:
         con = ContinuousContainer(
             capacity=CONTAINER_CAPACITY,
@@ -56,7 +56,7 @@ def test_error():
             con.put(-20, 3)
 
 
-def test_calculations():
+def test_calculations() -> None:
     with EnvironmentContext() as env:
         con = ContinuousContainer(
             capacity=CONTAINER_CAPACITY,
@@ -69,7 +69,7 @@ def test_calculations():
         assert con.time_until_level(CONTAINER_CAPACITY) == float("inf")
 
 
-def test_checking():
+def test_checking() -> None:
     with EnvironmentContext() as env:
         auto_started = ContinuousContainer(
             capacity=CONTAINER_CAPACITY,
@@ -84,7 +84,7 @@ def test_checking():
             env.run(until=10)
 
 
-def test_get_and_put():
+def test_get_and_put() -> None:
     with EnvironmentContext() as env:
         tank = ContinuousContainer(env, capacity=1000.0, init=500.0)
         get_time = 10.0
@@ -111,7 +111,7 @@ def test_get_and_put():
         assert tank.level == 720
 
 
-def test_interrupting():
+def test_interrupting() -> None:
     with EnvironmentContext() as env:
         tank = ContinuousContainer(
             env,
@@ -151,7 +151,7 @@ def test_interrupting():
         assert putter not in tank._active_users
 
 
-def test_complex_behavior():
+def test_complex_behavior() -> None:
     times = []
     tanker_called = [False]
 
@@ -232,7 +232,7 @@ def test_complex_behavior():
         tank._set_level()
 
 
-def test_basics_monitoring():
+def test_basics_monitoring() -> None:
     with EnvironmentContext() as env:
         con = SelfMonitoringContinuousContainer(
             capacity=CONTAINER_CAPACITY,
@@ -252,7 +252,7 @@ def test_basics_monitoring():
         assert len(con._quantities) == 3
 
 
-def test_checking_monitoring():
+def test_checking_monitoring() -> None:
     with EnvironmentContext() as env:
         auto_started = SelfMonitoringContinuousContainer(
             capacity=CONTAINER_CAPACITY,
@@ -267,7 +267,7 @@ def test_checking_monitoring():
             env.run(until=10)
 
 
-def test_self_monitoring_container():
+def test_self_monitoring_container() -> None:
     """Test self-monitoring container"""
     with EnvironmentContext() as env:
         con = SelfMonitoringContainer(env=env, capacity=CONTAINER_CAPACITY, init=INITIAL_LEVEL)

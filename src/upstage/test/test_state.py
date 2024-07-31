@@ -39,7 +39,7 @@ class StateTestActor(Actor):
     state_three = LinearChangingState(recording=True)
 
 
-def test_state_fails_without_env():
+def test_state_fails_without_env() -> None:
     """Test that recording states need the class to have an env attribute"""
     tester = StateTest(None)
     # the first one should not raise an error
@@ -49,7 +49,7 @@ def test_state_fails_without_env():
         tester.set_two(1)
 
 
-def test_state_values():
+def test_state_values() -> None:
     """Test that we get the right state values we input"""
     with EnvironmentContext(initial_time=1.5) as env:
         tester = StateTest(env)
@@ -59,7 +59,7 @@ def test_state_values():
         assert tester.state_two == 2
 
 
-def test_state_recording():
+def test_state_recording() -> None:
     with EnvironmentContext(initial_time=1.5) as env:
         tester = StateTest(env)
         tester.state_two = 2
@@ -71,7 +71,7 @@ def test_state_recording():
         assert tester._state_two_history[1] == (2.5, 3)
 
 
-def test_state_mutable_default():
+def test_state_mutable_default() -> None:
     with EnvironmentContext(initial_time=1.5) as env:
         tester = StateTest(env)
         tester2 = StateTest(env)
@@ -91,7 +91,7 @@ def test_state_mutable_default():
         assert len(tester2.setstate) == 1
 
 
-def test_state_values_from_init():
+def test_state_values_from_init() -> None:
     with EnvironmentContext() as env:
         tester = StateTestActor(
             name="testing",
@@ -108,7 +108,7 @@ def test_state_values_from_init():
         assert tester._state_three_history == [(0.0, 4), (1.5, 3)]
 
 
-def test_linear_changing_state():
+def test_linear_changing_state() -> None:
     state_three_init = 3
     init_time = 1.5
     rate = 3.1
@@ -141,7 +141,7 @@ def test_linear_changing_state():
         assert tester.state_three == rate * timestep * 2 + state_three_init
 
 
-def test_resource_state_valid_types():
+def test_resource_state_valid_types() -> None:
     class Holder(Actor):
         res = ResourceState(valid_types=Store)
 
@@ -168,7 +168,7 @@ def test_resource_state_valid_types():
                 res = ResourceState(valid_types=(Actor,))
 
 
-def test_resource_state_set_protection():
+def test_resource_state_set_protection() -> None:
     class Holder(Actor):
         res = ResourceState(valid_types=(Store))
 
@@ -181,7 +181,7 @@ def test_resource_state_set_protection():
             h.res = 1.0
 
 
-def test_resource_state_no_default_init():
+def test_resource_state_no_default_init() -> None:
     class Holder(Actor):
         res = ResourceState()
 
@@ -204,7 +204,7 @@ def test_resource_state_no_default_init():
         assert isinstance(h.res, Store)
 
 
-def test_resource_state_default_init():
+def test_resource_state_default_init() -> None:
     class Holder(Actor):
         res = ResourceState(default=Store)
 
@@ -217,7 +217,7 @@ def test_resource_state_default_init():
         assert h.res.capacity == 10
 
 
-def test_resource_state_kind_init():
+def test_resource_state_kind_init() -> None:
     class Holder(Actor):
         res = ResourceState()
 
@@ -242,7 +242,7 @@ def test_resource_state_kind_init():
             assert h.res.capacity == 99
 
 
-def test_resource_state_simpy_store_running():
+def test_resource_state_simpy_store_running() -> None:
     class Holder(Actor):
         res = ResourceState()
 
@@ -266,7 +266,7 @@ def test_resource_state_simpy_store_running():
         assert proc_1.value == "Done"
 
 
-def test_resource_clone():
+def test_resource_clone() -> None:
     class Holder(Actor):
         res = ResourceState(default=Store)
 
@@ -291,7 +291,7 @@ class HelperCallback:
         self.cbacks.append((instance, value))
 
 
-def test_state_callback():
+def test_state_callback() -> None:
     class CbackActor(Actor):
         state_one = State(recording=True)
 
@@ -312,7 +312,7 @@ def test_state_callback():
         assert len(helper.cbacks) == 1
 
 
-def test_matching_states():
+def test_matching_states() -> None:
     """Test the state matching code.
     At this time, state matching only works with CommunicationStore. It's the
     only state with a special attribute attached to it.

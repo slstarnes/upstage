@@ -10,12 +10,12 @@ import pytest
 from upstage.units.convert import CONVERSIONS, unit_convert
 
 
-def test_convert_fail():
+def test_convert_fail() -> None:
     with pytest.raises(ValueError):
         unit_convert(100, "parsec", "km")
 
 
-def test_convert():
+def test_convert() -> None:
     result = unit_convert(100, "km", "mi")
     assert result == 0.62137119223 * 100
 
@@ -26,7 +26,7 @@ def test_convert():
     assert result == 10.0 * 60.0
 
 
-def test_convert_reverse():
+def test_convert_reverse() -> None:
     for unit_1, unit_2 in combinations(CONVERSIONS, 2):
         if unit_2 in CONVERSIONS[unit_1]:
             ans = unit_convert(1.0, unit_1, unit_2)

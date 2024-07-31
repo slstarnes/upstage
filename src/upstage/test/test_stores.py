@@ -50,7 +50,7 @@ def putter(env, store, item, wait=0.0, cback=None, **kwargs):
     yield put
 
 
-def test_notifying_store():
+def test_notifying_store() -> None:
     notifications = []
 
     def callback(*args, **kwargs):
@@ -73,7 +73,7 @@ def test_notifying_store():
         assert len(notifications) == 2
 
 
-def test_sorted_filter_store():
+def test_sorted_filter_store() -> None:
     with EnvironmentContext() as env:
         store = SortedFilterStore(env=env)
 
@@ -102,7 +102,7 @@ def test_sorted_filter_store():
         env.run(until=MAX_RUN_TIME)
 
 
-def test_sorted_filter_store_upstage_get():
+def test_sorted_filter_store_upstage_get() -> None:
     with EnvironmentContext() as env:
         store = SortedFilterStore(env=env)
 
@@ -131,7 +131,7 @@ def test_sorted_filter_store_upstage_get():
         env.run(until=MAX_RUN_TIME)
 
 
-def test_reserve_store():
+def test_reserve_store() -> None:
     with EnvironmentContext() as env:
         store = ReserveStore(
             env=env,
@@ -177,7 +177,7 @@ def test_reserve_store():
         assert store.available == 5
 
 
-def test_self_monitoring_filter_store():
+def test_self_monitoring_filter_store() -> None:
     with EnvironmentContext() as env:
         store = SelfMonitoringFilterStore(env=env)
 
@@ -203,7 +203,7 @@ def test_self_monitoring_filter_store():
         env.run(until=MAX_RUN_TIME)
 
 
-def test_self_monitoring_sorted_filter_store():
+def test_self_monitoring_sorted_filter_store() -> None:
     with EnvironmentContext() as env:
         store = SelfMonitoringSortedFilterStore(env=env)
 
@@ -232,19 +232,19 @@ def test_self_monitoring_sorted_filter_store():
         env.run(until=MAX_RUN_TIME)
 
 
-def test_self_monitoring_store():
+def test_self_monitoring_store() -> None:
     with EnvironmentContext() as env:
         SelfMonitoringStore(env)
         env.run(until=MAX_RUN_TIME)
 
 
-def test_self_monitoring_reserve_store():
+def test_self_monitoring_reserve_store() -> None:
     with EnvironmentContext() as env:
         SelfMonitoringReserveStore(env)
         env.run(until=MAX_RUN_TIME)
 
 
-def test_self_monitoring_container():
+def test_self_monitoring_container() -> None:
     with EnvironmentContext() as env:
         con = SelfMonitoringContainer(env, capacity=10)
 

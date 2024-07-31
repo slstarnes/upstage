@@ -107,7 +107,7 @@ def test_creation() -> None:
         _ = WorkingTask()
 
 
-def test_failures_for_tasks_with_simpy_events():
+def test_failures_for_tasks_with_simpy_events() -> None:
     with EnvironmentContext() as env:
         actor = ActorForTest(name="testing", dummy=0)
 
@@ -131,7 +131,7 @@ def test_failures_for_tasks_with_simpy_events():
             )
 
 
-def test_failures_for_tasks_with_incorrect_events():
+def test_failures_for_tasks_with_incorrect_events() -> None:
     with EnvironmentContext():
         actor = ActorForTest(name="testing", dummy=0)
         times = [1, 2]
@@ -154,7 +154,7 @@ def test_failures_for_tasks_with_incorrect_events():
             )
 
 
-def test_running_as_rehearsal():
+def test_running_as_rehearsal() -> None:
     with EnvironmentContext() as env:
         actor = ActorForTest(name="testing", dummy=0)
         times = [1, 2]
@@ -189,7 +189,7 @@ def test_running_as_rehearsal():
         assert task_object.env is env, msg
 
 
-def test_running():
+def test_running() -> None:
     with EnvironmentContext() as env:
         actor = ActorForTest(name="testing", dummy=0)
         times = [1, 2]
@@ -205,7 +205,7 @@ def test_running():
         assert isinstance(task_process, Process), "Task process is not an instance of simpy.Process"
 
 
-def test_interrupting():
+def test_interrupting() -> None:
     with EnvironmentContext() as env:
         timeout_point = 0.5
         rate = 0.5
@@ -222,7 +222,7 @@ def test_interrupting():
         assert actor.dummy == timeout_point * rate, msg
 
 
-def test_interrupting_two():
+def test_interrupting_two() -> None:
     # Do the timeout right when a time will end
     with EnvironmentContext() as env:
         timeout_point = 1.0
@@ -240,7 +240,7 @@ def test_interrupting_two():
         assert actor.dummy == timeout_point * rate, msg
 
 
-def test_simultaneous_task():
+def test_simultaneous_task() -> None:
     with EnvironmentContext() as env:
         actor = ActorChangeForTest(name="testing", dummy=0)
 
@@ -282,7 +282,7 @@ def test_simultaneous_task():
         env.run(until=20.0)
 
 
-def test_terminal_task_run(task_objects: tuple[Task, Task, Actor]):
+def test_terminal_task_run(task_objects: tuple[Task, Task, Actor]) -> None:
     EndPoint, EndPointBase, Dummy = task_objects
 
     with EnvironmentContext() as env:
@@ -308,7 +308,7 @@ def test_terminal_task_run(task_objects: tuple[Task, Task, Actor]):
         assert "Entering terminal task:" in actor._debug_log[-1]
 
 
-def test_terminal_task_rehearse(task_objects: tuple[Task, Task, Actor]):
+def test_terminal_task_rehearse(task_objects: tuple[Task, Task, Actor]) -> None:
     EndPoint, _, Dummy = task_objects
     with EnvironmentContext():
         actor = Dummy(name="x", status="Good")
@@ -342,7 +342,7 @@ class Dummy(Actor):
     changer = LinearChangingState(recording=True)
 
 
-def test_restart():
+def test_restart() -> None:
     with EnvironmentContext() as env:
         actor = Dummy(
             name="Example",

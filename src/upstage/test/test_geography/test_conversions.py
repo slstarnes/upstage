@@ -14,7 +14,7 @@ WSGC2 = wgs84.WGS84
 
 
 @pytest.mark.parametrize("use", [SC, SC2, WSGC, WSGC2])
-def test_conversions(use, random_lla):
+def test_conversions(use, random_lla) -> None:
     # Do a back and forth test of random Lat Lon Alt
     ecef = use.lla2ecef(random_lla)
     lla_from_ecef = use.ecef2lla(ecef)

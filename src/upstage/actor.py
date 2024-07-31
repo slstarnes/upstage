@@ -451,7 +451,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
         state = self._state_defs[state_name]
         state._remove_callback(source)
 
-    def get_knowledge(self, name: str, must_exist: bool = False) -> Any | None:
+    def get_knowledge(self, name: str, must_exist: bool = False) -> Any:
         """Get a knowledge value from the actor.
 
         Args:
@@ -459,7 +459,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
             must_exist (bool): Raise an error if the knowledge isn't present. Defaults to false.
 
         Returns:
-            Any | None: The knowledge value. None if the name doesn't exist.
+            Any: The knowledge value. None if the name doesn't exist.
         """
         if must_exist and name not in self._knowledge:
             raise SimulationError(f"Knowledge '{name}' does not exist in {self}")

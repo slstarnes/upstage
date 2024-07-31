@@ -5,12 +5,12 @@
 """Fixtures for testing."""
 
 import pytest
-
+from typing import Any
 import upstage.api as UP
 
 
 @pytest.fixture
-def base_actors() -> tuple[tuple[UP.State, ...], tuple[UP.Actor, ...]]:
+def base_actors() -> tuple[tuple[UP.State, ...], tuple[type[UP.Actor], ...]]:
     """State and Actor classes for testing.
 
     Returns:
@@ -25,14 +25,14 @@ def base_actors() -> tuple[tuple[UP.State, ...], tuple[UP.Actor, ...]]:
         state_one = first_state
         state_two = second_state
 
-        def a_function(self, inp):
+        def a_function(self, inp: Any) -> tuple[UP.Actor, Any]:
             return self, inp
 
     class DoubleSubclass(ActorSubclass):
         state_three = third_state
         state_four = fourth_state
 
-        def b_function(self, inp):
+        def b_function(self, inp: Any) -> tuple[UP.Actor, Any]:
             return self, inp
 
     states = (first_state, second_state, third_state, fourth_state)
@@ -42,7 +42,7 @@ def base_actors() -> tuple[tuple[UP.State, ...], tuple[UP.Actor, ...]]:
 
 
 @pytest.fixture
-def task_objects() -> tuple[UP.Task, UP.Task, UP.Actor]:
+def task_objects() -> tuple[type[UP.Task], type[UP.Task], type[UP.Actor]]:
     """Example task objects for testing.
 
     Returns:
@@ -50,7 +50,7 @@ def task_objects() -> tuple[UP.Task, UP.Task, UP.Actor]:
     """
 
     class EndPoint(UP.TerminalTask):
-        def log_message(self, *, actor):
+        def log_message(self, *, actor: UP.Actor) -> str:
             return "The Message"
 
     class EndPointBase(UP.TerminalTask):

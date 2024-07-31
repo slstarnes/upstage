@@ -19,14 +19,14 @@ STAGE_SETUP = dict(
 )
 
 
-def test_basics():
+def test_basics() -> None:
     with UP.EnvironmentContext():
         with pytest.raises(NotImplementedError):
             l1 = UP.Location()
             l1 - 3
 
 
-def test_hashable():
+def test_hashable() -> None:
     with UP.EnvironmentContext():
         p1 = [10, 10]
         point_1 = UP.CartesianLocation(*p1)
@@ -36,7 +36,7 @@ def test_hashable():
         _ = {point_1: 1.0}
 
 
-def test_cartesian():
+def test_cartesian() -> None:
     with UP.EnvironmentContext():
         for k, v in STAGE_SETUP.items():
             UP.add_stage_variable(k, v)
@@ -73,7 +73,7 @@ def test_cartesian():
         assert point_2 == point_2a, f"Nearly equal points are still {point_2 - point_2a} too far"
 
 
-def test_geodetic():
+def test_geodetic() -> None:
     with UP.EnvironmentContext():
         for k, v in STAGE_SETUP.items():
             UP.add_stage_variable(k, v)

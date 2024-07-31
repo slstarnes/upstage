@@ -163,9 +163,9 @@ warn_return_any = true
 warn_unused_ignores = true
 disable_error_code = "type-abstract"
 # disallow_any_unimported = true
-exclude = [
-  "^.+/upstage/test.+\\.py$",
-]
+#exclude = [
+#  "^.+/upstage/test.+\\.py$",
+#]
 
 [[tool.mypy.overrides]]
 module = [

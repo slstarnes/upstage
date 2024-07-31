@@ -26,7 +26,7 @@ from .events import BaseEvent, Event
 TASK_TYPE = Generator[BaseEvent | Process, Any, None]
 
 
-__all__ = ("DecisionTask", "Task", "process", "TerminalTask", "TASK_TYPE")
+__all__ = ("DecisionTask", "Task", "process", "TerminalTask", "TASK_TYPE", "InterruptStates")
 
 
 class InterruptStates(IntFlag):
@@ -103,14 +103,14 @@ class Task(SettableEnv):
         self._network_ref: TaskNetwork | None = None
         self._marker: str | None = None
         self._marked_time: float | None = None
-        self._interrupt_action: InterruptStates | None = InterruptStates.END
+        self._interrupt_action: InterruptStates = InterruptStates.END
         self._rehearsing: bool = False
 
-    def task(self, *, actor: "Actor") -> TASK_TYPE:
+    def task(self, *, actor: Any) -> TASK_TYPE:
         """Define the process this task follows."""
         raise NotImplementedError("User must define the actions performed when executing this task")
 
-    def on_interrupt(self, *, actor: "Actor", **kwargs: Any) -> InterruptStates | None:
+    def on_interrupt(self, *, actor: Any, cause: Any) -> InterruptStates:
         """Define any actions to take on the actor if this task is interrupted.
 
         Note:
@@ -120,9 +120,9 @@ class Task(SettableEnv):
 
         Args:
             actor (Actor): the actor using the task
-            kwargs (Any): Optional data for the interrupt
+            cause (Any): Optional data for the interrupt
         """
-        actor.log(f"Interrupted while performing {self}. Reasons: {kwargs}")
+        actor.log(f"Interrupted while performing {self}. Reasons: {cause}")
         return self._interrupt_action
 
     def set_marker(
@@ -260,7 +260,7 @@ class Task(SettableEnv):
         actor.clear_knowledge(name, caller=cname)
 
     @staticmethod
-    def get_actor_knowledge(actor: "Actor", name: str, must_exist: bool = False) -> Any | None:
+    def get_actor_knowledge(actor: "Actor", name: str, must_exist: bool = False) -> Any:
         """Get knowledge from the actor.
 
         Args:
@@ -270,7 +270,7 @@ class Task(SettableEnv):
             Defaults to False.
 
         Returns:
-            Any | None: The knowledge value or None
+            Any: The knowledge value, which could be None
         """
         return actor.get_knowledge(name, must_exist)
 
@@ -397,14 +397,14 @@ class Task(SettableEnv):
         return stop_run, restart
 
     @process
-    def run(self, *, actor: "Actor") -> Generator[SimpyEvent | Process, None, None]:
+    def run(self, *, actor: "Actor") -> Generator[SimpyEvent | Process, Any, None]:
         """Execute the task.
 
         Args:
             actor (Actor): The actor using the task
 
         Returns:
-            Generator[SimpyEvent, None, None]
+            Generator[SimpyEvent, Any, None]
         """
         generator = self.task(actor=actor)
         self._proc = generator
@@ -488,6 +488,7 @@ class DecisionTask(Task):
         actor: "Actor",
         knowledge: dict[str, Any] | None = None,
         cloned_actor: bool = False,
+        **kwargs: Any,
     ) -> "Actor":
         """Rehearse the task to evaluate its feasibility.
 
@@ -495,6 +496,7 @@ class DecisionTask(Task):
             actor (Actor): The actor to rehearse with
             knowledge (Optional[dict[str, Any]], optional): Knowledge to add. Defaults to None.
             cloned_actor (bool, optional): If the actor is a clone or not. Defaults to False.
+            kwargs (Any): Kwargs for rehearsal. Kept for consistency to the base class.
 
         Returns:
             Actor: Cloned actor after rehearsing this task.
@@ -550,16 +552,17 @@ class TerminalTask(Task):
         """
         return f"Entering terminal task: {self} on network {self._network_name}"
 
-    def on_interrupt(self, *, actor: "Actor", **kwargs: Any) -> None:
+    def on_interrupt(self, *, actor: "Actor", cause: Any) -> InterruptStates:
         """Special case interrupt for terminal task.
 
         Args:
             actor (Actor): The actor
-            kwargs (Any): Additional data sent to the interrupt.
+            cause (Any): Additional data sent to the interrupt.
         """
         raise SimulationError(
-            f"Cannot interrupt a terminal task {self} on {actor}. " f"Kwargs sent: {kwargs}"
+            f"Cannot interrupt a terminal task {self} on {actor}. " f"Kwargs sent: {cause}"
         )
+        return InterruptStates.END
 
     def task(self, *, actor: "Actor") -> TASK_TYPE:
         """The terminal task.

@@ -71,7 +71,7 @@ from upstage.states import (
 )
 
 # Task
-from upstage.task import DecisionTask, Task, TerminalTask, process
+from upstage.task import DecisionTask, Task, TerminalTask, process, InterruptStates
 
 # Task Networks
 from upstage.task_network import TaskNetwork, TaskNetworkFactory
@@ -124,6 +124,7 @@ __all__ = [
     "DecisionTask",
     "Task",
     "process",
+    "InterruptStates",
     "TerminalTask",
     "TaskNetwork",
     "TaskNetworkFactory",

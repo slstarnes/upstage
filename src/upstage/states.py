@@ -7,7 +7,7 @@
 
 from collections.abc import Callable
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar, Generic, cast
 
 from simpy import Container, Store
 
@@ -782,7 +782,7 @@ class GeodeticLocationChangingState(ActiveState):
 T = TypeVar("T", Store, Container)
 
 
-class ResourceState(State):
+class ResourceState(State, Generic[T]):
     """A State class for States that are meant to be Stores or Containers.
 
     This should enable easier initialization of Actors with stores/containers or
@@ -901,7 +901,7 @@ class ResourceState(State):
     def _set_default(self, instance: "Actor") -> None:
         self.__set__(instance, {})
 
-    def __get__(self, instance: "Actor", owner: type | None = None) -> Store | Container:
+    def __get__(self, instance: "Actor", owner: type | None = None) -> T:
         if instance is None:
             # instance attribute accessed on class, return self
             return self  # pragma: no cover
@@ -910,7 +910,7 @@ class ResourceState(State):
         obj = instance.__dict__[self.name]
         if not isinstance(obj, Store | Container):
             raise UpstageError("Bad type of ResourceStatee")
-        return obj
+        return cast(T, obj)
 
     def _make_clone(self, instance: "Actor", copy: T) -> T:
         """Method to support cloning a store or container.
@@ -933,7 +933,7 @@ class ResourceState(State):
         return new
 
 
-class CommunicationStore(ResourceState):
+class CommunicationStore(ResourceState[Store]):
     """A State class for communications inputs.
 
     Used for automated finding of communication inputs on Actors by the CommsTransfer code.

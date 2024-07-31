@@ -21,7 +21,7 @@ from upstage.events import (
 )
 
 
-def test_base_event():
+def test_base_event() -> None:
     init_time = 1.23
     with EnvironmentContext(initial_time=init_time) as env:
         base = BaseEvent()
@@ -32,7 +32,7 @@ def test_base_event():
             base.as_event()
 
 
-def test_wait_event():
+def test_wait_event() -> None:
     init_time = 1.23
     with EnvironmentContext(initial_time=init_time) as env:
         timeout = 1
@@ -66,7 +66,7 @@ def test_wait_event():
             Wait(timeout=[1, 2, 3])
 
 
-def test_base_request_event():
+def test_base_request_event() -> None:
     init_time = 1.23
     with EnvironmentContext(initial_time=init_time) as env:
         base = BaseRequestEvent(env)
@@ -76,7 +76,7 @@ def test_base_request_event():
         base.cancel()
 
 
-def test_put_event_with_stores():
+def test_put_event_with_stores() -> None:
     with EnvironmentContext() as env:
         store = SIM.Store(env, capacity=1)
         put_object = ("A Test Object", 1.0)
@@ -103,7 +103,7 @@ def test_put_event_with_stores():
         assert event not in store.put_queue, "Event is still in the store's queue"
 
 
-def test_put_event_with_containers():
+def test_put_event_with_containers() -> None:
     with EnvironmentContext() as env:
         container = SIM.Container(env, capacity=1)
         put_arg = 1.0
@@ -130,7 +130,7 @@ def test_put_event_with_containers():
         assert event not in container.put_queue, "Event is still in the store's queue"
 
 
-def test_get_event_with_stores():
+def test_get_event_with_stores() -> None:
     with EnvironmentContext() as env:
         store = SIM.Store(env, capacity=1)
         put_object = ("A Test Object", 1.0)
@@ -158,7 +158,7 @@ def test_get_event_with_stores():
         assert returned_object not in store.get_queue, "Event is still in queue"
 
 
-def test_get_event_with_containers():
+def test_get_event_with_containers() -> None:
     with EnvironmentContext() as env:
         container = SIM.Container(env, capacity=1)
         put_arg = 1.0
@@ -192,7 +192,7 @@ def test_get_event_with_containers():
         assert returned_object not in container.get_queue, "Event is still in queue"
 
 
-def test_resource_events():
+def test_resource_events() -> None:
     with EnvironmentContext() as env:
         a_resource = SIM.Resource(env, capacity=1)
 
@@ -240,7 +240,7 @@ def test_resource_events():
         ), "Resource hasn't left the wait queue"
 
 
-def test_multi_event():
+def test_multi_event() -> None:
     with EnvironmentContext() as env:
         event1 = Wait(1.0)
         event2 = Wait(1.5)
@@ -254,7 +254,7 @@ def test_multi_event():
             All(event1, event2)
 
 
-def test_and_event():
+def test_and_event() -> None:
     with EnvironmentContext() as env:
 
         def run(env, data):
@@ -272,7 +272,7 @@ def test_and_event():
         assert data["time"] == 1.5
 
 
-def test_or_event():
+def test_or_event() -> None:
     with EnvironmentContext() as env:
 
         def run(env, data):
@@ -291,7 +291,7 @@ def test_or_event():
         assert data["time"] == 1.0
 
 
-def test_composite():
+def test_composite() -> None:
     with EnvironmentContext() as env:
 
         def run(env, data):
@@ -314,7 +314,7 @@ def test_composite():
         assert len(data["result"].events) == 4
 
 
-def test_process_in_multi():
+def test_process_in_multi() -> None:
     with EnvironmentContext() as env:
 
         def a_process():
@@ -341,7 +341,7 @@ def test_process_in_multi():
         assert t.events[0] not in t.result
 
 
-def test_rehearse_process_in_multi():
+def test_rehearse_process_in_multi() -> None:
     with EnvironmentContext() as env:
 
         def a_process():
@@ -369,7 +369,7 @@ def test_rehearse_process_in_multi():
 # # TODO: Test how to retrieve event items
 
 
-def test_basic_usage():
+def test_basic_usage() -> None:
     with EnvironmentContext() as env:
         event = Event()
         assert event._event is not None
@@ -404,7 +404,7 @@ def test_basic_usage():
         assert last_event is not event._event
 
 
-def test_conflicts():
+def test_conflicts() -> None:
     with EnvironmentContext() as env:
         event = Event()
 

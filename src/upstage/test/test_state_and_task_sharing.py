@@ -91,7 +91,7 @@ WAYPOINTS_GEO = [
 ]
 
 
-def test_regular_run():
+def test_regular_run() -> None:
     with EnvironmentContext() as env:
         add_stage_variable("distance_units", "nmi")
         add_stage_variable("altitude_units", "ft")
@@ -114,7 +114,7 @@ def test_regular_run():
         assert pytest.approx(d) == 0
 
 
-def test_first_interrupt():
+def test_first_interrupt() -> None:
     with EnvironmentContext() as env:
         add_stage_variable("altitude_units", "ft")
         add_stage_variable("distance_units", "nmi")
@@ -139,7 +139,7 @@ def test_first_interrupt():
         assert pytest.approx(d) == 0
 
 
-def test_second_interrupt():
+def test_second_interrupt() -> None:
     with EnvironmentContext() as env:
         add_stage_variable("altitude_units", "ft")
         add_stage_variable("distance_units", "nmi")
@@ -164,7 +164,7 @@ def test_second_interrupt():
         assert pytest.approx(d) == 0
 
 
-def test_regular_run_geo():
+def test_regular_run_geo() -> None:
     with EnvironmentContext() as env:
         add_stage_variable("altitude_units", "ft")
         add_stage_variable("distance_units", "nmi")
@@ -187,7 +187,7 @@ def test_regular_run_geo():
         assert pytest.approx(d) == 0
 
 
-def test_first_interrupt_geo():
+def test_first_interrupt_geo() -> None:
     with EnvironmentContext() as env:
         add_stage_variable("altitude_units", "ft")
         add_stage_variable("distance_units", "nmi")
@@ -212,7 +212,7 @@ def test_first_interrupt_geo():
         assert pytest.approx(d) == 0
 
 
-def test_second_interrupt_geo():
+def test_second_interrupt_geo() -> None:
     with EnvironmentContext() as env:
         add_stage_variable("altitude_units", "ft")
         add_stage_variable("distance_units", "nmi")

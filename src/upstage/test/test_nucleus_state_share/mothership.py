@@ -6,6 +6,8 @@
 import simpy as SIM
 
 import upstage.api as UP
+from upstage.type_help import TASK_GEN
+from typing import Any
 
 from .mover import Mover
 
@@ -13,13 +15,13 @@ from .mover import Mover
 class Mothership(Mover):
     fuel_ports_in_use = UP.State(valid_types=(int,))
     fuel_ports_max = UP.State(valid_types=(int,), frozen=True)
-    messages = UP.ResourceState(
+    messages = UP.ResourceState[UP.SelfMonitoringStore](
         default=UP.SelfMonitoringStore, valid_types=(UP.SelfMonitoringStore, SIM.Store)
     )
 
 
 class DispenseFuel(UP.Task):
-    def task(self, *, actor):
+    def task(self, *, actor: Mothership) -> TASK_GEN:
         draws = self.get_actor_knowledge(actor, "fuel_users", must_exist=False)
         draws = {} if draws is None else draws
         total_draw = sum(draws.values())
@@ -32,7 +34,7 @@ class DispenseFuel(UP.Task):
         # We use Nucleus to go to the interrupt.
         yield UP.Event()
 
-    def on_interrupt(self, *, actor, cause):
+    def on_interrupt(self, *, actor: Mothership, cause: Any) -> UP.InterruptStates:
         # No matter what, restart
         return self.INTERRUPT.RESTART
 
@@ -41,21 +43,21 @@ give_fuel_factory = UP.TaskNetworkFactory.from_single_looping("GiveFuel", Dispen
 
 
 class CrewMember(UP.Task):
-    def _user_add(self, actor, vehicle, add):
+    def _user_add(self, actor: Mothership, vehicle: Mover, add: float) -> int:
         know = self.get_actor_knowledge(actor, "fuel_users")
         know = {} if know is None else know
         know[vehicle] = add
         self.set_actor_knowledge(actor, "fuel_users", know, overwrite=True)
         return len(know)
 
-    def _user_remove(self, actor, vehicle):
+    def _user_remove(self, actor: Mothership, vehicle: Mover) -> int:
         know = self.get_actor_knowledge(actor, "fuel_users")
         know = {} if know is None else know
         del know[vehicle]
         self.set_actor_knowledge(actor, "fuel_users", know, overwrite=True)
         return len(know)
 
-    def task(self, *, actor):
+    def task(self, *, actor: Mothership) -> TASK_GEN:
         # receive a message that someone is ready, then update fuel_users
         msg = yield UP.Get(actor.messages)
         vehicle, draw = msg

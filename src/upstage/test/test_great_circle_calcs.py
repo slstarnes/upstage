@@ -16,7 +16,7 @@ from upstage.motion.great_circle_calcs import (
 )
 
 
-def test_distance():
+def test_distance() -> None:
     """Test great circle distance calc."""
     with UP.EnvironmentContext():
         p1 = UP.GeodeticLocation(0, 180, 0).to_radians()
@@ -28,7 +28,7 @@ def test_distance():
         assert pytest.approx(get_dist_rad(p3, p4)) == pi / 180
 
 
-def test_course():
+def test_course() -> None:
     """Test great circle course calc."""
     with UP.EnvironmentContext():
         p1 = UP.GeodeticLocation(0, 180, 0).to_radians()
@@ -40,7 +40,7 @@ def test_course():
         assert pytest.approx(get_course_rad(p3, p4)) == 3 * pi / 2.0
 
 
-def test_position_from_point_distance():
+def test_position_from_point_distance() -> None:
     """Test position from point and distance calc."""
     with UP.EnvironmentContext():
         p1 = UP.GeodeticLocation(0, 180, 0).to_radians()
@@ -51,7 +51,7 @@ def test_position_from_point_distance():
         assert pytest.approx(degrees(half_point[1])) == -180
 
 
-def test_great_circle_points():
+def test_great_circle_points() -> None:
     """Test calculation of points on creat circle path."""
     with UP.EnvironmentContext():
         p1 = UP.GeodeticLocation(0, 180, 0).to_radians()
@@ -69,7 +69,7 @@ def test_great_circle_points():
         assert pytest.approx(distances[1]) == radians(4)
 
 
-def test_caching():
+def test_caching() -> None:
     with UP.EnvironmentContext():
         get_dist_rad.cache_clear()
         get_course_rad.cache_clear()

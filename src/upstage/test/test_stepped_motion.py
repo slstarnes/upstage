@@ -74,7 +74,7 @@ class StartDetectable(UP.Task):
         actor.visible = True
 
 
-def test_basic_functions():
+def test_basic_functions() -> None:
     with UP.EnvironmentContext() as env:
         motion = SteppedMotionManager(0.01)
         UP.add_stage_variable("motion_manager", motion)
@@ -106,7 +106,7 @@ def test_basic_functions():
         assert len(sense.history[0]) == 4, "Wrong intersection history"
 
 
-def test_dual_sense():
+def test_dual_sense() -> None:
     with UP.EnvironmentContext() as env:
         motion = SteppedMotionManager(0.01)
         UP.add_stage_variable("motion_manager", motion)
@@ -156,7 +156,7 @@ def test_dual_sense():
         assert pytest.approx(move2.history[0][3], abs=0.1) == 1
 
 
-def test_detectability_change():
+def test_detectability_change() -> None:
     with UP.EnvironmentContext() as env:
         motion = SteppedMotionManager(0.01)
         UP.add_stage_variable("motion_manager", motion)

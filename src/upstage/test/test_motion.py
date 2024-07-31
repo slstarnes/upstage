@@ -120,7 +120,7 @@ def _create_mover_and_waypoints(env, mover_type, location_type, *waypoints):
     return mover, waypoints
 
 
-def test_errors():
+def test_errors() -> None:
     with UP.EnvironmentContext() as env:
         UP.add_stage_variable("distance_units", "m")
         motion = UP.SensorMotionManager(cli)
@@ -146,7 +146,7 @@ def test_errors():
             motion.add_sensor(bad_sensor, "location", "radius")
 
 
-def test_no_interaction_cli():
+def test_no_interaction_cli() -> None:
     with UP.EnvironmentContext() as env:
         UP.add_stage_variable("distance_units", "m")
         motion = UP.SensorMotionManager(cli)
@@ -175,7 +175,7 @@ def test_no_interaction_cli():
         assert motion._debug_log == [], "No log expected for no actions"
 
 
-def test_enter_exit():
+def test_enter_exit() -> None:
     with UP.EnvironmentContext() as env:
         motion = UP.SensorMotionManager(cli)
         mover, waypoints = _create_mover_and_waypoints(
@@ -208,7 +208,7 @@ def test_enter_exit():
         assert sensor not in motion._in_view.get(mover, {})
 
 
-def test_sensor_popup():
+def test_sensor_popup() -> None:
     with UP.EnvironmentContext() as env:
         UP.add_stage_variable("distance_units", "m")
         motion = UP.SensorMotionManager(cli)
@@ -244,7 +244,7 @@ def test_sensor_popup():
         assert sensor not in motion._in_view.get(mover, {})
 
 
-def test_start_inside_exit():
+def test_start_inside_exit() -> None:
     with UP.EnvironmentContext() as env:
         UP.add_stage_variable("distance_units", "m")
         motion = UP.SensorMotionManager(cli)
@@ -276,7 +276,7 @@ def test_start_inside_exit():
         assert sensor not in motion._in_view.get(mover, {})
 
 
-def test_enter_end_inside_then_leave():
+def test_enter_end_inside_then_leave() -> None:
     with UP.EnvironmentContext() as env:
         UP.add_stage_variable("distance_units", "m")
         motion = UP.SensorMotionManager(cli)
@@ -318,7 +318,7 @@ def test_enter_end_inside_then_leave():
         assert sensor not in motion._in_view[mover]
 
 
-def test_start_inside_end_inside():
+def test_start_inside_end_inside() -> None:
     with UP.EnvironmentContext() as env:
         UP.add_stage_variable("distance_units", "m")
         motion = UP.SensorMotionManager(cli)
@@ -344,7 +344,7 @@ def test_start_inside_end_inside():
         assert sensor in motion._in_view[mover]
 
 
-def test_motion_setup_cli():
+def test_motion_setup_cli() -> None:
     with UP.EnvironmentContext() as env:
         UP.add_stage_variable("distance_units", "m")
         motion = UP.SensorMotionManager(cli, debug=True)
@@ -374,7 +374,7 @@ def test_motion_setup_cli():
             assert pytest.approx(truth) == datum[1]
 
 
-def test_late_intersection():
+def test_late_intersection() -> None:
     with UP.EnvironmentContext() as env:
         UP.add_stage_variable("distance_units", "m")
         motion = UP.SensorMotionManager(cli, debug=True)
@@ -395,7 +395,7 @@ def test_late_intersection():
         env.run()
 
 
-def test_motion_coordination_cli():
+def test_motion_coordination_cli() -> None:
     with UP.EnvironmentContext() as env:
         UP.add_stage_variable("distance_units", "m")
         motion = UP.SensorMotionManager(cli, debug=True)
@@ -430,7 +430,7 @@ def test_motion_coordination_cli():
             assert abs(loc - mover._loc_history[i * 2 + 1][1]) <= 1e-12
 
 
-def test_background_motion():
+def test_background_motion() -> None:
     with UP.EnvironmentContext() as env:
         UP.add_stage_variable("distance_units", "m")
         motion = UP.SensorMotionManager(cli, debug=True)
@@ -461,7 +461,7 @@ def test_background_motion():
         # TODO: TEST EQUIVALENT POINTS: I MISSED THAT ONE
 
 
-def test_background_rehearse():
+def test_background_rehearse() -> None:
     with UP.EnvironmentContext() as env:
         UP.add_stage_variable("distance_units", "m")
         motion = UP.SensorMotionManager(cli, debug=True)
@@ -489,7 +489,7 @@ def test_background_rehearse():
         assert flyer_clone not in motion._debug_data
 
 
-def test_interrupt_clean():
+def test_interrupt_clean() -> None:
     with UP.EnvironmentContext() as env:
         UP.add_stage_variable("distance_units", "m")
         motion = UP.SensorMotionManager(cli, debug=True)
@@ -538,7 +538,7 @@ def test_interrupt_clean():
         assert mover not in motion._movers
 
 
-def test_undetectable_cli():
+def test_undetectable_cli() -> None:
     with UP.EnvironmentContext() as env:
         UP.add_stage_variable("distance_units", "m")
         motion = UP.SensorMotionManager(cli, debug=True)
@@ -570,7 +570,7 @@ def test_undetectable_cli():
         assert sensor.data[-1] == (mover, 25, "end detect")
 
 
-def test_redetectable():
+def test_redetectable() -> None:
     with UP.EnvironmentContext() as env:
         UP.add_stage_variable("distance_units", "m")
         motion = UP.SensorMotionManager(cli, debug=True)
@@ -597,7 +597,7 @@ def test_redetectable():
             mover.detect = True
 
 
-def test_undetectable_after():
+def test_undetectable_after() -> None:
     with UP.EnvironmentContext() as env:
         UP.add_stage_variable("distance_units", "m")
         motion = UP.SensorMotionManager(cli, debug=True)
@@ -630,7 +630,7 @@ def test_undetectable_after():
         assert len(sensor.data) == 4
 
 
-def test_motion_setup_gi():
+def test_motion_setup_gi() -> None:
     with UP.EnvironmentContext() as env:
         motion = UP.SensorMotionManager(gi, debug=True)
         UP.add_stage_variable("stage_model", Spherical)
@@ -661,7 +661,7 @@ def test_motion_setup_gi():
             assert pytest.approx(truth, abs=0.001) == datum[1]
 
 
-def test_no_interaction_gi():
+def test_no_interaction_gi() -> None:
     with UP.EnvironmentContext() as env:
         motion = UP.SensorMotionManager(gi, debug=True)
         UP.add_stage_variable("stage_model", Spherical)
@@ -694,7 +694,7 @@ def test_no_interaction_gi():
         motion._stop_mover(mover)
 
 
-def test_motion_coordination_gi():
+def test_motion_coordination_gi() -> None:
     with UP.EnvironmentContext() as env:
         motion = UP.SensorMotionManager(gi, debug=True)
         UP.add_stage_variable("stage_model", Spherical)
@@ -732,7 +732,7 @@ def test_motion_coordination_gi():
             assert abs(loc - geo_mover._loc_history[i][1]) <= 1e-12
 
 
-def test_motion_setup_agi():
+def test_motion_setup_agi() -> None:
     with UP.EnvironmentContext() as env:
         motion = UP.SensorMotionManager(agi, debug=True)
         UP.add_stage_variable("stage_model", Spherical)
@@ -763,7 +763,7 @@ def test_motion_setup_agi():
             assert pytest.approx(truth, abs=0.1) == datum[1]
 
 
-def test_no_interaction_agi():
+def test_no_interaction_agi() -> None:
     with UP.EnvironmentContext() as env:
         motion = UP.SensorMotionManager(agi, debug=True)
         UP.add_stage_variable("stage_model", Spherical)
@@ -797,7 +797,7 @@ def test_no_interaction_agi():
         motion._stop_mover(mover)
 
 
-def test_motion_coordination_agi():
+def test_motion_coordination_agi() -> None:
     with UP.EnvironmentContext() as env:
         motion = UP.SensorMotionManager(agi, debug=True)
         UP.add_stage_variable("stage_model", Spherical)
@@ -835,7 +835,7 @@ def test_motion_coordination_agi():
             assert abs(loc - geo_mover._loc_history[i][1]) <= 0.5  # nm
 
 
-def test_analytical_intersection():
+def test_analytical_intersection() -> None:
     with UP.EnvironmentContext():
         UP.add_stage_variable("stage_model", Spherical)
         UP.add_stage_variable("altitude_units", "m")

@@ -40,7 +40,7 @@ fact2 = UP.TaskNetworkFactory(
 )
 
 
-def test_creation():
+def test_creation() -> None:
     with UP.EnvironmentContext() as env:
         actor = Dummy(name="example", number=10)
         nuc = UP.TaskNetworkNucleus(actor=actor)
@@ -53,7 +53,7 @@ def test_creation():
         assert actor.number == 1.25
 
 
-def test_with_interrupt():
+def test_with_interrupt() -> None:
     with UP.EnvironmentContext() as env:
         actor = Dummy(name="example", number=10, results=0)
         nuc = UP.TaskNetworkNucleus(actor=actor)

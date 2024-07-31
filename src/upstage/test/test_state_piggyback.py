@@ -49,7 +49,7 @@ class RiderTaskTwo(Task):
         actor.deactivate_all_states(task=self)
 
 
-def test_simple():
+def test_simple() -> None:
     with EnvironmentContext() as env:
         pig = Piggy(name="Piggy", a_level=1, location="here")
         ride = Rider(name="Rider", b_level=2, location="there", piggy=pig)
@@ -102,7 +102,7 @@ def test_simple():
         assert pig.a_level == 9
 
 
-def test_rehearsing():
+def test_rehearsing() -> None:
     with EnvironmentContext():
         pig = Piggy(name="Piggy", a_level=1, location="here")
         ride = Rider(name="Rider", b_level=2, location="there", piggy=pig)
@@ -112,7 +112,7 @@ def test_rehearsing():
             task.rehearse(actor=ride)
 
 
-def test_rehearse_from_piggyback():
+def test_rehearse_from_piggyback() -> None:
     with EnvironmentContext() as env:
         pig = Piggy(name="Piggy", a_level=1, location="here")
         ride = Rider(name="Rider", b_level=2, location="there", piggy=pig)
@@ -147,7 +147,7 @@ def test_rehearse_from_piggyback():
         assert ride.b_level == 9
 
 
-def test_double_mimic():
+def test_double_mimic() -> None:
     with EnvironmentContext():
         pig = Piggy(name="Piggy", a_level=1, location="here")
         ride = Rider(name="Rider", b_level=2, location="there", piggy=pig)
@@ -165,7 +165,7 @@ def test_double_mimic():
             )
 
 
-def test_interrupt_deactivate():
+def test_interrupt_deactivate() -> None:
     with EnvironmentContext() as env:
         pig = Piggy(name="Piggy", a_level=1, location="here")
         ride = Rider(name="Rider", b_level=2, location="there", piggy=pig)
@@ -178,7 +178,7 @@ def test_interrupt_deactivate():
         env.run()
 
 
-def test_record():
+def test_record() -> None:
     with EnvironmentContext():
         pig = Piggy(name="Piggy", a_level=1, location="here")
 

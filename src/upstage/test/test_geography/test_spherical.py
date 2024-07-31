@@ -8,17 +8,17 @@ import pytest
 from upstage.geography import Spherical
 
 
-def test_distance(atl, nas):
+def test_distance(atl, nas) -> None:
     dist = Spherical.distance(atl, nas)
     assert dist == pytest.approx(186.94317974521996)
 
 
-def test_bearing(atl, nas):
+def test_bearing(atl, nas) -> None:
     bearing = Spherical.bearing(atl, nas)
     assert bearing == pytest.approx(321.5766379719283)
 
 
-def test_linspace(atl, nas):
+def test_linspace(atl, nas) -> None:
     latlons = Spherical.geo_linspace(atl, nas, 10)
     assert len(latlons) == 11
     lats, lons = zip(*latlons)
@@ -28,20 +28,20 @@ def test_linspace(atl, nas):
     assert pytest.approx(lons[-1]) == nas[1]
 
 
-def test_geo_circle(atl):
+def test_geo_circle(atl) -> None:
     latlons = Spherical.geo_circle(atl, radius=100, num_points=20)
     for lat, lon in latlons:
         d = Spherical.distance(atl, (lat, lon))
         assert d == pytest.approx(100)
 
 
-def test_point_along(atl, nas):
+def test_point_along(atl, nas) -> None:
     pt = Spherical.point_along(atl, nas, 0.0)
     assert pt[0] == atl[0]
     assert pt[1] == atl[1]
 
 
-def test_bearing_dist_from_point(atl, nas):
+def test_bearing_dist_from_point(atl, nas) -> None:
     bearing = Spherical.bearing(atl, nas)
     dist = Spherical.distance(atl, nas)
     pt = Spherical.point_from_bearing_dist(atl, bearing, dist, "nmi")
@@ -49,7 +49,7 @@ def test_bearing_dist_from_point(atl, nas):
     assert new_dist <= 1e-4
 
 
-def test_cross_track(nyc, lax, atl):
+def test_cross_track(nyc, lax, atl) -> None:
     res = Spherical.cross_track_point(nyc, lax, atl)
     dist = Spherical.cross_track_distance(nyc, lax, atl)
     dist2 = Spherical.distance(res, atl)

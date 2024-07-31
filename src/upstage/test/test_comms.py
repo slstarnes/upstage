@@ -41,7 +41,7 @@ class SendTask(Task):
         yield self.comms.make_put(message, actor, self.receiver)
 
 
-def test_send_receive():
+def test_send_receive() -> None:
     with EnvironmentContext() as env:
         receiver = ReceiveSend()
         sender = ReceiveSend()
@@ -71,7 +71,7 @@ def test_send_receive():
         assert content["thought"] == "good"
 
 
-def test_send_receive_delayed():
+def test_send_receive_delayed() -> None:
     with EnvironmentContext() as env:
         receiver = ReceiveSend()
         sender = ReceiveSend()
@@ -102,7 +102,7 @@ def test_send_receive_delayed():
         assert content["thought"] == "good"
 
 
-def test_degraded():
+def test_degraded() -> None:
     with EnvironmentContext() as env:
         receiver = ReceiveSend()
         sender = ReceiveSend()
@@ -130,7 +130,7 @@ def test_degraded():
         assert receiver.result is None
 
 
-def test_blocked():
+def test_blocked() -> None:
     with EnvironmentContext() as env:
         receiver = ReceiveSend()
         sender = ReceiveSend()
@@ -159,7 +159,7 @@ def test_blocked():
         assert receiver.result is None
 
 
-def test_comms_wait():
+def test_comms_wait() -> None:
     with UP.EnvironmentContext() as env:
         store = Store(env=env)
         data_point = []
@@ -185,7 +185,7 @@ class Worker(UP.Actor):
     intercom = UP.CommunicationStore(mode="loudspeaker")
 
 
-def test_worker_talking():
+def test_worker_talking() -> None:
     with EnvironmentContext() as env:
         w1 = Worker(name="worker1")
         w2 = Worker(name="worker2")

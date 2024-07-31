@@ -17,7 +17,7 @@ class Example2(Example):
 class EnvHolder(UP.UpstageBase): ...
 
 
-def test_actor_tracking():
+def test_actor_tracking() -> None:
     with UP.EnvironmentContext():
         env = EnvHolder()
         actor = Example(name="Example_1")
@@ -41,7 +41,7 @@ def test_actor_tracking():
         assert len(actor_entities) == 1
 
 
-def test_env_reset():
+def test_env_reset() -> None:
     with UP.EnvironmentContext():
         env = EnvHolder()
         actor = Example(name="Example_1")
@@ -59,7 +59,7 @@ def test_env_reset():
         assert actor not in actors
 
 
-def test_actor_multi_tracking():
+def test_actor_multi_tracking() -> None:
     class Person(UP.Actor, entity_groups=("A Person", "VIP")):
         pass
 
@@ -101,7 +101,7 @@ class NextRadar(RadarSensor):
     pass
 
 
-def test_entity_tracking():
+def test_entity_tracking() -> None:
     with UP.EnvironmentContext():
         env = EnvHolder()
         simple_sensor = Sensor(name="Sense1", radius=3)
@@ -130,7 +130,7 @@ def test_entity_tracking():
         assert nxt in env.get_entity_group("RadarSensor")
 
 
-def test_multi_tracking():
+def test_multi_tracking() -> None:
     with UP.EnvironmentContext():
         env = EnvHolder()
 
@@ -144,7 +144,7 @@ def test_multi_tracking():
         assert len(sensors) == 1
 
 
-def test_env_reset_tracking():
+def test_env_reset_tracking() -> None:
     with UP.EnvironmentContext():
         env = EnvHolder()
         simple_sensor = Sensor(name="Sense1", radius=3)

@@ -22,7 +22,7 @@ class Do2(UP.Task):
         actor.state = actor.state + 3
 
 
-def test_single_loop_and_names():
+def test_single_loop_and_names() -> None:
     with UP.EnvironmentContext() as env:
         factory = UP.TaskNetworkFactory.from_single_looping("example", Do)
 
@@ -59,7 +59,7 @@ def test_single_loop_and_names():
         assert actor.state == 4
 
 
-def test_other_inits():
+def test_other_inits() -> None:
     with UP.EnvironmentContext() as env:
         factory = UP.TaskNetworkFactory.from_ordered_terminating("example", [Do, Do2])
         actor = Act(name="a thing")

@@ -6,7 +6,7 @@
 """Base classes and exceptions for UPSTAGE."""
 
 from collections import defaultdict
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Iterable, Generator
 from contextvars import ContextVar, Token
 from functools import wraps
 from math import floor

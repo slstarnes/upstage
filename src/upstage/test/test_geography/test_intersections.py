@@ -10,7 +10,7 @@ from upstage.motion.cartesian_model import ray_intersection
 
 
 @pytest.mark.parametrize("earth", [WGS84, Spherical])
-def test_intersections(intersect_positions, earth):
+def test_intersections(intersect_positions, earth) -> None:
     pos, sensor_range, range_units, answer = intersect_positions
     start_lla, finish_lla, sensor_lla = pos
     sensor_loc = (sensor_lla[0], sensor_lla[1])
@@ -37,7 +37,7 @@ def test_intersections(intersect_positions, earth):
 
 
 @pytest.mark.parametrize("earth", [WGS84, Spherical])
-def test_short_intersections(earth, short_intersections):
+def test_short_intersections(earth, short_intersections) -> None:
     pos, sensor_range, range_units = short_intersections
     start_lla, finish_lla, sensor_lla = pos
     _ = get_intersection_locations(
@@ -52,7 +52,7 @@ def test_short_intersections(earth, short_intersections):
     )
 
 
-def test_ray_trace():
+def test_ray_trace() -> None:
     input_1 = ((0, 2), (0, 1.8), (0, 0), (1, 1))
     input_2 = ((0, 2), (1, 2), (0, 0), (1, 1))
     input_3 = ((0, 2, 0), (0, 1.8, 0), (0, 0, 0), (1, 1, 1))

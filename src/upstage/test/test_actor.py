@@ -29,7 +29,7 @@ def test_actor_creation() -> None:
 
 
 def test_actor_subclass(
-    base_actors: tuple[tuple[UP.State, ...], tuple[UP.Actor, ...]],
+    base_actors: tuple[tuple[UP.State, ...], tuple[type[UP.Actor], ...]],
 ):
     """Test subclasses of actor.
 
@@ -123,7 +123,7 @@ def test_multiple_inheritance(
         assert instance._state_defs["state_four"] is fourth_state
 
 
-def test_get_knowledge():
+def test_get_knowledge() -> None:
     class TestActor(Actor):
         pass
 
@@ -142,7 +142,7 @@ def test_get_knowledge():
         assert other_value is None, "Empty knowledge returned something other than None"
 
 
-def test_set_knowledge():
+def test_set_knowledge() -> None:
     class TestActor(Actor):
         pass
 
@@ -162,7 +162,7 @@ def test_set_knowledge():
         assert value2 == returned_value, "Returned value is not the same knowldge"
 
 
-def test_clear_knowledge():
+def test_clear_knowledge() -> None:
     class TestActor(Actor):
         pass
 
@@ -180,7 +180,7 @@ def test_clear_knowledge():
         assert know is None, "Knowledge was not cleared"
 
 
-def test_knowledge_event():
+def test_knowledge_event() -> None:
     with EnvironmentContext() as env:
         act = Actor(name="A test actor")
         evt = act.create_knowledge_event(name="Waiter")
@@ -192,7 +192,7 @@ def test_knowledge_event():
         assert evt.is_complete()
 
 
-def test_actor_copying():
+def test_actor_copying() -> None:
     class SomeActor(Actor):
         kind = "a simple actor for testing"
         some_state = State()
@@ -215,22 +215,23 @@ def test_actor_copying():
         assert actor.kind == clone.kind
 
 
-def test_actor_copy_with_knowledge():
+def test_actor_copy_with_knowledge() -> None:
     class SomeActor(Actor):
         kind = "a simple actor for testing"
         some_state = State()
 
     with EnvironmentContext():
         actor = SomeActor(name="some actor", some_state=True)
-        names = ["new", "other"]
-        values = [{"A": 1, "B": 2}, 1234.567]
-        for name, value in zip(names, values):
-            actor.set_knowledge(name, value)
+        d_values = {"A": 1, "B": 2}
+        float_value = 1234.567
+        
+        actor.set_knowledge("new", d_values)
+        actor.set_knowledge("other", float_value)
 
         mock_env = {"None": None}
 
         clone = actor.clone(new_env=mock_env, some_state=False)
-        for name, value in zip(names, values):
+        for name in ["new", "other"]:
             v1 = actor.get_knowledge(name)
             v2 = clone.get_knowledge(name)
             assert v1 == v2, "Copied knowledge is different"
@@ -238,7 +239,7 @@ def test_actor_copy_with_knowledge():
         # we can't test for equal IDs or object equivalence because of how
         # Python handles memory for booleans, small integers, etc.
 
-        values[0]["A"] = 23
+        d_values["A"] = 23
         v1 = actor.get_knowledge("new")
         assert v1["A"] == 23, "Input knowledge did not retain reference"
 

@@ -17,7 +17,7 @@ DENVER = [39.7392, -104.9903, 30_000]
 SAN_FRAN = [37.7749, -122.4194, 0]
 
 
-def test_create_geodetic():
+def test_create_geodetic() -> None:
     with EnvironmentContext():
         atl = GeodeticLocation(
             *ATLANTA,
@@ -41,7 +41,7 @@ def test_create_geodetic():
         assert san_fran == san_fran.copy()
 
 
-def test_subtraction_geodetic():
+def test_subtraction_geodetic() -> None:
     with EnvironmentContext():
         add_stage_variable("stage_model", Spherical)
         add_stage_variable("altitude_units", "ft")
@@ -67,7 +67,7 @@ def test_subtraction_geodetic():
         assert abs(dist - 1052.67744200) <= 1e-6
 
 
-def test_create_geodetic_changing():
+def test_create_geodetic_changing() -> None:
     class StateTest(Actor):
         loc_state = GeodeticLocationChangingState(
             recording=True,
@@ -86,7 +86,7 @@ def test_create_geodetic_changing():
         assert tester.loc_state != GeodeticLocation(*DENVER)
 
 
-def test_active_geodetic_changing():
+def test_active_geodetic_changing() -> None:
     class StateTest(Actor):
         loc_state = GeodeticLocationChangingState(
             recording=True,
