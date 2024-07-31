@@ -2,6 +2,7 @@
 
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
+"""WGS84 Earth model."""
 
 from math import atan, atan2, cos, degrees, radians, sin, sqrt, tan
 
@@ -12,10 +13,9 @@ from .spherical import LAT_LON, POSITIONS
 
 
 class WGS84(WGS84Conversions):
-    """A class containing methods for doing geographical math using elliptical
-    coordinates for Earth.
+    """Geographical math using elliptical coordinates for Earth.
 
-    Based on Vincenty's methods.
+    Based on Vincenty's methods and WGS84 parameters.
     """
 
     @classmethod

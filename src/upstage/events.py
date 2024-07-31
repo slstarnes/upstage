@@ -40,7 +40,8 @@ class BaseEvent(UpstageBase):
         """Create a base event with a notion of rehearsal time.
 
         Args:
-            rehearsal_time_to_complete (float, optional): Time to simulate passing on rehearsal. Defaults to 0.0.
+            rehearsal_time_to_complete (float, optional): Time to simulate passing
+                on rehearsal. Defaults to 0.0.
         """
         super().__init__()
         self._simpy_event: SIM.Event | None = None
@@ -172,6 +173,8 @@ class Wait(BaseEvent):
 
         Args:
             timeout (float | int): Time to wait.
+            rehearsal_time_to_complete (float | int, optional): The rehearsal time
+                to complete. Defaults to None (the timeout given).
 
         """
         if not isinstance(timeout, float | int):
@@ -195,6 +198,8 @@ class Wait(BaseEvent):
         Args:
             low (float): Lower bounds of random draw
             high (float): Upper bounds of random draw
+            rehearsal_time_to_complete (float | int, optional): The rehearsal time
+                to complete. Defaults to None - meaning the random value drawn.
 
         Returns:
             Wait: The timeout event
@@ -235,7 +240,8 @@ class BaseRequestEvent(BaseEvent):
         """Create a request event.
 
         Args:
-            rehearsal_time_to_complete (float, optional): Estimated time to complete. Defaults to 0.0.
+            rehearsal_time_to_complete (float, optional): Estimated time to complete.
+                Defaults to 0.0.
         """
         super().__init__(rehearsal_time_to_complete=rehearsal_time_to_complete)
         self._request_event: SIM_REQ_EVTS | None = None
@@ -359,6 +365,7 @@ class MultiEvent(BaseEvent):
         """Return the simpy equivalent event.
 
         Args:
+            env (SIM.Environment): The SimPy environment.
             events (list[BaseEvent]): Events to turn into multi-event.
 
         Returns:
@@ -398,7 +405,8 @@ class MultiEvent(BaseEvent):
         """Compute time required to complete the multi-event.
 
         Args:
-            return_sub_events (bool, Optional): Whether to return all times or not. Defaults to False.
+            return_sub_events (bool, Optional): Whether to return all times or not.
+                Defaults to False.
         """
         event_times = {event: event.calculate_time_to_complete() for event in self.events}
 
@@ -457,10 +465,27 @@ class Any(MultiEvent):
 
     @staticmethod
     def aggregation_function(times: list[float]) -> float:
+        """Aggregation function for rehearsal time.
+
+        Args:
+            times (list[float]): List of rehearsal times
+
+        Returns:
+            float: Aggregated time (the minimum)
+        """
         return min(times)
 
     @staticmethod
     def simpy_equivalent(env: SIM.Environment, events: list[SIM.Event]) -> SIM.Event:
+        """Return the SimPy version of the UPSTAGE Any event.
+
+        Args:
+            env (SIM.Environment): SimPy Environment.
+            events (list[SIM.Event]): List of events.
+
+        Returns:
+            SIM.Event: A simpy AnyOf event.
+        """
         return SIM.AnyOf(env, events)
 
 
@@ -483,8 +508,10 @@ class Get(BaseRequestEvent):
         Args:
             get_location (SIM.Store | SIM.Container): The place for the Get request
             rehearsal_time_to_complete (float, optional): _description_. Defaults to 0.0.
-            *get_args (Any): optional positional args for the get request (blank for Store and Container)
-            *get_kwargs (Any): optional keyword args for the get request (blank for Store and Container)
+            get_args (Any): optional positional args for the get request
+                (blank for Store and Container)
+            get_kwargs (Any): optional keyword args for the get request
+                (blank for Store and Container)
         """
         super().__init__(rehearsal_time_to_complete=rehearsal_time_to_complete)
 
@@ -586,7 +613,8 @@ class ResourceHold(BaseRequestEvent):
 
         Args:
             resource (SIM.Resource): The simpy resource object.
-            rehearsal_time_to_complete (float, optional): Expected time to wait to get the resource. Defaults to 0.0.
+            rehearsal_time_to_complete (float, optional): Expected time to wait to
+                get the resource. Defaults to 0.0.
             *resource_args (Any): positional arguments to the resource
             **resource_kwargs (Any): keyword arguments to the resource
         """
@@ -652,7 +680,7 @@ class FilterGet(Get):
 
         Args:
             get_location (SIM.Store | SIM.Container): The place for the Get request
-            filter (Callable[[Any], bool]): The function that filters (True/False) items in the store
+            filter (Callable[[Any], bool]): The function that filters items in the store
             rehearsal_time_to_complete (float, optional): _description_. Defaults to 0.0.
         """
         super().__init__(
@@ -667,10 +695,27 @@ class All(MultiEvent):
 
     @staticmethod
     def aggregation_function(times: list[float]) -> float:
+        """Aggregate event times for rehearsal.
+
+        Args:
+            times (list[float]): List of rehearsing times.
+
+        Returns:
+            float: Aggregated (maximum) time.
+        """
         return max(times)
 
     @staticmethod
     def simpy_equivalent(env: SIM.Environment, events: list[SIM.Event]) -> SIM.Event:
+        """Return the SimPy version of the UPSTAGE All event.
+
+        Args:
+            env (SIM.Environment): SimPy Environment.
+            events (list[SIM.Event]): List of events.
+
+        Returns:
+            SIM.Event: A simpy AllOf event.
+        """
         return SIM.AllOf(env, events)
 
 
@@ -692,7 +737,8 @@ class Event(BaseEvent):
         """Create an event.
 
         Args:
-            rehearsal_time_to_complete (float, optional): Expected time to complete. Defaults to 0.0.
+            rehearsal_time_to_complete (float, optional): Expected time to complete.
+                Defaults to 0.0.
             auto_reset (bool, optional): Whether to auto-reset on yield. Defaults to True.
         """
         super().__init__(rehearsal_time_to_complete=rehearsal_time_to_complete)

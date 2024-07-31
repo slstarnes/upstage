@@ -22,11 +22,15 @@ from upstage.task import process
 
 @dataclass
 class MessageContent:
+    """Message content data object."""
+
     data: dict
 
 
 @dataclass
 class Message:
+    """A message data object."""
+
     sender: Actor
     content: str | MessageContent | dict
     destination: Actor
@@ -154,6 +158,14 @@ class CommsManager(UpstageBase):
         self.connected[entity] = comms_store_name
 
     def store_from_actor(self, actor: Actor) -> Store:
+        """Retrieve a communications store from an actor.
+
+        Args:
+            actor (Actor): The actor
+
+        Returns:
+            Store: A Comms store.
+        """
         if actor not in self.connected:
             try:
                 msg_store_name = actor._get_matching_state(CommunicationStore, {"_mode": self.mode})
@@ -208,7 +220,7 @@ class CommsManager(UpstageBase):
         self, message: Message, destination: Actor
     ) -> Generator[SimpyEvent, None, None]:
         start_time = self.env.now
-        while self.comms_degraded or self.link_test(message):
+        while self.comms_degraded or self.test_if_link_is_blocked(message):
             if self.debug_logging:
                 msg = {
                     "time": self.env.now,
@@ -251,6 +263,11 @@ class CommsManager(UpstageBase):
 
     @process
     def run(self) -> Generator[SimpyEvent, Any, None]:
+        """Run the communications message passing.
+
+        Yields:
+            Generator[SimpyEvent, Any, None]: Simpy Process
+        """
         while True:
             message = yield self.incoming.get()
             dest = message.destination
@@ -263,7 +280,15 @@ class CommsManager(UpstageBase):
                 return True
         return False
 
-    def link_test(self, message: Message) -> bool:
+    def test_if_link_is_blocked(self, message: Message) -> bool:
+        """Test if a link is blocked.
+
+        Args:
+            message (Message): Message with sender/destination data.
+
+        Returns:
+            bool: If the link is blocked.
+        """
         if self._link_compare(message.sender, message.destination):
             return True
         return False

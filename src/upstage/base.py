@@ -25,6 +25,8 @@ if TYPE_CHECKING:
 
 
 class EarthProtocol(Protocol):
+    """Protocol for defining an earth model interface."""
+
     def distance(
         self,
         loc1: tuple[float, float],
@@ -39,7 +41,7 @@ class EarthProtocol(Protocol):
         loc2: tuple[float, float],
         units: str,
     ) -> tuple[float, float]:
-        """Get the distance between two lat/lon (degrees) points"""
+        """Get the distance between two lat/lon (degrees) points."""
 
     def point_from_bearing_dist(
         self,
@@ -48,7 +50,7 @@ class EarthProtocol(Protocol):
         distance: float,
         distance_units: str = "nmi",
     ) -> tuple[float, float]:
-        """Get a lat/lon in degrees from a point, bearing, and distance"""
+        """Get a lat/lon in degrees from a point, bearing, and distance."""
 
     def lla2ecef(
         self,
@@ -132,6 +134,8 @@ class dotdict(dict):
 
 
 class StageProtocol(Protocol):
+    """Protocol for typing the minimum entries in the Stage."""
+
     @property
     def altitude_units(self) -> str:
         """Units of altitude."""
@@ -173,6 +177,12 @@ class SimulationError(UpstageError):
     """Raised when a simulation error occurs."""
 
     def __init__(self, message: str, time: float | None = None):
+        """Create an informative simulation error.
+
+        Args:
+            message (str): Error message
+            time (float | None, optional): Time of the error. Defaults to None.
+        """
         msg = "Error in the simulation: "
         if msg in message:
             msg = ""
@@ -193,6 +203,11 @@ class MockEnvironment:
     """A fake environment that holds the ``now`` property and all-caps attributes."""
 
     def __init__(self, now: float):
+        """Create the mock environment.
+
+        Args:
+            now (float): The time the environment is at.
+        """
         self.now = now
 
     @classmethod
@@ -241,6 +256,11 @@ class UpstageBase:
 
     @property
     def env(self) -> SimpyEnv:
+        """Return the environment.
+
+        Returns:
+            SimpyEnv: SimPy environment.
+        """
         try:
             env: SimpyEnv = ENV_CONTEXT_VAR.get()
         except LookupError:
@@ -249,6 +269,11 @@ class UpstageBase:
 
     @property
     def stage(self) -> StageProtocol:
+        """Return the stage context variable.
+
+        Returns:
+            StageProtocol: The stage, as defined in context.
+        """
         try:
             stage = STAGE_CONTEXT_VAR.get()
         except LookupError:
@@ -256,7 +281,11 @@ class UpstageBase:
         return stage
 
     def get_actors(self) -> list["NamedUpstageEntity"]:
-        """Return all actors that the director knows."""
+        """Return all actors that the director knows.
+
+        Returns:
+            list[NamedUpstageEntity]: List of actors in the simulation.
+        """
         ans: list[NamedUpstageEntity] = []
         try:
             ans = ACTOR_CONTEXT_VAR.get()
@@ -265,6 +294,14 @@ class UpstageBase:
         return ans
 
     def get_entity_group(self, group_name: str) -> list["NamedUpstageEntity"]:
+        """Get a single entity group by name.
+
+        Args:
+            group_name (str): The name of the entity group.
+
+        Returns:
+            list[NamedUpstageEntity]: List of entities in the group.
+        """
         ans: list[NamedUpstageEntity] = []
         try:
             grps: dict[str, list[NamedUpstageEntity]] = ENTITY_CONTEXT_VAR.get()
@@ -274,6 +311,12 @@ class UpstageBase:
         return ans
 
     def get_all_entity_groups(self) -> dict[str, list["NamedUpstageEntity"]]:
+        """Get all entity groups.
+
+        Returns:
+            dict[str, list[NamedUpstageEntity]]: Entity group names and associated
+                entities.
+        """
         grps: dict[str, list[NamedUpstageEntity]] = {}
         try:
             grps = ENTITY_CONTEXT_VAR.get()
@@ -373,12 +416,20 @@ class NamedUpstageEntity(UpstageBase):
 
 
 class SettableEnv(UpstageBase):
+    """A mixin class for allowing the instance's environment to change."""
+
     def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Passthrough for the mixed classes."""
         self._new_env: MockEnvironment | None = None
         super().__init__(*args, **kwargs)
 
     @property  # type: ignore [override]
     def env(self) -> SimpyEnv | MockEnvironment:
+        """Get the relevant environment.
+
+        Returns:
+            SimpyEnv | MockEnvironment: Real or mocked environment.
+        """
         if self._new_env is not None:
             return self._new_env
         return super().env
@@ -434,7 +485,17 @@ class EnvironmentContext:
         initial_time: float = 0.0,
         random_seed: int | None = None,
         random_gen: Any | None = None,
-    ):
+    ) -> None:
+        """Create an environment context.
+
+        random_seed is ignored if random_gen is given. Otherwise random.Random is
+        used.
+
+        Args:
+            initial_time (float, optional): Time to start the clock at. Defaults to 0.0.
+            random_seed (int | None, optional): Seed for RNG. Defaults to None.
+            random_gen (Any | None, optional): RNG object. Defaults to None.
+        """
         self.env_ctx = ENV_CONTEXT_VAR
         self.actor_ctx = ACTOR_CONTEXT_VAR
         self.entity_ctx = ENTITY_CONTEXT_VAR

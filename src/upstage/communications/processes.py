@@ -2,6 +2,7 @@
 
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
+"""Communications process helper."""
 
 from collections.abc import Callable, Generator
 from typing import Any

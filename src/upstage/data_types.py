@@ -41,7 +41,13 @@ class Location(UpstageBase):
         raise NotImplementedError("Location is intended to be subclassed.")
 
     def _to_tuple(self) -> tuple[float, ...]:
-        """Return a tuple of the location"""
+        """Return a tuple of the location.
+
+        To be implemented in a subclass.
+
+        Returns:
+            tuple[float, ...]: Tuple of numbers describing a location.
+        """
         raise NotImplementedError("Subclass must implement tuple.")
 
     def straight_line_distance(self, other: object) -> float:
@@ -77,7 +83,14 @@ class Location(UpstageBase):
         )
 
     def __eq__(self, other: object) -> bool:
-        """Test for equality with another location"""
+        """Test for equality with another location.
+
+        Args:
+            other (object): The other location object
+
+        Returns:
+            bool: If it is equal.
+        """
         raise NotImplementedError("Subclass must implement a equality comparison")
 
     def __hash__(self) -> int:
@@ -163,7 +176,11 @@ class CartesianLocation(Location):
         return (self.x, self.y, height)
 
     def _to_tuple(self) -> tuple[float, float, float]:
-        """Return a tuple of the location"""
+        """Return a tuple of the location.
+
+        Returns:
+            tuple[float, float, float]: Latitude, longitude, altitude.
+        """
         return self._as_array()
 
     def copy(self) -> "CartesianLocation":
@@ -290,7 +307,8 @@ class GeodeticLocation(Location):
             lat (float): Latitude (North/South)
             lon (float): Longitude (East/West)
             alt (float, optional): Altitude. Defaults to 0.0.
-            in_radians (bool, optional): If the lat/lon are in radians or degrees. Defaults to False.
+            in_radians (bool, optional): If the lat/lon are in radians or degrees.
+                Defaults to False.
 
         Returns:
             GeodeticLocation
@@ -321,7 +339,11 @@ class GeodeticLocation(Location):
         return attrs
 
     def _to_tuple(self) -> tuple[float, float, float]:
-        """Return a tuple of the location"""
+        """Return a tuple of the location.
+
+        Returns:
+            tuple[float, float, float]: Latitude, longitude, altitude.
+        """
         return (self.lat, self.lon, self.alt)
 
     def to_radians(self) -> "GeodeticLocation":

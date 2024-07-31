@@ -69,7 +69,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
 
     """
 
-    def __init_states(self, **states: State) -> None:
+    def __init_states(self, **states: Any) -> None:
         seen = set()
         for state, value in states.items():
             if state in self._state_defs:
@@ -90,7 +90,14 @@ class Actor(SettableEnv, NamedUpstageEntity):
         if "log" in seen:
             raise UpstageError("Do not name a state `log`")
 
-    def __init__(self, *, name: str, debug_log: bool = True, **states: State) -> None:
+    def __init__(self, *, name: str, debug_log: bool = True, **states: Any) -> None:
+        """Create an Actor.
+
+        Args:
+            name (str): The name of the actor.
+            debug_log (bool, optional): Whether to write to debug log. Defaults to True.
+            states (Any): Values for each state as kwargs.
+        """
         self.name = name
         super().__init__()
 
@@ -139,7 +146,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
         cls._state_defs = all_states
 
         nxt = cls.mro()[1]
-        if nxt == object:
+        if nxt is object:
             raise UpstageError(f"Actor has bad inheritance, MRO: {cls.mro()}")
 
         sig = signature(cls.__init__)
@@ -248,6 +255,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
             state (str): State name
             speed (float): The speed to move at
             waypoints (list[LOCATIONS]): Waypoints to move over
+            task (Task): The task that the state is activated during.
         """
         self.activate_state(
             state=state,
@@ -296,7 +304,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
         """Deactivate a specific state.
 
         Args:
-            states (str | Iterable[str]): The names of the states to deactivate.
+            state (str): The name of the state to deactivate.
             task (Task): The task that is deactivating the state.
         """
         self._unlock_state(state=state, task=task)
@@ -328,7 +336,8 @@ class Actor(SettableEnv, NamedUpstageEntity):
 
         Args:
             state_name (str): The name of the state for which to retrieve the data.
-            without_update (bool): Whether or not to update the state to the current sim time. Defaults to True
+            without_update (bool): Whether or not to update the state to the current
+                sim time. Defaults to True
 
         Returns:
             dict[str, Any]: The state data.
@@ -491,7 +500,8 @@ class Actor(SettableEnv, NamedUpstageEntity):
         Args:
             name (str): The name of the knowledge item.
             value (Any): The value to store for the knowledge.
-            overwrite (bool, Optional): Allow the knowledge to be changed if it exits. Defaults to False.
+            overwrite (bool, Optional): Allow the knowledge to be changed if it exits.
+                Defaults to False.
             caller (str, Optional): The name of the object that called the method.
         """
         self._log_caller(f"set_knowledge '{name}={value}'", caller_name=caller)
@@ -642,7 +652,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
         network.loop(actor=self, init_task_name=init_task_name)
 
     def get_running_task(self, network_name: str) -> dict[str, str | Process]:
-        """Return name and process reference of a task on this Actor's task network of the given name.
+        """Return name and process reference of a task on this Actor's task network.
 
         Useful for finding a process to call interrupt() on.
 
@@ -707,7 +717,9 @@ class Actor(SettableEnv, NamedUpstageEntity):
         return network_id in self._task_networks
 
     def suggest_network_name(self, factory: TaskNetworkFactory) -> str:
-        """For creating multiple parallel task networks, this assists in deconflicting names of the networks.
+        """Deconflict names of task networks by suggesting a new name.
+
+        Used for creating multiple parallel task networks.
 
         Args:
             factory (TaskNetworkFactory): The factory from which you will create the network.
@@ -753,7 +765,8 @@ class Actor(SettableEnv, NamedUpstageEntity):
         Args:
             network_name (str): Network name
             task_name_list (list[str]): Tasks to rehearse on the network.
-            knowledge (dict[str, Any], optional): knowledge to give to the cloned actor. Defaults to None.
+            knowledge (dict[str, Any], optional): knowledge to give to the cloned
+                actor. Defaults to None.
             end_task (str, optional): A task to end on once reached.
 
         Returns:
@@ -788,8 +801,11 @@ class Actor(SettableEnv, NamedUpstageEntity):
             ``'#'`` indicates the number of clones of the actor.
 
         Args:
-            new_env (Optional[MockEnvironment], optional): Environment for cloning. Defaults to None.
-            knowledge (Optional[dict[str, Any]], optional): Knowledge for the clone. Defaults to None.
+            new_env (Optional[MockEnvironment], optional): Environment for cloning.
+                Defaults to None.
+            knowledge (Optional[dict[str, Any]], optional): Knowledge for the clone.
+                Defaults to None.
+            new_states (Any): New states to add to the actor when cloning.
 
         Returns:
             Actor: The cloned actor
@@ -912,7 +928,8 @@ class Actor(SettableEnv, NamedUpstageEntity):
 
         Args:
             state_class (State): The class of state to search for
-            attr_matches (Optional[dict[str, Any]], optional): Attributes and values to match. Defaults to None.
+            attr_matches (Optional[dict[str, Any]], optional): Attributes and values
+                to match. Defaults to None.
 
         Returns:
             str | None: The name of the state (for getattr)
@@ -945,7 +962,8 @@ class Actor(SettableEnv, NamedUpstageEntity):
     ) -> Event:
         """Create an event and store it in knowledge.
 
-        Useful for creating simple hold points in Tasks that can be succeeded by other processes.
+        Useful for creating simple hold points in Tasks that can be succeeded by
+        other processes.
 
         Example:
             >>> def task(self, actor):
@@ -959,7 +977,8 @@ class Actor(SettableEnv, NamedUpstageEntity):
 
         Args:
             name (str): Name of the knowledge slot to store the event in.
-            rehearsal_time_to_complete (float, optional): The event's expected time to complete. Defaults to 0.0.
+            rehearsal_time_to_complete (float, optional): The event's expected
+                time to complete. Defaults to 0.0.
 
         Returns:
             Event: The event to yield on
@@ -993,7 +1012,8 @@ class Actor(SettableEnv, NamedUpstageEntity):
     ) -> list[GeodeticLocation] | list[CartesianLocation]:
         """Convenience method for interacting with LocationChangingStates.
 
-        Primary use case is when restarting a Task that has a motion element to allow updating waypoint knowledge easily.
+        Primary use case is when restarting a Task that has a motion element to
+        allow updating waypoint knowledge easily.
 
         Args:
             location_state (str): The name of the <LocationChangingState>
@@ -1007,6 +1027,11 @@ class Actor(SettableEnv, NamedUpstageEntity):
         return wypts
 
     def get_nucleus(self) -> "TaskNetworkNucleus":
+        """Return the actor's nucleus.
+
+        Returns:
+            TaskNetworkNucleus: The nucleus on the actor.
+        """
         if self._state_listener is None:
             raise SimulationError("Expected a nucleus, but none found.")
         return self._state_listener

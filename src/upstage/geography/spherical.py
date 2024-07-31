@@ -2,6 +2,7 @@
 
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
+"""Geographical math using spherical coordinates for Earth."""
 
 from math import acos, asin, atan, atan2, cos, degrees, radians, sin, sqrt
 
@@ -14,7 +15,7 @@ LAT_LON = tuple[float, float]
 
 
 class Spherical(SphericalConversions):
-    """A class containing methods for doing geographical math using spherical coordinates for Earth."""
+    """Geographical math using spherical coordinates for Earth."""
 
     EARTH_RADIUS = spherical_radius  # m
 
@@ -40,7 +41,7 @@ class Spherical(SphericalConversions):
         origin: LAT_LON,
         destination: LAT_LON,
     ) -> float:
-        """Calculate the forward bearing from origin to destination
+        """Calculate the forward bearing from origin to destination.
 
         Args:
             origin (LAT_LON): Start lat/lon
@@ -93,8 +94,7 @@ class Spherical(SphericalConversions):
         destination: LAT_LON,
         f: float,
     ) -> LAT_LON:
-        """Find the location along a great circle path given a fraction of the
-        distance traveled.
+        """Find the location fractionally along a great circle path.
 
         Args:
             origin (LAT_LON): Lat / Lon (degrees)
@@ -129,7 +129,7 @@ class Spherical(SphericalConversions):
 
     @classmethod
     def _cart2lla(cls, cart: POSITION, R: float = 1.0) -> POSITION:
-        """Convert XYZ to lat/lon
+        """Convert XYZ to lat/lon.
 
         Args:
             cart (POSITION): Cartesian (XYZ) point.
