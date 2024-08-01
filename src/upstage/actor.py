@@ -9,7 +9,7 @@ from collections import defaultdict
 from collections.abc import Callable, Iterable
 from copy import copy, deepcopy
 from inspect import Parameter, signature
-from typing import TYPE_CHECKING, Any, cast, Self
+from typing import TYPE_CHECKING, Any, Self, cast
 
 from simpy import Process
 
@@ -888,10 +888,10 @@ class Actor(SettableEnv, NamedUpstageEntity):
         elif msg is None:
             return self._debug_log
         return None
-    
+
     def get_log(self) -> list[str]:
         """Get the debug log.
-        
+
         Returns:
             list[str]: List of log messages.
         """

@@ -30,6 +30,8 @@ __all__ = ("DecisionTask", "Task", "process", "TerminalTask", "TASK_TYPE", "Inte
 
 
 class InterruptStates(IntFlag):
+    """Class that describes how to behave after an interrupt."""
+
     END = 0
     IGNORE = 1
     RESTART = 2
@@ -89,6 +91,7 @@ def process(
 
 EVT = TypeVar("EVT", bound=BaseEvent)
 REH_ACTOR = TypeVar("REH_ACTOR", bound="Actor")
+
 
 class Task(SettableEnv):
     """A Task is an action that can be performed by an Actor."""

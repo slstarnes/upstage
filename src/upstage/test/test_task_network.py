@@ -20,8 +20,8 @@ from upstage.api import (
     ResourceHold,
     State,
     Task,
-    TaskNetworkFactory,
     TaskLinks,
+    TaskNetworkFactory,
     Wait,
 )
 from upstage.data_types import CartesianLocation, Location

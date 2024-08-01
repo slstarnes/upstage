@@ -70,7 +70,6 @@ def test_actor_subclass(
 
         assert instance.a_function(123) == (instance, 123)  # type: ignore [attr-defined]
 
-
         # test the state definitions
         assert hasattr(instance, "_state_defs")
         assert len(instance._state_defs) == 2
@@ -84,7 +83,7 @@ def test_actor_subclass(
     # Test that copying a state name will cause a failure.
     with pytest.raises(ValueError):
 
-        class _(DoubleSubclass): # type: ignore [valid-type, misc]
+        class _(DoubleSubclass):  # type: ignore [valid-type, misc]
             state_three = UP.State[float](default=1.2)
 
 
@@ -113,7 +112,7 @@ def test_multiple_inheritance(
             state_three=3,
             state_four=4,
         )
-        assert instance.b_function(123) == (instance, 123) # type: ignore [attr-defined]
+        assert instance.b_function(123) == (instance, 123)  # type: ignore [attr-defined]
 
         # test the state definitions
         assert hasattr(instance, "_state_defs")
@@ -224,7 +223,7 @@ def test_actor_copy_with_knowledge() -> None:
         actor = SomeActor(name="some actor", some_state=True)
         d_values = {"A": 1, "B": 2}
         float_value = 1234.567
-        
+
         actor.set_knowledge("new", d_values)
         actor.set_knowledge("other", float_value)
 

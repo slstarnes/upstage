@@ -140,10 +140,10 @@ class CommsManager(UpstageBase):
 
         If it is, return the message contents only. Otherwise return the message.
 
-        Args
+        Args:
             message (str | Message): The message to clean
 
-        Returns
+        Returns:
             MessageContent: The message as a message content object.
         """
         if isinstance(message, Message):

@@ -6,8 +6,8 @@
 import pytest
 import simpy as SIM
 from simpy.resources import base
-from simpy.resources.store import StoreGet, StorePut
 from simpy.resources.container import ContainerGet, ContainerPut
+from simpy.resources.store import StoreGet, StorePut
 
 from upstage.api import Actor, EnvironmentContext, SimulationError, State, Task
 from upstage.events import (
@@ -57,16 +57,16 @@ def test_wait_event() -> None:
         assert timeout_2[0] <= ret._delay <= timeout_2[1], "Incorrect timeout time"
 
         with pytest.raises(SimulationError):
-            Wait(timeout={1, 2}) # type: ignore [arg-type]
+            Wait(timeout={1, 2})  # type: ignore [arg-type]
 
         with pytest.raises(SimulationError):
-            Wait(timeout="1") # type: ignore [arg-type]
+            Wait(timeout="1")  # type: ignore [arg-type]
 
         with pytest.raises(SimulationError):
-            Wait(timeout=[1]) # type: ignore [arg-type]
+            Wait(timeout=[1])  # type: ignore [arg-type]
 
         with pytest.raises(SimulationError):
-            Wait(timeout=[1, 2, 3]) # type: ignore [arg-type]
+            Wait(timeout=[1, 2, 3])  # type: ignore [arg-type]
 
 
 def test_base_request_event() -> None:
@@ -261,7 +261,7 @@ def test_multi_event() -> None:
         with pytest.warns(UserWarning):
             event1 = Wait(1.0)
             event3 = SIM.Timeout(env, 1.5)
-            All(event1, event3) # type: ignore [arg-type]
+            All(event1, event3)  # type: ignore [arg-type]
 
 
 def test_and_event() -> None:
@@ -286,6 +286,7 @@ def test_or_event() -> None:
         data = {
             "time": 0.0,
         }
+
         def run(env: SIM.Environment) -> SIMPY_GEN:
             event1 = Wait(1.0)
             event2 = Wait(1.5)
@@ -302,11 +303,11 @@ def test_or_event() -> None:
 
 def test_composite() -> None:
     with EnvironmentContext() as env:
-        
         data = {
             "time": 0.0,
             "result": 0,
         }
+
         def run(env: SIM.Environment) -> SIMPY_GEN:
             event1 = Wait(1.0)
             event2 = Wait(1.5)
@@ -359,8 +360,7 @@ def test_rehearse_process_in_multi() -> None:
         def a_process() -> SIMPY_GEN:
             yield env.timeout(2)
 
-        class Thing(Actor):
-            ...
+        class Thing(Actor): ...
 
         class TheTask(Task):
             def task(self, *, actor: Thing) -> TASK_GEN:

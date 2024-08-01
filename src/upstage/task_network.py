@@ -5,9 +5,10 @@
 
 """The task network class, and factory classes."""
 
-from collections.abc import Generator
-from typing import TYPE_CHECKING, Any, Sequence, TypeVar
+from collections.abc import Generator, Sequence
 from dataclasses import dataclass
+from typing import TYPE_CHECKING, Any, TypeVar
+
 if TYPE_CHECKING:
     from upstage.actor import Actor
 
@@ -17,6 +18,7 @@ from upstage.base import SimulationError
 from upstage.task import Task, TerminalTask, process
 
 REH_ACTOR = TypeVar("REH_ACTOR", bound="Actor")
+
 
 @dataclass
 class TaskLinks:

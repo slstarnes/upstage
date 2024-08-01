@@ -4,8 +4,10 @@
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 """Fixtures for testing."""
 
-import pytest
 from typing import Any
+
+import pytest
+
 import upstage.api as UP
 
 

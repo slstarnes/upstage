@@ -9,8 +9,8 @@ from typing import Any
 import simpy as SIM
 
 import upstage.api as UP
-from upstage.type_help import SIMPY_GEN, TASK_GEN
 from upstage.task import InterruptStates
+from upstage.type_help import SIMPY_GEN, TASK_GEN
 
 
 class Cashier(UP.Actor):
@@ -215,13 +215,13 @@ task_classes = {
 }
 
 task_links = {
-    "GoToWork": UP.TaskLinks(default="TalkToBoss",allowed=["TalkToBoss"]),
-    "TalkToBoss": UP.TaskLinks(default="WaitInLane",allowed=["WaitInLane"]),
-    "WaitInLane": UP.TaskLinks(default="DoCheckout",allowed=["DoCheckout", "Break"]),
-    "DoCheckout": UP.TaskLinks(default="WaitInLane",allowed=["WaitInLane", "Break"]),
-    "Break": UP.TaskLinks(default="ShortBreak",allowed=["ShortBreak", "NightBreak"]),
-    "ShortBreak": UP.TaskLinks(default="WaitInLane",allowed=["WaitInLane"]),
-    "NightBreak": UP.TaskLinks(default="GoToWork",allowed=["GoToWork"]),
+    "GoToWork": UP.TaskLinks(default="TalkToBoss", allowed=["TalkToBoss"]),
+    "TalkToBoss": UP.TaskLinks(default="WaitInLane", allowed=["WaitInLane"]),
+    "WaitInLane": UP.TaskLinks(default="DoCheckout", allowed=["DoCheckout", "Break"]),
+    "DoCheckout": UP.TaskLinks(default="WaitInLane", allowed=["WaitInLane", "Break"]),
+    "Break": UP.TaskLinks(default="ShortBreak", allowed=["ShortBreak", "NightBreak"]),
+    "ShortBreak": UP.TaskLinks(default="WaitInLane", allowed=["WaitInLane"]),
+    "NightBreak": UP.TaskLinks(default="GoToWork", allowed=["GoToWork"]),
     "Restock": UP.TaskLinks(default="WaitInLane", allowed=["WaitInLane", "Break"]),
 }
 

@@ -7,11 +7,11 @@ import pytest
 import simpy as SIM
 
 import upstage.api as UP
+from upstage.type_help import SIMPY_GEN
 
 from .flyer import Flyer, flyer_refuel_factory, mission_plan_net
 from .mothership import Mothership, crew_factory, give_fuel_factory
 from .mover import fly_end_factory
-from upstage.type_help import SIMPY_GEN
 
 
 def build_sim() -> tuple[float, Mothership]:

@@ -7,7 +7,7 @@
 
 from collections.abc import Callable
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, TypeVar, Generic, cast
+from typing import TYPE_CHECKING, Any, Generic, TypeVar, cast
 
 from simpy import Container, Store
 
@@ -31,6 +31,7 @@ __all__ = (
 CALLBACK_FUNC = Callable[["Actor", Any], None]
 ST = TypeVar("ST")
 
+
 class State(Generic[ST]):
     """The particular condition that something is in at a specific time.
 
@@ -41,7 +42,7 @@ class State(Generic[ST]):
     Note:
         The classes that use this descriptor must contain an ``env`` attribute.
 
-    States are aware 
+    States are aware
 
     """
 

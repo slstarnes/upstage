@@ -8,8 +8,8 @@ import simpy as SIM
 import upstage.api as UP
 from upstage.type_help import TASK_GEN
 
-from .mover import Mover
 from .mothership import Mothership
+from .mover import Mover
 
 
 class Flyer(Mover):

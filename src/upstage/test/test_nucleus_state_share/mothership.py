@@ -3,11 +3,12 @@
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
+from typing import Any
+
 import simpy as SIM
 
 import upstage.api as UP
 from upstage.type_help import TASK_GEN
-from typing import Any
 
 from .mover import Mover
 

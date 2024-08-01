@@ -3,8 +3,10 @@
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
-from simpy import Store
 from typing import Any
+
+from simpy import Store
+
 import upstage.api as UP
 from upstage.api import (
     Actor,
@@ -13,9 +15,9 @@ from upstage.api import (
     Get,
     Message,
     MessageContent,
+    ResourceState,
     State,
     Task,
-    ResourceState,
     Wait,
 )
 from upstage.communications.processes import generate_comms_wait
@@ -36,6 +38,7 @@ class ReceiveTask(Task):
 class SendTask(Task):
     comms: CommsManager
     receiver: ReceiveSend
+
     def task(self, *, actor: ReceiveSend) -> TASK_GEN:
         yield Wait(1.0)
         content = MessageContent(data=dict(action="move", thought="good"))

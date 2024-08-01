@@ -12,8 +12,9 @@ Note:
 """
 
 import inspect
+from collections.abc import Sequence
 from sys import _getframe as get_frame  # pylint: disable=protected-access
-from typing import Any, TypeVar, Sequence
+from typing import Any, TypeVar
 
 from .data_types import Location
 

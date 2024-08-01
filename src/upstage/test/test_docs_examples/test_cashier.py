@@ -160,13 +160,13 @@ task_classes = {
 }
 
 task_links = {
-    "GoToWork": UP.TaskLinks(default="TalkToBoss",allowed=["TalkToBoss"]),
-    "TalkToBoss": UP.TaskLinks(default="WaitInLane",allowed=["WaitInLane"]),
-    "WaitInLane": UP.TaskLinks(default="DoCheckout",allowed=["DoCheckout", "Break"]),
-    "DoCheckout": UP.TaskLinks(default="WaitInLane",allowed=["WaitInLane"]),
-    "Break": UP.TaskLinks(default="ShortBreak",allowed=["ShortBreak", "NightBreak"]),
-    "ShortBreak": UP.TaskLinks(default="WaitInLane",allowed=["WaitInLane"]),
-    "NightBreak": UP.TaskLinks(default="GoToWork",allowed=["GoToWork"]),
+    "GoToWork": UP.TaskLinks(default="TalkToBoss", allowed=["TalkToBoss"]),
+    "TalkToBoss": UP.TaskLinks(default="WaitInLane", allowed=["WaitInLane"]),
+    "WaitInLane": UP.TaskLinks(default="DoCheckout", allowed=["DoCheckout", "Break"]),
+    "DoCheckout": UP.TaskLinks(default="WaitInLane", allowed=["WaitInLane"]),
+    "Break": UP.TaskLinks(default="ShortBreak", allowed=["ShortBreak", "NightBreak"]),
+    "ShortBreak": UP.TaskLinks(default="WaitInLane", allowed=["WaitInLane"]),
+    "NightBreak": UP.TaskLinks(default="GoToWork", allowed=["GoToWork"]),
 }
 
 
