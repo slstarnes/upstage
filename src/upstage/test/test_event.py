@@ -6,6 +6,8 @@
 import pytest
 import simpy as SIM
 from simpy.resources import base
+from simpy.resources.store import StoreGet, StorePut
+from simpy.resources.container import ContainerGet, ContainerPut
 
 from upstage.api import Actor, EnvironmentContext, SimulationError, State, Task
 from upstage.events import (
@@ -19,6 +21,7 @@ from upstage.events import (
     ResourceHold,
     Wait,
 )
+from upstage.type_help import SIMPY_GEN, TASK_GEN
 
 
 def test_base_event() -> None:
@@ -47,29 +50,29 @@ def test_wait_event() -> None:
         assert ret._delay == timeout, "Incorrect timeout time"
 
     with EnvironmentContext(initial_time=init_time) as env:
-        timeout = [1, 3]
-        wait = Wait.from_random_uniform(*timeout)
+        timeout_2 = [1, 3]
+        wait = Wait.from_random_uniform(*timeout_2)
         ret = wait.as_event()
         assert isinstance(ret, SIM.Timeout), "Wait doesn't return a simpy timeout"
-        assert timeout[0] <= ret._delay <= timeout[1], "Incorrect timeout time"
+        assert timeout_2[0] <= ret._delay <= timeout_2[1], "Incorrect timeout time"
 
         with pytest.raises(SimulationError):
-            Wait(timeout={1, 2})
+            Wait(timeout={1, 2}) # type: ignore [arg-type]
 
         with pytest.raises(SimulationError):
-            Wait(timeout="1")
+            Wait(timeout="1") # type: ignore [arg-type]
 
         with pytest.raises(SimulationError):
-            Wait(timeout=[1])
+            Wait(timeout=[1]) # type: ignore [arg-type]
 
         with pytest.raises(SimulationError):
-            Wait(timeout=[1, 2, 3])
+            Wait(timeout=[1, 2, 3]) # type: ignore [arg-type]
 
 
 def test_base_request_event() -> None:
     init_time = 1.23
     with EnvironmentContext(initial_time=init_time) as env:
-        base = BaseRequestEvent(env)
+        base = BaseRequestEvent()
         assert base.created_at == init_time, "Problem in environment time being stored in event"
         assert base.env is env, "Problem in environment being stored in event"
 
@@ -88,6 +91,7 @@ def test_put_event_with_stores() -> None:
             returned_object.__class__, base.Put
         ), "Event returned is not simpy put event"
         env.run()
+        assert isinstance(returned_object, StorePut)
         assert returned_object.item is put_object, "Wrong object put"
         assert put_object in store.items
 
@@ -115,6 +119,7 @@ def test_put_event_with_containers() -> None:
             returned_object.__class__, base.Put
         ), "Event returned is not simpy put event"
         env.run()
+        assert isinstance(returned_object, ContainerPut)
         assert returned_object.amount == put_arg, "Wrong amount put"
         assert container.level == put_arg
 
@@ -145,6 +150,7 @@ def test_get_event_with_stores() -> None:
         ), "Event returned is not simpy put event"
 
         env.run()
+        assert isinstance(event._request_event, StoreGet)
         item = event._request_event.value
         assert item is put_object, "Returned item is not the original item"
         item2 = event.get_value()
@@ -174,6 +180,7 @@ def test_get_event_with_containers() -> None:
         ), "Event returned is not simpy put event"
 
         env.run()
+        assert isinstance(event._request_event, ContainerGet)
         amount = event._request_event.amount
         assert amount == get_arg, "Returned item is not the original item"
         with pytest.raises(
@@ -211,11 +218,13 @@ def test_resource_events() -> None:
 
         # TODO: A better name might be needed, since this request hasn't succeeded yet
         assert new_request._stage == "release", "Request object in wrong state"
+        assert new_request._request is not None
         assert not new_request._request.processed, "Request went through when it shouldn't"
 
         # put the old one back
         request_object.as_event()
         env.run()
+        assert new_request._request is not None
         assert new_request._request.processed, "Follow-on request didn't go through"
 
         newest_request = ResourceHold(a_resource)
@@ -225,6 +234,7 @@ def test_resource_events() -> None:
 
         # cancel it
         assert newest_request._stage == "release", "Request object in wrong state"
+        assert newest_request._request is not None
         assert not newest_request._request.processed, "Request went through when it shouldn't"
 
         assert (
@@ -250,23 +260,22 @@ def test_multi_event() -> None:
     with EnvironmentContext() as env:
         with pytest.warns(UserWarning):
             event1 = Wait(1.0)
-            event2 = SIM.Timeout(env, 1.5)
-            All(event1, event2)
+            event3 = SIM.Timeout(env, 1.5)
+            All(event1, event3) # type: ignore [arg-type]
 
 
 def test_and_event() -> None:
     with EnvironmentContext() as env:
 
-        def run(env, data):
+        def run(env: SIM.Environment, data: dict[str, float]) -> SIMPY_GEN:
             event1 = Wait(1.0)
             event2 = Wait(1.5)
 
             event = All(event1, event2)
             yield event.as_event()
             data["time"] = env.now
-            data["events"] = [event1, event2]
 
-        data = {}
+        data: dict[str, float] = {}
         env.process(run(env, data))
         env.run()
         assert data["time"] == 1.5
@@ -274,18 +283,18 @@ def test_and_event() -> None:
 
 def test_or_event() -> None:
     with EnvironmentContext() as env:
-
-        def run(env, data):
+        data = {
+            "time": 0.0,
+        }
+        def run(env: SIM.Environment) -> SIMPY_GEN:
             event1 = Wait(1.0)
             event2 = Wait(1.5)
 
             event = Any(event1, event2)
             yield event.as_event()
             data["time"] = env.now
-            data["events"] = [event1, event2]
 
-        data = {}
-        env.process(run(env, data))
+        env.process(run(env))
         env.run()
         # SimPy still runs the simulation long enough to finish the timeout
         assert data["time"] == 1.0
@@ -293,8 +302,12 @@ def test_or_event() -> None:
 
 def test_composite() -> None:
     with EnvironmentContext() as env:
-
-        def run(env, data):
+        
+        data = {
+            "time": 0.0,
+            "result": 0,
+        }
+        def run(env: SIM.Environment) -> SIMPY_GEN:
             event1 = Wait(1.0)
             event2 = Wait(1.5)
 
@@ -305,27 +318,26 @@ def test_composite() -> None:
             event_b = All(event3, event4, event_a)
             result = yield event_b.as_event()
             data["time"] = env.now
-            data["result"] = result
+            data["result"] = len(result.events)
 
-        data = {}
-        env.process(run(env, data))
+        env.process(run(env))
         env.run()
         assert data["time"] == 2.1
-        assert len(data["result"].events) == 4
+        assert data["result"] == 4
 
 
 def test_process_in_multi() -> None:
     with EnvironmentContext() as env:
 
-        def a_process():
+        def a_process() -> SIMPY_GEN:
             yield env.timeout(2)
 
         class Thing(Actor):
-            result = State()
-            events = State()
+            result = State[dict]()
+            events = State[list]()
 
         class TheTask(Task):
-            def task(self, *, actor):
+            def task(self, *, actor: Thing) -> TASK_GEN:
                 wait = Wait(3.0)
                 proc = env.process(a_process())
                 res = yield Any(wait, proc)
@@ -344,22 +356,19 @@ def test_process_in_multi() -> None:
 def test_rehearse_process_in_multi() -> None:
     with EnvironmentContext() as env:
 
-        def a_process():
+        def a_process() -> SIMPY_GEN:
             yield env.timeout(2)
 
         class Thing(Actor):
-            result = State()
-            events = State()
+            ...
 
         class TheTask(Task):
-            def task(self, *, actor):
+            def task(self, *, actor: Thing) -> TASK_GEN:
                 wait = Wait(3.0)
                 proc = env.process(a_process())
-                res = yield Any(wait, proc)
-                actor.events = [wait, proc]
-                actor.result = res
+                yield Any(wait, proc)
 
-        t = Thing(name="Thing", result=None, events=None)
+        t = Thing(name="Thing")
         task = TheTask()
         with pytest.raises(SimulationError, match="All events in a MultiEvent"):
             with pytest.warns(UserWarning):
@@ -367,6 +376,36 @@ def test_rehearse_process_in_multi() -> None:
 
 
 # # TODO: Test how to retrieve event items
+def run_one(env: SIM.Environment, event: Event) -> SIMPY_GEN:
+    yield env.timeout(1.0)
+    event.succeed(data="here")
+
+
+def run_two(env: SIM.Environment, event: Event, data: dict[str, float]) -> SIMPY_GEN:
+    yield event._event
+    data["time_two"] = env.now
+
+
+def run_three(env: SIM.Environment, event: Event, data: dict[str, float]) -> SIMPY_GEN:
+    yield event._event
+    data["time_three"] = env.now
+
+
+def run_four(env: SIM.Environment, event: Event) -> SIMPY_GEN:
+    yield env.timeout(1.1)
+    event.succeed()
+
+
+def run_four_alt(env: SIM.Environment, event: Event) -> SIMPY_GEN:
+    yield env.timeout(1.1)
+    event.succeed()
+
+
+def run_five(env: SIM.Environment, event: Event, data: dict[str, float]) -> SIMPY_GEN:
+    # Timeout until after the event suceeded, but before its reset
+    yield env.timeout(1.05)
+    yield event.as_event()
+    data["time_five"] = env.now
 
 
 def test_basic_usage() -> None:
@@ -377,19 +416,11 @@ def test_basic_usage() -> None:
         assert event._event is event.as_event()
         assert event.is_complete() is False
 
-        def run_one(env, event):
-            yield env.timeout(1.0)
-            event.succeed(data="here")
-
-        def run_two(env, event, data):
-            yield event._event
-            data["time"] = env.now
-
         env.process(run_one(env, event))
-        data = {}
+        data: dict[str, float] = {}
         env.process(run_two(env, event, data))
         env.run()
-        assert data["time"] == 1.0
+        assert data["time_two"] == 1.0
         assert event.is_complete()
         payload = event.get_payload()
         assert payload == {"data": "here"}
@@ -405,57 +436,29 @@ def test_basic_usage() -> None:
 
 
 def test_conflicts() -> None:
+    data: dict[str, float] = {}
     with EnvironmentContext() as env:
         event = Event()
-
-        def run_one(env, event):
-            yield env.timeout(1.0)
-            event.succeed()
-
-        def run_two(env, event, data):
-            yield event._event
-            data["time_two"] = env.now
-
-        def run_three(env, event, data):
-            yield event._event
-            data["time_three"] = env.now
-
-        def run_four(env, event):
-            yield env.timeout(1.1)
-            event.succeed()
-
         env.process(run_one(env, event))
-        data = {}
         env.process(run_two(env, event, data))
         env.process(run_three(env, event, data))
         env.run()
         assert data["time_two"] == data["time_three"]
 
+    data: dict[str, float] = {}
     with EnvironmentContext() as env:
         with pytest.raises(SimulationError):
             event = Event()
             env.process(run_one(env, event))
-            data = {}
             env.process(run_two(env, event, data))
             env.process(run_three(env, event, data))
             env.process(run_four(env, event))
             env.run()
 
+    data: dict[str, float] = {}
     with EnvironmentContext() as env:
-
-        def run_four_alt(env, event):
-            yield env.timeout(1.1)
-            event.succeed()
-
-        def run_five(env, event, data):
-            # Timeout until after the event suceeded, but before its reset
-            yield env.timeout(1.05)
-            yield event.as_event()
-            data["time_five"] = env.now
-
         event = Event()
         env.process(run_one(env, event))
-        data = {}
         env.process(run_two(env, event, data))
         env.process(run_three(env, event, data))
         env.process(run_four_alt(env, event))

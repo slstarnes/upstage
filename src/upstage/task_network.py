@@ -6,7 +6,7 @@
 """The task network class, and factory classes."""
 
 from collections.abc import Generator
-from typing import TYPE_CHECKING, Any, Sequence
+from typing import TYPE_CHECKING, Any, Sequence, TypeVar
 from dataclasses import dataclass
 if TYPE_CHECKING:
     from upstage.actor import Actor
@@ -16,6 +16,7 @@ from simpy import Process
 from upstage.base import SimulationError
 from upstage.task import Task, TerminalTask, process
 
+REH_ACTOR = TypeVar("REH_ACTOR", bound="Actor")
 
 @dataclass
 class TaskLinks:
@@ -131,11 +132,11 @@ class TaskNetwork:
     def rehearse_network(
         self,
         *,
-        actor: "Actor",
+        actor: REH_ACTOR,
         task_name_list: list[str],
         knowledge: dict[str, Any] | None = None,
         end_task: str | None = None,
-    ) -> "Actor":
+    ) -> REH_ACTOR:
         """Rehearse a path through the task network.
 
         Args:

@@ -7,7 +7,7 @@ import pytest
 
 import upstage.api as UP
 from upstage.utils import waypoint_time_and_dist
-from upstage.type_help import SIMPY_GEN, TASK_GEN
+from upstage.type_help import TASK_GEN
 
 
 class Plane(UP.Actor):

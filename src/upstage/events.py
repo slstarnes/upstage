@@ -328,7 +328,7 @@ class MultiEvent(BaseEvent):
         For an example, refer to :class:`~Any` and :class:`~All`.
     """
 
-    def __init__(self, *events: BaseEvent) -> None:
+    def __init__(self, *events: BaseEvent | SIM.Process) -> None:
         """Create a multi-event based on a list of events.
 
         Args:
@@ -373,7 +373,7 @@ class MultiEvent(BaseEvent):
         """
         raise NotImplementedError("Implement in subclass")
 
-    def _make_event(self, event: BaseEvent) -> SIM.Event:
+    def _make_event(self, event: BaseEvent | SIM.Process) -> SIM.Event:
         # handle a process in the MultiEvent for non-rehearsal uses
         if isinstance(event, SIM.Process):
             return event
@@ -397,7 +397,8 @@ class MultiEvent(BaseEvent):
         self._simpy_event.defused = True
         self._simpy_event.fail(Exception("defused"))
         for event in self.events:
-            event.cancel()
+            if isinstance(event, BaseEvent):
+                event.cancel()
 
     def calculate_time_to_complete(
         self,
@@ -408,7 +409,11 @@ class MultiEvent(BaseEvent):
             return_sub_events (bool, Optional): Whether to return all times or not.
                 Defaults to False.
         """
-        event_times = {event: event.calculate_time_to_complete() for event in self.events}
+        event_times = {
+            event: event.calculate_time_to_complete()
+            for event in self.events
+            if isinstance(event, BaseEvent)
+        }
 
         time_to_complete = self.aggregation_function(list(event_times.values()))
 
@@ -420,7 +425,11 @@ class MultiEvent(BaseEvent):
         Returns:
             tuple[float, dict[BaseEvent, float]]: Aggregate and individual times.
         """
-        event_times = {event: event.calculate_time_to_complete() for event in self.events}
+        event_times = {
+            event: event.calculate_time_to_complete()
+            for event in self.events
+            if isinstance(event, BaseEvent)
+        }
         time_to_complete = self.aggregation_function(list(event_times.values()))
 
         return time_to_complete, event_times

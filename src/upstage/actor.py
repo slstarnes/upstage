@@ -775,7 +775,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
         """
         knowledge = {} if knowledge is None else knowledge
         net = self._task_networks[network_name]
-        understudy: Actor = net.rehearse_network(
+        understudy = net.rehearse_network(
             actor=self,
             task_name_list=task_name_list,
             knowledge=knowledge,

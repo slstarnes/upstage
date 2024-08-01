@@ -88,7 +88,7 @@ def process(
 
 
 EVT = TypeVar("EVT", bound=BaseEvent)
-
+REH_ACTOR = TypeVar("REH_ACTOR", bound="Actor")
 
 class Task(SettableEnv):
     """A Task is an action that can be performed by an Actor."""
@@ -274,7 +274,7 @@ class Task(SettableEnv):
         """
         return actor.get_knowledge(name, must_exist)
 
-    def _clone_actor(self, actor: "Actor", knowledge: dict[str, Any] | None) -> "Actor":
+    def _clone_actor(self, actor: REH_ACTOR, knowledge: dict[str, Any] | None) -> REH_ACTOR:
         """Create a clone of the actor.
 
         Args:
@@ -295,11 +295,11 @@ class Task(SettableEnv):
     def rehearse(
         self,
         *,
-        actor: "Actor",
+        actor: REH_ACTOR,
         knowledge: dict[str, Any] | None = None,
         cloned_actor: bool = False,
         **kwargs: Any,
-    ) -> "Actor":
+    ) -> REH_ACTOR:
         """Rehearse the task to evaluate its feasibility.
 
         Args:
@@ -485,11 +485,11 @@ class DecisionTask(Task):
     def rehearse(
         self,
         *,
-        actor: "Actor",
+        actor: REH_ACTOR,
         knowledge: dict[str, Any] | None = None,
         cloned_actor: bool = False,
         **kwargs: Any,
-    ) -> "Actor":
+    ) -> REH_ACTOR:
         """Rehearse the task to evaluate its feasibility.
 
         Args:
