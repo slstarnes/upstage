@@ -107,7 +107,7 @@ def test_active_geodetic_changing() -> None:
         ]
         tester.activate_state(
             state="loc_state",
-            task="dummy_task",
+            task="dummy_task",  # type: ignore [arg-type]
             speed=1.0,
             waypoints=waypoints,
         )

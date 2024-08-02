@@ -178,9 +178,9 @@ def test_running_as_rehearsal() -> None:
         assert result.dummy == 3, msg
 
         msg = "Actor returned by task test needs to keep recorded data"
-        assert len(result._dummy_history) == 3, msg
-        assert result._dummy_history[0] == (0, 0), msg
-        assert result._dummy_history[2] == (sum(times), sum(times)), msg
+        assert len(result._state_histories["dummy"]) == 3, msg
+        assert result._state_histories["dummy"][0] == (0, 0), msg
+        assert result._state_histories["dummy"][2] == (sum(times), sum(times)), msg
 
         msg = "No linkage between original actor and dummy actor"
         assert actor.dummy == 0, msg

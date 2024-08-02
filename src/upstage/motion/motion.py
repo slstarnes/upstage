@@ -29,6 +29,7 @@ VALID = [
 ]
 
 LOC_TYPES = CartesianLocation | GeodeticLocation
+LOC_LIST = list[CartesianLocation] | list[GeodeticLocation]
 
 
 class SensorType(Protocol):
@@ -82,7 +83,7 @@ class SensorMotionManager(UpstageBase):
         """
         super().__init__()
         self._sensors: dict[SensorType, tuple[str, str]] = {}
-        self._movers: dict[Actor, tuple[float, list[LOC_TYPES], float]] = {}
+        self._movers: dict[Actor, tuple[float, LOC_LIST, float]] = {}
         self._events: dict[Actor, list[tuple[SensorType, Process]]] = {}
         self._in_view: dict[Actor, set[SensorType]] = {}
         self._debug: bool = debug
@@ -415,13 +416,13 @@ class SensorMotionManager(UpstageBase):
                 for pair in inter_pairs:
                     self._schedule(m, s, pair)
 
-    def _start_mover(self, mover: Actor, speed: float, waypoints: list[LOC_TYPES]) -> None:
+    def _start_mover(self, mover: Actor, speed: float, waypoints: LOC_LIST) -> None:
         """Start a mover's motion and find intersections with sensors.
 
         Args:
             mover (Actor): The mover
             speed (float): Speed (in model units)
-            waypoints (list[LOC_TYPES]): Waypoint of travel.
+            waypoints (LOC_LIST): Waypoint of travel.
         """
         detect_state = self._test_detect(mover)
         if detect_state is None:

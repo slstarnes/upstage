@@ -578,8 +578,8 @@ def test_rehearsing_network() -> None:
 
         assert new_actor.env.now > 2.0, "Cloned actor environment at the wrong time"
 
-        task_name = actor.get_running_task("plane_net")["name"]
-        assert task_name == "GroundWait"
+        task = actor.get_running_task("plane_net")
+        assert task is not None and task.name == "GroundWait"
 
 
 def test_rehearsing_from_actor() -> None:

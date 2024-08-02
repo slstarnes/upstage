@@ -5,7 +5,7 @@
 
 """The task network class, and factory classes."""
 
-from collections.abc import Generator, Sequence
+from collections.abc import Generator, Mapping, Sequence
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -34,8 +34,8 @@ class TaskNetwork:
     def __init__(
         self,
         name: str,
-        task_classes: dict[str, type[Task]],
-        task_links: dict[str, TaskLinks],
+        task_classes: Mapping[str, type[Task]],
+        task_links: Mapping[str, TaskLinks],
     ) -> None:
         """Create a task network.
 
@@ -45,8 +45,8 @@ class TaskNetwork:
 
         Args:
             name (str): Network name
-            task_classes (dict[str, Task]): Task names to Task object mapping.
-            task_links (dict[str, TaskLinks]): Task links.
+            task_classes (Mapping[str, Task]): Task names to Task object mapping.
+            task_links (Mapping[str, TaskLinks]): Task links.
         """
         self.name = name
         self.task_classes = task_classes

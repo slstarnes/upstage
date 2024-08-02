@@ -8,8 +8,9 @@
 from collections import defaultdict
 from collections.abc import Callable, Iterable
 from copy import copy, deepcopy
+from dataclasses import dataclass
 from inspect import Parameter, signature
-from typing import TYPE_CHECKING, Any, Self, cast
+from typing import TYPE_CHECKING, Any, Self
 
 from simpy import Process
 
@@ -43,6 +44,12 @@ if TYPE_CHECKING:
 LOC_STATE = GeodeticLocationChangingState | CartesianLocationChangingState
 LOCATIONS = GeodeticLocation | CartesianLocation
 LOC_LIST = list[GeodeticLocation] | list[CartesianLocation]
+
+
+@dataclass
+class TaskData:
+    name: str
+    process: Process
 
 
 class Actor(SettableEnv, NamedUpstageEntity):
@@ -120,6 +127,8 @@ class Actor(SettableEnv, NamedUpstageEntity):
 
         self._debug_logging: bool = debug_log
         self._debug_log: list[str] = []
+
+        self._state_histories: dict[str, list[tuple[float, Any]]] = {}
 
         # Task Network Nucleus hook-ins
         self._state_listener: TaskNetworkNucleus | None = None
@@ -652,7 +661,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
         network = self._task_networks[network_name]
         network.loop(actor=self, init_task_name=init_task_name)
 
-    def get_running_task(self, network_name: str) -> dict[str, str | Process]:
+    def get_running_task(self, network_name: str) -> TaskData | None:
         """Return name and process reference of a task on this Actor's task network.
 
         Useful for finding a process to call interrupt() on.
@@ -661,7 +670,7 @@ class Actor(SettableEnv, NamedUpstageEntity):
             network_name (str): Network name.
 
         Returns:
-            dict[str, str | Process]: Dictionary of name and process for the current task.
+            TaskData: Dataclass of name and process for the current task.
                 {"name": Name, "process": the Process simpy is holding.}
         """
         if network_name not in self._task_networks:
@@ -670,29 +679,22 @@ class Actor(SettableEnv, NamedUpstageEntity):
         if net._current_task_proc is not None:
             assert net._current_task_name is not None
             assert net._current_task_proc is not None
-            task_data: dict[str, str | Process] = {
-                "name": net._current_task_name,
-                "process": net._current_task_proc,
-            }
+            task_data = TaskData(name=net._current_task_name, process=net._current_task_proc)
             return task_data
-        return {}
+        return None
 
-    def get_running_tasks(self) -> dict[str, dict[str, str | Process]]:
+    def get_running_tasks(self) -> dict[str, TaskData]:
         """Get all running task data.
 
         Returns:
-            dict[str, dict[str, str | Generator]]: Dictionary of all running tasks.
+            dict[str, dict[str, TaskData]]: Dictionary of all running tasks.
                 Keyed on network name, then {"name": Name, "process": ...}
         """
-        tasks: dict[str, dict[str, str | Process]] = {}
+        tasks: dict[str, TaskData] = {}
         for name, net in self._task_networks.items():
             if net._current_task_proc is not None:
                 assert net._current_task_name is not None
-                assert net._current_task_proc is not None
-                tasks[name] = {
-                    "name": net._current_task_name,
-                    "process": net._current_task_proc,
-                }
+                tasks[name] = TaskData(name=net._current_task_name, process=net._current_task_proc)
         return tasks
 
     def interrupt_network(self, network_name: str, **interrupt_kwargs: Any) -> None:
@@ -703,8 +705,9 @@ class Actor(SettableEnv, NamedUpstageEntity):
             interrupt_kwargs (Any): kwargs to pass to the interrupt.
         """
         data = self.get_running_task(network_name)
-        proc = cast(Process, data["process"])
-        proc.interrupt(**interrupt_kwargs)
+        if data is None:
+            raise UpstageError(f"No processes named {network_name} is running.")
+        data.process.interrupt(**interrupt_kwargs)
 
     def has_task_network(self, network_id: Any) -> bool:
         """Test if a network id exists.
@@ -846,13 +849,8 @@ class Actor(SettableEnv, NamedUpstageEntity):
 
         # update the state histories
         for state_name in self._state_defs:
-            history_name = f"_{state_name}_history"
-            if hasattr(self, history_name):
-                setattr(
-                    clone,
-                    history_name,
-                    deepcopy(getattr(self, history_name)),
-                )
+            if state_name in self._state_histories:
+                clone._state_histories[state_name] = deepcopy(self._state_histories[state_name])
 
         clone._knowledge = {}
         for name, data in self._knowledge.items():

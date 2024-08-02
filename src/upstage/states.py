@@ -109,13 +109,10 @@ class State(Generic[ST]):
             )
         # get the instance time here
         to_append = (env.now, value)
-        attr_name = f"_{self.name}_history"
-        if not hasattr(instance, attr_name):
-            setattr(instance, attr_name, [to_append])
-
-        if to_append != instance.__dict__[attr_name][-1]:
-            # TODO: The value in to_append is a reference, not a copy
-            instance.__dict__[attr_name].append(to_append)
+        if self.name not in instance._state_histories:
+            instance._state_histories[self.name] = [to_append]
+        elif to_append != instance._state_histories[self.name][-1]:
+            instance._state_histories[self.name].append(to_append)
 
     def _do_callback(self, instance: "Actor", value: ST) -> None:
         """Run callbacks for the state change.

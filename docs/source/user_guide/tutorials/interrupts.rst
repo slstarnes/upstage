@@ -325,8 +325,8 @@ If an actor is running a task network, you will need to get the current Task pro
     task_process.interrupt(cause="Stop running")
 
     # OR:
-    task_name, task_process = actor.get_running_task(task_network_name)
-    task_process.interrupt(cause="Stop running")
+    task_data = actor.get_running_task(task_network_name)
+    task_data.process.interrupt(cause="Stop running")
 
     # OR:
     actor.interrupt_network(task_network_name, cause="Stop running")

@@ -58,7 +58,9 @@ def test_great_circle_points() -> None:
         p2 = UP.GeodeticLocation(5, 180, 0).to_radians()
         p3 = UP.GeodeticLocation(3, 180, 0).to_radians()
         dist = pi / 180
-        points, distances = get_great_circle_points(p1, p2, p3, dist)
+        x = get_great_circle_points(p1, p2, p3, dist)
+        assert x is not None
+        points, distances = x
         assert len(points) == 2
 
         assert pytest.approx(points[0][0]) == radians(2)

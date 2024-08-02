@@ -226,8 +226,8 @@ def test_record() -> None:
         assert ride.state == 23
         assert ride1.state == 23
         assert ride2.state == 23
-        assert hasattr(ride, "_state_history")
-        assert hasattr(ride1, "_state_history")
-        assert not hasattr(ride2, "_state_history")
-        assert ride._state_history[1] == (0, 23)
-        assert ride1._state_history[1] == (0, 23)
+        assert "state" in ride._state_histories
+        assert "state" in ride1._state_histories
+        assert "state" not in ride2._state_histories
+        assert ride._state_histories["state"][1] == (0, 23)
+        assert ride1._state_histories["state"][1] == (0, 23)

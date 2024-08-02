@@ -3,26 +3,29 @@
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
+from typing import Any
+
 import upstage.api as UP
+from upstage.type_help import TASK_GEN
 
 
 class Dummy(UP.Actor):
-    number = UP.State()
-    results = UP.State(default=0)
+    number = UP.State[float]()
+    results = UP.State[int](default=0)
 
 
 class Example(UP.Task):
-    def task(self, *, actor):
+    def task(self, *, actor: Dummy) -> TASK_GEN:
         yield UP.Wait(actor.number)
         actor.number /= 2
 
 
 class OtherExample(UP.Task):
-    def task(self, *, actor):
+    def task(self, *, actor: Dummy) -> TASK_GEN:
         actor.results += 1
         yield UP.Wait(100)
 
-    def on_interrupt(self, *, actor, cause):
+    def on_interrupt(self, *, actor: Dummy, cause: Any) -> UP.InterruptStates:
         super().on_interrupt(actor=actor, cause=cause)
         return self.INTERRUPT.RESTART
 

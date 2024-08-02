@@ -7,11 +7,11 @@ import upstage.api as UP
 
 
 class Example(UP.Actor):
-    a_value = UP.State(default=1.0)
+    a_value = UP.State[float](default=1.0)
 
 
 class Example2(Example):
-    b_value = UP.State(default=2.0)
+    b_value = UP.State[float](default=2.0)
 
 
 class EnvHolder(UP.UpstageBase): ...
@@ -84,7 +84,7 @@ def test_actor_multi_tracking() -> None:
 
 
 class Sensor(UP.NamedUpstageEntity):
-    def __init__(self, name, radius):
+    def __init__(self, name: str, radius: float) -> None:
         self.name = name
         self.radius = radius
 

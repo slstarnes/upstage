@@ -13,4 +13,4 @@ from simpy import Event as SimEvent
 from upstage.events import BaseEvent
 
 TASK_GEN = Generator[BaseEvent, Any, None]
-SIMPY_GEN = Generator[SimEvent, Any, None]
+SIMPY_GEN = Generator[SimEvent, Any, Any]

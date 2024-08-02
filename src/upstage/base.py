@@ -12,7 +12,7 @@ from functools import wraps
 from math import floor
 from random import Random
 from time import gmtime, strftime
-from typing import TYPE_CHECKING, Any, Protocol, Union
+from typing import TYPE_CHECKING, Any, Protocol, TypeVar, Union
 from warnings import warn
 
 from simpy import Environment as SimpyEnv
@@ -21,7 +21,7 @@ from upstage.geography import LAT_LON_ALT, CrossingCondition
 from upstage.units import unit_convert
 
 if TYPE_CHECKING:
-    from upstage.data_types import CartesianLocation, GeodeticLocation, Location
+    from upstage.data_types import CartesianLocation, GeodeticLocation
 
 
 class EarthProtocol(Protocol):
@@ -73,16 +73,18 @@ INTERSECTION_LOCATION_CALLABLE = Callable[
     list[CrossingCondition],
 ]
 
+LOC_INPUT = TypeVar("LOC_INPUT", "GeodeticLocation", "CartesianLocation")
+
 INTERSECTION_TIMING_CALLABLE = Callable[
     [
-        "Location",
-        "Location",
+        LOC_INPUT,
+        LOC_INPUT,
         float,
-        "Location",
+        LOC_INPUT,
         float,
     ],
     tuple[
-        list[Union["GeodeticLocation", "CartesianLocation"]],
+        list[LOC_INPUT],
         list[float],
         list[str],
         float,
@@ -226,6 +228,15 @@ class MockEnvironment:
             if k.upper() == k and not k.startswith("_"):
                 setattr(mock_env, k, v)
         return mock_env
+
+    @classmethod
+    def run(cls, until: float | int) -> None:
+        """Method stub for playing nice with rehearsal.
+
+        Args:
+            until (float | int): Placeholder
+        """
+        raise UpstageError("You tried to use `run` on a mock environment")
 
 
 ENV_CONTEXT_VAR: ContextVar[SimpyEnv] = ContextVar("Environment")

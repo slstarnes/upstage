@@ -269,7 +269,9 @@ def manager_process(boss: StoreBoss, cashiers: list[Cashier]) -> SIMPY_GEN:
         # because this is a simpy only process
         yield UP.Wait.from_random_uniform(30.0, 90.0).as_event()
         possible = [
-            cash for cash in cashiers if cash.get_running_task("CashierJob") != "NightBreak"
+            cash
+            for cash in cashiers
+            if getattr(cash.get_running_task("CashierJob"), "name", "") != "NightBreak"
         ]
         if not possible:
             return
