@@ -49,9 +49,9 @@ optional-dependencies.docs = [
 optional-dependencies.lint = [
   "mypy",
   "pyproject-fmt!=0.9.1",
+  "pytest",
   "ruff",
   "ssort",
-  "pytest",
 ]
 optional-dependencies.test = [
   "pytest-cov",
