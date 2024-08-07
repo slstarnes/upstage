@@ -51,6 +51,7 @@ optional-dependencies.lint = [
   "pyproject-fmt!=0.9.1",
   "ruff",
   "ssort",
+  "pytest",
 ]
 optional-dependencies.test = [
   "pytest-cov",
