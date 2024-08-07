@@ -8,9 +8,14 @@ import pytest
 from upstage.geography import WGS84, Spherical, get_intersection_locations
 from upstage.motion.cartesian_model import ray_intersection
 
+from .conftest import POS
+
 
 @pytest.mark.parametrize("earth", [WGS84, Spherical])
-def test_intersections(intersect_positions, earth) -> None:
+def test_intersections(
+    intersect_positions: tuple[tuple[POS, POS, POS], float, str, list[str]],
+    earth: WGS84 | Spherical,
+) -> None:
     pos, sensor_range, range_units, answer = intersect_positions
     start_lla, finish_lla, sensor_lla = pos
     sensor_loc = (sensor_lla[0], sensor_lla[1])
@@ -37,7 +42,9 @@ def test_intersections(intersect_positions, earth) -> None:
 
 
 @pytest.mark.parametrize("earth", [WGS84, Spherical])
-def test_short_intersections(earth, short_intersections) -> None:
+def test_short_intersections(
+    earth: WGS84 | Spherical, short_intersections: tuple[tuple[POS, POS, POS], float, str]
+) -> None:
     pos, sensor_range, range_units = short_intersections
     start_lla, finish_lla, sensor_lla = pos
     _ = get_intersection_locations(

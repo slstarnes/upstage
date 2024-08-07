@@ -199,8 +199,8 @@ class TaskNetworkFactory:
     def __init__(
         self,
         name: str,
-        task_classes: dict[str, type[Task]],
-        task_links: dict[str, TaskLinks],
+        task_classes: Mapping[str, type[Task]],
+        task_links: Mapping[str, TaskLinks],
     ) -> None:
         """Create a factory for making instances of a task network.
 

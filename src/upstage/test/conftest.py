@@ -44,7 +44,7 @@ def base_actors() -> tuple[tuple[UP.State, ...], tuple[type[UP.Actor], ...]]:
 
 
 @pytest.fixture
-def task_objects() -> tuple[type[UP.Task], type[UP.Task], type[UP.Actor]]:
+def task_objects() -> tuple[type[UP.TerminalTask], type[UP.TerminalTask], type[UP.Actor]]:
     """Example task objects for testing.
 
     Returns:

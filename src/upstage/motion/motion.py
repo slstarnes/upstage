@@ -37,13 +37,13 @@ class SensorType(Protocol):
 
     def entity_exited_range(
         self,
-        entity: Actor,
+        entity: Any,
     ) -> None:
         """Entity exit range and does something."""
 
     def entity_entered_range(
         self,
-        entity: Actor,
+        entity: Any,
     ) -> None:
         """Entity enters range and does something."""
 

@@ -4,6 +4,7 @@
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
 import simpy as SIM
+from simpy import Environment, Process
 
 from upstage.actor import Actor
 from upstage.base import EnvironmentContext, MockEnvironment
@@ -11,19 +12,32 @@ from upstage.constants import PLANNING_FACTOR_OBJECT
 from upstage.events import Any, Get, Put, ResourceHold, Wait
 from upstage.states import LinearChangingState, State
 from upstage.task import Task
+from upstage.type_help import SIMPY_GEN, TASK_GEN
 
 
 class ActorForTest(Actor):
-    dummy = State()
+    dummy = State[list]()
 
 
 class StateActor(Actor):
-    fuel = LinearChangingState(recording=True)
-    fuel_burn = State(recording=True)
+    fuel = LinearChangingState[float](recording=True)
+    fuel_burn = State[float](recording=True)
+
+
+class Flight:
+    def __init__(self, code: int) -> None:
+        self.code = code
+        self.dummy: list = []
 
 
 class AirplaneTask(Task):
-    def task(self, *, actor):
+    limit: float
+    rate: float
+    store: SIM.Store
+    orders_time: float
+    reason: list
+
+    def task(self, *, actor: StateActor) -> TASK_GEN:
         # this task could be thought of as loitering, waiting for a get
         # request, interrupt, or prescribed failure
         time_to_leave = (actor.fuel - self.limit) / self.rate
@@ -45,18 +59,22 @@ class AirplaneTask(Task):
 
 
 class BigTask(Task):
+    time: float
+    maintenance_bay: SIM.Resource
+    broken_vehicle_depot: SIM.Store
+    fixed_vehicle_depot: SIM.Store
+
     def task(
         self,
         *,
-        actor,
-    ):
+        actor: Flight,
+    ) -> TASK_GEN:
         # a function to mimic extra code needed to perform a task
         # TODO: This should be wrapped to handle the planning answer
-        def test_flight(flight, planning_answer=3.0) -> None:
+        def test_flight(flight: Flight, planning_answer: float = 3.0) -> float:
             if flight is PLANNING_FACTOR_OBJECT:
                 return planning_answer
-            else:
-                return flight.code * 1.5
+            return flight.code * 1.5
 
         yield Wait(self.time)
         actor.dummy.append(self.time)
@@ -81,7 +99,7 @@ class BigTask(Task):
         yield resource_event
 
 
-def interrupting_task(*, env, time, other_task):
+def interrupting_task(*, env: Environment, time: float, other_task: Process) -> SIMPY_GEN:
     yield env.timeout(time)
     if other_task.is_alive:
         other_task.interrupt("cancelling")
@@ -95,7 +113,7 @@ def test_event_store_returns() -> None:
         env.run()
 
         class DoARun(Task):
-            def task(self, *, actor):
+            def task(self, *, actor: ActorForTest) -> TASK_GEN:
                 return_value = yield Get(store)
                 actor.dummy.append(return_value)
 
@@ -118,11 +136,6 @@ def test_task_with_all_events() -> None:
         store = SIM.Store(env, capacity=2)
         store2 = SIM.Store(env, capacity=2)
         resource = SIM.Resource(env)
-
-        # add a 'flight' to the store
-        class Flight:
-            def __init__(self, code):
-                self.code = code
 
         f = Flight(2)
         f2 = Flight(3)
@@ -173,7 +186,7 @@ def test_task_with_get() -> None:
         order_time = 12.3
 
         class SimpleTask(Task):
-            def task(self, *, actor):
+            def task(self, *, actor: StateActor) -> TASK_GEN:
                 event = Get(orders, rehearsal_time_to_complete=order_time)
                 res = yield event
                 result.append(res)
@@ -228,7 +241,7 @@ def test_task_with_cancels() -> None:
     with EnvironmentContext() as env:
         orders = SIM.Store(env)
         actor = StateActor(name="Airplane", fuel=100, fuel_burn=5.2)
-        reason = []
+        reason: list[str] = []
 
         at = AirplaneTask()
         at.rate = 1.2
@@ -248,7 +261,7 @@ def test_task_with_cancels() -> None:
         assert actor.fuel == 5, "Wrong fuel"
 
         # test the task when orders are given
-        def give_orders(env, time, orders):
+        def give_orders(env: SIM.Environment, time: float, orders: SIM.Store) -> SIMPY_GEN:
             yield env.timeout(time)
             yield orders.put("STOP WHAT YOU ARE DOING")
 

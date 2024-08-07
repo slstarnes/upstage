@@ -8,7 +8,7 @@ import pytest
 from upstage.geography import WGS84
 
 
-def test_distance_and_bearing(atl, nas) -> None:
+def test_distance_and_bearing(atl: tuple[float, float], nas: tuple[float, float]) -> None:
     dist = WGS84.distance(atl, nas, "nmi")
     assert dist == pytest.approx(186.64143600171283)
     bearing = WGS84.bearing(atl, nas)
@@ -17,7 +17,7 @@ def test_distance_and_bearing(atl, nas) -> None:
     assert pytest.approx(0) == d2
 
 
-def test_linspace(atl, nas) -> None:
+def test_linspace(atl: tuple[float, float], nas: tuple[float, float]) -> None:
     latlons = WGS84.geo_linspace(atl, nas, 10)
     assert len(latlons) == 11
     lats, lons = zip(*latlons)
@@ -27,14 +27,14 @@ def test_linspace(atl, nas) -> None:
     assert lons[-1] == pytest.approx(nas[1])
 
 
-def test_geo_circle(atl) -> None:
+def test_geo_circle(atl: tuple[float, float]) -> None:
     latlons = WGS84.geo_circle(atl, radius=100, num_points=20)
     for lat, lon in latlons:
         d = WGS84.distance(atl, (lat, lon))
         assert d == pytest.approx(100, rel=0.001)
 
 
-def test_bearing_dist_from_point(atl, nas) -> None:
+def test_bearing_dist_from_point(atl: tuple[float, float], nas: tuple[float, float]) -> None:
     dist, bearing = WGS84.distance_and_bearing(atl, nas, units="km")
     pt = WGS84.point_from_bearing_dist(atl, bearing, dist, distance_units="km")
     new_dist = WGS84.distance(pt, nas, units="km")

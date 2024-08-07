@@ -3,8 +3,11 @@
 # Licensed under the BSD 3-Clause License.
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
+from collections.abc import Callable
+from typing import Any
+
 import pytest
-from simpy import Store
+from simpy import Environment, Store
 
 from upstage.actor import Actor
 from upstage.base import EnvironmentContext
@@ -18,11 +21,14 @@ from upstage.resources.monitoring import (
 )
 from upstage.resources.reserve import ReserveStore
 from upstage.resources.sorted import SortedFilterGet, SortedFilterStore
+from upstage.type_help import SIMPY_GEN
 
 MAX_RUN_TIME = 10.0
 
 
-def getter(env, store, wait=1.0, cback=None, **kwargs):
+def getter(
+    env: Environment, store: Store, wait: float = 1.0, cback: Callable | None = None, **kwargs: Any
+) -> SIMPY_GEN:
     yield env.timeout(wait)
     get = store.get(**kwargs)
     if cback is not None:
@@ -31,7 +37,13 @@ def getter(env, store, wait=1.0, cback=None, **kwargs):
     return item
 
 
-def sorted_filter_getter(env, store, wait, filter, sorter):
+def sorted_filter_getter(
+    env: Environment,
+    store: SortedFilterStore,
+    wait: float,
+    filter: Callable[[Any], bool],
+    sorter: Callable[[Any], Any] | None = None,
+) -> SIMPY_GEN:
     yield env.timeout(wait)
     evt = SortedFilterGet(
         store,
@@ -42,7 +54,14 @@ def sorted_filter_getter(env, store, wait, filter, sorter):
     return item
 
 
-def putter(env, store, item, wait=0.0, cback=None, **kwargs):
+def putter(
+    env: Environment,
+    store: Store,
+    item: Any,
+    wait: float = 0.0,
+    cback: Callable | None = None,
+    **kwargs: Any,
+) -> SIMPY_GEN:
     yield env.timeout(wait)
     put = store.put(item, **kwargs)
     if cback is not None:
@@ -51,16 +70,16 @@ def putter(env, store, item, wait=0.0, cback=None, **kwargs):
 
 
 def test_notifying_store() -> None:
-    notifications = []
+    notifications: list[Any] = []
 
-    def callback(*args, **kwargs):
+    def callback(*args: Any, **kwargs: Any) -> None:
         assert len(kwargs) == 0
         notifications.append(args)
 
     with EnvironmentContext() as env:
         store = Store(env=env)
 
-        def sim():
+        def sim() -> SIMPY_GEN:
             item = "an item"
             yield env.process(putter(env, store, item, cback=callback))
             retrieved_item = yield env.process(getter(env, store, cback=callback))
@@ -77,7 +96,7 @@ def test_sorted_filter_store() -> None:
     with EnvironmentContext() as env:
         store = SortedFilterStore(env=env)
 
-        def get_proc():
+        def get_proc() -> SIMPY_GEN:
             item = yield env.process(
                 getter(
                     env,
@@ -89,7 +108,7 @@ def test_sorted_filter_store() -> None:
             )
             return item
 
-        def sim():
+        def sim() -> SIMPY_GEN:
             env.process(putter(env, store, 10, wait=0.0))
             env.process(putter(env, store, 1, wait=0.0))
 
@@ -106,7 +125,7 @@ def test_sorted_filter_store_upstage_get() -> None:
     with EnvironmentContext() as env:
         store = SortedFilterStore(env=env)
 
-        def get_proc():
+        def get_proc() -> SIMPY_GEN:
             item = yield env.process(
                 sorted_filter_getter(
                     env,
@@ -118,7 +137,7 @@ def test_sorted_filter_store_upstage_get() -> None:
             )
             return item
 
-        def sim():
+        def sim() -> SIMPY_GEN:
             env.process(putter(env, store, 10, wait=0.0))
             env.process(putter(env, store, 1, wait=0.0))
 
@@ -184,7 +203,7 @@ def test_self_monitoring_filter_store() -> None:
         def filter(item: str) -> bool:
             return "Another" in item
 
-        def proc():
+        def proc() -> SIMPY_GEN:
             yield store.put("The Item")
             yield store.put("Another Item")
             evt = FilterGet(
@@ -194,7 +213,7 @@ def test_self_monitoring_filter_store() -> None:
             item = yield evt.as_event()
             return item
 
-        def sim():
+        def sim() -> SIMPY_GEN:
             item = yield env.process(proc())
             assert item == "Another Item"
 
@@ -207,7 +226,7 @@ def test_self_monitoring_sorted_filter_store() -> None:
     with EnvironmentContext() as env:
         store = SelfMonitoringSortedFilterStore(env=env)
 
-        def get_proc():
+        def get_proc() -> SIMPY_GEN:
             item = yield env.process(
                 getter(
                     env,
@@ -219,7 +238,7 @@ def test_self_monitoring_sorted_filter_store() -> None:
             )
             return item
 
-        def sim():
+        def sim() -> SIMPY_GEN:
             env.process(putter(env, store, 10, wait=0.0))
             env.process(putter(env, store, 1, wait=0.0))
 
@@ -248,7 +267,7 @@ def test_self_monitoring_container() -> None:
     with EnvironmentContext() as env:
         con = SelfMonitoringContainer(env, capacity=10)
 
-        def sim():
+        def sim() -> SIMPY_GEN:
             evt = con.put(5)
             yield evt
             evt = con.get(3)

@@ -4,6 +4,8 @@
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 """0A 3-D intersection model for cartesian motion in UPSTAGE along straight-line paths."""
 
+from typing import TypeVar
+
 from upstage.base import MotionAndDetectionError
 from upstage.data_types import CartesianLocation
 from upstage.math_utils import (
@@ -18,14 +20,16 @@ from upstage.math_utils import (
 XY = tuple[float, float]
 XYZ = tuple[float, float, float]
 
+L = TypeVar("L", XY, XYZ)
+
 
 def ray_intersection(
-    start: XY | XYZ,
-    toward: XY | XYZ,
-    center: XY | XYZ,
-    radii: float | XY | XYZ,
+    start: L,
+    toward: L,
+    center: L,
+    radii: float | L,
     speed: float,
-) -> tuple[list[XY] | list[XYZ], list[float]]:
+) -> tuple[list[L], list[float]]:
     """Ray intersection with ellispoid.
 
     Args:
@@ -69,7 +73,7 @@ def ray_intersection(
     roots = _roots(a, b, c)
     possible = [r for r in roots if r >= 0]
 
-    intersections: list[XY] | list[XYZ] = []
+    intersections: list[L] = []
     times: list[float] = []
     for t in sorted(possible):
         loc = _vector_add(start, [t * x for x in v])

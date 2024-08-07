@@ -5,7 +5,7 @@
 """This file contains a ContinuousContainer."""
 
 from collections.abc import Callable, Generator
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from simpy import Environment, Event, Interrupt, Process
 from simpy.core import BoundClass
@@ -153,10 +153,6 @@ class ContinuousGet(_ContinuousEvent):
 class ContinuousContainer:
     """A container that accepts continuous gets and puts."""
 
-    put = BoundClass(ContinuousPut)
-
-    get = BoundClass(ContinuousGet)
-
     def __init__(
         self,
         env: Environment,
@@ -186,6 +182,27 @@ class ContinuousContainer:
         self._last: float = self._env.now
         self._active_users: list[_ContinuousEvent] = []
         self._checking: Process | None = None
+
+    if TYPE_CHECKING:
+
+        def put(
+            self,
+            rate: float,
+            time: float,
+            custom_callbacks: list[Callable[[], None]] | None = None,
+        ) -> ContinuousPut:
+            """Request to put *item* into the store."""
+            return ContinuousPut(self, rate, time, custom_callbacks)
+
+        def get(
+            self, rate: float, time: float, custom_callbacks: list[Callable[[], None]] | None = None
+        ) -> ContinuousGet:
+            """Request to get an *item* out of the store."""
+            return ContinuousGet(self, rate, time, custom_callbacks)
+
+    else:
+        put = BoundClass(ContinuousPut)
+        get = BoundClass(ContinuousGet)
 
     def time_until_level(self, level: float, rate: float = 0.0) -> float:
         """Calculate the time until the containers reaches a value.

@@ -209,11 +209,22 @@ class CommsManager(UpstageBase):
         Put
             UPSTAGE Put event object to yield from a task
         """
-        if not isinstance(message, Message):
-            message = Message(sender=source, content=message, destination=destination)
+        use: Message
+        if isinstance(message, Message):
+            use = message
+        elif isinstance(message, MessageContent):
+            use = Message(sender=source, content=message, destination=destination)
+        else:
+            content = (
+                MessageContent(data=message)
+                if isinstance(message, dict)
+                else MessageContent(data={}, message=message)
+            )
+            use = Message(sender=source, content=content, destination=destination)
+
         return Put(
             self.incoming,
-            message,
+            use,
             rehearsal_time_to_complete=rehearsal_time_to_complete,
         )
 

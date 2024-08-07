@@ -17,6 +17,7 @@ from upstage.resources.monitoring import (
     SelfMonitoringContainer,
     SelfMonitoringContinuousContainer,
 )
+from upstage.type_help import SIMPY_GEN
 
 CONTAINER_CAPACITY = 100
 INITIAL_LEVEL = 50
@@ -123,7 +124,7 @@ def test_interrupting() -> None:
 
         msg = []
 
-        def full_callback():
+        def full_callback() -> None:
             msg.append("full")
 
         putter = tank.put(10.0, 100.0, custom_callbacks=[full_callback])
@@ -163,13 +164,15 @@ def test_complex_behavior() -> None:
         )
         tank._set_new_rate(-1.0)
 
-        def tank_is_empty():
-            return "empty"
+        d: list[str] = []
 
-        def tank_is_overflowing():
-            return "overflowing"
+        def tank_is_empty() -> None:
+            d.append("empty")
 
-        def call_refill():
+        def tank_is_overflowing() -> None:
+            d.append("overflowing")
+
+        def call_refill() -> SIMPY_GEN:
             yield env.timeout(5.0)
 
             rate = 10.0
@@ -179,7 +182,7 @@ def test_complex_behavior() -> None:
             tanker_called[0] = False
             yield env.timeout(until)
 
-        def draw_fuel():
+        def draw_fuel() -> SIMPY_GEN:
             while True:
                 wait = uniform(10.0, 15.0)
 
@@ -194,7 +197,7 @@ def test_complex_behavior() -> None:
                 # print("{:5.1f} - Random Draw Stopped".format(env.now, rate,
                 #                                              until))
 
-        def start_stop_getting():
+        def start_stop_getting() -> SIMPY_GEN:
             getter = tank.get(rate=1.0, time=1_000, custom_callbacks=[tank_is_empty])
             # print("{:5.1f} - Started constant getting".format(env.now))
             while True:
@@ -210,7 +213,7 @@ def test_complex_behavior() -> None:
                 getter = tank.get(rate=10.0, time=1_000, custom_callbacks=[tank_is_empty])
                 # print("{:5.1f} - Restarted constant getting".format(env.now))
 
-        def simulate():
+        def simulate() -> SIMPY_GEN:
             env.process(draw_fuel())
             env.process(start_stop_getting())
             while True:

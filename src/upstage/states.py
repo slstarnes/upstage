@@ -328,7 +328,7 @@ class ActiveState(State, Generic[ST]):
         return False
 
 
-class LinearChangingState(ActiveState, Generic[ST]):
+class LinearChangingState(ActiveState[ST], Generic[ST]):
     """A state whose value changes linearly over time.
 
     When activating:

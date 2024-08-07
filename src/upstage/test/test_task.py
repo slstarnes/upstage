@@ -4,28 +4,32 @@
 # See the LICENSE file in the project root for complete license terms and disclaimers.
 
 from inspect import isgeneratorfunction
+from typing import Any, cast
 
 import pytest
-from simpy import Process
+from simpy import Environment, Process
 
 from upstage.actor import Actor
-from upstage.api import SimulationError
+from upstage.api import InterruptStates, SimulationError
 from upstage.base import EnvironmentContext
 from upstage.events import Wait
 from upstage.states import LinearChangingState, State
-from upstage.task import Task
+from upstage.task import Task, TerminalTask
+from upstage.type_help import SIMPY_GEN, TASK_GEN
 
 
 class ActorForTest(Actor):
-    dummy = State(recording=True)
+    dummy = State[float](recording=True)
 
 
 class ActorChangeForTest(Actor):
-    dummy = LinearChangingState()
+    dummy = LinearChangingState[float]()
 
 
 class WorkingTask(Task):
-    def task(self, *, actor):
+    times: list[float]
+
+    def task(self, *, actor: ActorForTest) -> TASK_GEN:
         for wait_period in self.times:
             the_event = Wait(wait_period)
             yield the_event
@@ -33,20 +37,26 @@ class WorkingTask(Task):
 
 
 class ChangingTask(Task):
-    def task(self, *, actor, times, rate):
-        for t in times:
+    times: list[float]
+    rate: float
+
+    def task(self, *, actor: ActorForTest) -> TASK_GEN:
+        for t in self.times:
             the_event = Wait(t)
-            actor.activate_state(state="dummy", task=self, rate=rate)
+            actor.activate_state(state="dummy", task=self, rate=self.rate)
             yield the_event
             actor.deactivate_state(state="dummy", task=self)
 
 
 class Actor2Test(Actor):
-    dummy = State()
+    dummy = State[Any]()
 
 
 class WorkingTask2(Task):
-    def task(self, *, actor):
+    times: list[float]
+    log: list[str]
+
+    def task(self, *, actor: ActorChangeForTest) -> TASK_GEN:
         for wait_period in self.times:
             wait_event = Wait(wait_period)
             self.log.append(
@@ -63,7 +73,11 @@ class WorkingTask2(Task):
 
 
 class ChangingTask2(Task):
-    def task(self, *, actor):
+    times: list[float]
+    rate: float
+    log: list[str]
+
+    def task(self, *, actor: ActorForTest | ActorChangeForTest) -> TASK_GEN:
         for wait_period in self.times:
             wait_event = Wait(wait_period)
             actor.activate_state(state="dummy", task=self, rate=self.rate)
@@ -80,9 +94,9 @@ class ChangingTask2(Task):
             actor.deactivate_state(state="dummy", task=self)
 
 
-def _task_runner(env, rate, timeout_point):
-    use_actor = ActorChangeForTest(name="testing", dummy=0, debug_log=True)
-    times = [1, 2]
+def _task_runner(env: Environment, rate: float, timeout_point: float) -> SIMPY_GEN:
+    use_actor = ActorChangeForTest(name="testing", dummy=0.0, debug_log=True)
+    times = [1.0, 2.0]
 
     task_object = ChangingTask2()
     task_object.times = times
@@ -112,8 +126,8 @@ def test_failures_for_tasks_with_simpy_events() -> None:
         actor = ActorForTest(name="testing", dummy=0)
 
         class BrokenTask(Task):
-            def task(self, *, actor):
-                yield self.env.timeout(1.0)
+            def task(self, *, actor: ActorForTest) -> TASK_GEN:
+                yield self.env.timeout(1.0)  # type: ignore [misc, union-attr]
 
         # msg = "*Task is yielding objects without `as_event`*"
         with pytest.raises(SimulationError):  # , match=msg):
@@ -134,30 +148,30 @@ def test_failures_for_tasks_with_simpy_events() -> None:
 def test_failures_for_tasks_with_incorrect_events() -> None:
     with EnvironmentContext():
         actor = ActorForTest(name="testing", dummy=0)
-        times = [1, 2]
 
         class BlankEvent:
-            def __init__(self, **kwargs):
+            def __init__(self, **kwargs: Any) -> None:
                 pass
 
         class BrokenTask(Task):
-            def task(self, *, actor, times, event_class):
-                yield event_class()
+            event_class: type
+
+            def task(self, *, actor: ActorForTest) -> TASK_GEN:
+                yield self.event_class()
 
         # msg = '*must be a subclass of BaseEvent*'
         with pytest.raises(SimulationError):
             task_instance = BrokenTask()
+            task_instance.event_class = BlankEvent
             task_instance.rehearse(
                 actor=actor,
-                times=times,
-                event_class=BlankEvent,
             )
 
 
 def test_running_as_rehearsal() -> None:
     with EnvironmentContext() as env:
         actor = ActorForTest(name="testing", dummy=0)
-        times = [1, 2]
+        times = [1.0, 2.0]
         task_object = WorkingTask()
         task_object.times = times
         rehearse_function = task_object.rehearse
@@ -192,7 +206,7 @@ def test_running_as_rehearsal() -> None:
 def test_running() -> None:
     with EnvironmentContext() as env:
         actor = ActorForTest(name="testing", dummy=0)
-        times = [1, 2]
+        times = [1.0, 2.0]
 
         task_object = WorkingTask()
         task_object.times = times
@@ -217,7 +231,7 @@ def test_interrupting() -> None:
             )
         )
         env.run()
-        actor = proc.value
+        actor = cast(ActorForTest, proc.value)
         msg = "Task interruption ended at the wrong time"
         assert actor.dummy == timeout_point * rate, msg
 
@@ -235,16 +249,21 @@ def test_interrupting_two() -> None:
             )
         )
         env.run()
-        actor = proc.value
+        actor = cast(ActorForTest, proc.value)
         msg = "Task interruption ended at the wrong time"
         assert actor.dummy == timeout_point * rate, msg
 
 
 def test_simultaneous_task() -> None:
     with EnvironmentContext() as env:
-        actor = ActorChangeForTest(name="testing", dummy=0)
+        actor = ActorChangeForTest(name="testing", dummy=0.0)
 
-        def task_runner(*, task_class, interrupt_time, **task_kwargs):
+        def task_runner(
+            *,
+            task_class: type[WorkingTask2 | ChangingTask2],
+            interrupt_time: float,
+            **task_kwargs: Any,
+        ) -> SIMPY_GEN:
             task = task_class()
             task.log = []
             for k, v in task_kwargs.items():
@@ -282,7 +301,9 @@ def test_simultaneous_task() -> None:
         env.run(until=20.0)
 
 
-def test_terminal_task_run(task_objects: tuple[Task, Task, Actor]) -> None:
+def test_terminal_task_run(
+    task_objects: tuple[type[TerminalTask], type[TerminalTask], type[Actor]],
+) -> None:
     EndPoint, EndPointBase, Dummy = task_objects
 
     with EnvironmentContext() as env:
@@ -308,7 +329,9 @@ def test_terminal_task_run(task_objects: tuple[Task, Task, Actor]) -> None:
         assert "Entering terminal task:" in actor._debug_log[-1]
 
 
-def test_terminal_task_rehearse(task_objects: tuple[Task, Task, Actor]) -> None:
+def test_terminal_task_rehearse(
+    task_objects: tuple[type[TerminalTask], type[TerminalTask], type[Actor]],
+) -> None:
     EndPoint, _, Dummy = task_objects
     with EnvironmentContext():
         actor = Dummy(name="x", status="Good")
@@ -318,8 +341,14 @@ def test_terminal_task_rehearse(task_objects: tuple[Task, Task, Actor]) -> None:
         assert clone.env.now == task._time_to_complete
 
 
+class Dummy(Actor):
+    status = State[str]()
+    rate = State[float]()
+    changer = LinearChangingState[float](recording=True)
+
+
 class Restartable(Task):
-    def task(self, *, actor: Actor):
+    def task(self, *, actor: Dummy) -> TASK_GEN:
         actor.activate_state(
             state="changer",
             task=self,
@@ -329,17 +358,11 @@ class Restartable(Task):
         yield Wait(10.0)
         actor.deactivate_all_states(task=self)
 
-    def on_interrupt(self, *, actor, cause):
+    def on_interrupt(self, *, actor: Dummy, cause: Any) -> InterruptStates:
         if cause == "restart":
             return self.INTERRUPT.RESTART
         else:
             return self.INTERRUPT.END
-
-
-class Dummy(Actor):
-    status = State()
-    rate = State()
-    changer = LinearChangingState(recording=True)
 
 
 def test_restart() -> None:

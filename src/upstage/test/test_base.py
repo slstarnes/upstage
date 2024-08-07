@@ -109,7 +109,7 @@ def test_random() -> None:
         num = cl.stage.random.uniform(1, 3)
 
 
-def a_simulation(t: float):
+def a_simulation(t: float) -> float:
     with EnvironmentContext() as env:
         env.run(until=env.now + t)
         return env.now
