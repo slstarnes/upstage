@@ -59,11 +59,10 @@ Code quality is enforced using the following tools:
 These tools are run as follows, allowing for auto-fixing:
 
 ```bash
-# formatters
+# 3 formatters, linting, then type checking
 pyproject-fmt pyproject.toml
 ssort src
 ruff format src
-# linting and type checking
 ruff check --fix src
 mypy --show-error-codes -p upstage
 ```

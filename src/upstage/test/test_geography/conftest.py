@@ -14,16 +14,6 @@ def atl() -> tuple[float, float]:
 
 
 @pytest.fixture()
-def atl_north() -> tuple[float, float]:
-    return (33.9, -84.3880)
-
-
-@pytest.fixture()
-def atl_south() -> tuple[float, float]:
-    return (33.7489, -84.3880)
-
-
-@pytest.fixture()
 def nas() -> tuple[float, float]:
     return (36.1627, -86.7816)
 
@@ -59,18 +49,6 @@ def random_lla() -> list[tuple[float, float, float]]:
     lon = [-180 + 360 * lo for lo in lon]
     alt = [a * 10_000 for a in alt]
     return [(a, b, c) for a, b, c in zip(lat, lon, alt)]
-
-
-@pytest.fixture()
-def local_lla() -> list[tuple[float, float, float]]:
-    lla_base = [33.7490, -84.3880, 320]
-    lla = randvals(10, 3)
-    lat, lon, alt = zip(*lla)
-    lat = [lla_base[0] + 5 * (-1 + 2 * la) for la in lat]
-    lon = [lla_base[1] + 5 * (-1 + 2 * lo) for lo in lon]
-    alt = [lla_base[2] + 1000 * (-1 + 2 * a) for a in alt]
-    ans = [tuple(lla_base)] + [(a, b, c) for a, b, c in zip(lat, lon, alt)]
-    return ans
 
 
 POS = tuple[float, float, float]

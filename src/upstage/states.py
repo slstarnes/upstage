@@ -25,7 +25,10 @@ __all__ = (
     "State",
     "LinearChangingState",
     "CartesianLocationChangingState",
+    "GeodeticLocationChangingState",
+    "ResourceState",
     "DetectabilityState",
+    "CommunicationStore",
 )
 
 CALLBACK_FUNC = Callable[["Actor", Any], None]
@@ -823,6 +826,13 @@ class ResourceState(State, Generic[T]):
         default: Any | None = None,
         valid_types: type | tuple[type, ...] | None = None,
     ) -> None:
+        """Create a resource State decorator.
+
+        Args:
+            default (Any | None, optional): Default store/container class. Defaults to None.
+            valid_types (type | tuple[type, ...] | None, optional): Valid store/container
+                classes. Defaults to None.
+        """
         if isinstance(valid_types, type):
             valid_types = (valid_types,)
 
@@ -970,6 +980,15 @@ class CommunicationStore(ResourceState[Store]):
         default: type | None = None,
         valid_types: type | tuple[type, ...] | None = None,
     ):
+        """Create a comms store.
+
+        Args:
+            mode (str): A mode to describe the comms channel.
+            default (type | None, optional): Store class by default.
+                Defaults to None.
+            valid_types (type | tuple[type, ...] | None, optional): Valid store classes.
+                Defaults to None.
+        """
         if default is None:
             default = SelfMonitoringStore
         if valid_types is None:

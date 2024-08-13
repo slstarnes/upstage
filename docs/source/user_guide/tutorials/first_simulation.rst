@@ -40,12 +40,12 @@ Let's imagine our Cashier has the ability to scan items at a certain speed, and 
 
     class Cashier(UP.Actor):
         # items per minute
-        scan_speed: float = UP.State(
+        scan_speed = UP.State[float](
             valid_types=(float,),
             frozen=True,
         )
         # minutes until break
-        time_until_break: float = UP.State(
+        time_until_break = UP.State[float](
             default=120.0,
             valid_types=(float,),
             frozen=True,
@@ -85,17 +85,17 @@ We want to keep track of the number of items scanned, so let's add a state that 
 
     class Cashier(UP.Actor):
         # items per minute
-        scan_speed: float = UP.State(
+        scan_speed = UP.State[float](
             valid_types=(float,),
             frozen=True,
         )
         # minutes until break
-        time_until_break: float = UP.State(
+        time_until_break = UP.State[float](
             default=120.0,
             valid_types=(float,),
             frozen=True,
         )
-        items_scanned: int = UP.State(
+        items_scanned = UP.State[int](
             default=0,
             valid_types=(int,),
             recording=True,
@@ -134,7 +134,7 @@ Let's also make an Actor for the checkout lane, so we have a simple location to 
 .. code-block:: python
 
     class CheckoutLane(UP.Actor):
-        customer_queue: SIM.Store = UP.ResourceState()
+        customer_queue = UP.ResourceState[SIM.Store]()
 
     with UP.EnvironmentContext() as env:
         lane = CheckoutLane(
@@ -285,7 +285,7 @@ There is one other kind of Task, a |DecisionTask|, which does not consume the en
 .. code-block:: python
     
     class Break(UP.DecisionTask):
-        def make_decision(self, *, actor: Cashier):
+        def make_decision(self, *, actor: Cashier) -> None:
             """Decide what kind of break we are taking."""
             actor.breaks_taken += 1
             if actor.breaks_taken == actor.breaks_until_done:
@@ -415,7 +415,7 @@ To complete the simulation, we need to make customers arrive at the checkout lan
     def customer_spawner(
         env: SIM.Environment,
         lanes: list[CheckoutLane],
-    ) -> Generator[SIM.Event, None, None]:
+    ) -> SIMPY_GEN:
         # We store the RNG on the stage, and this is a quick way to get the stage (steal it from an actor)
         stage = lanes[0].stage
         while True:

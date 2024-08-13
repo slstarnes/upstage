@@ -51,6 +51,7 @@ These pages detail the specific activities that can be accomplished using UPSTAG
 :caption: How-Tos
 :maxdepth: 1
 
+how_tos/resource_states.rst
 how_tos/active_states.rst
 how_tos/mimic_states.rst
 how_tos/nucleus.rst
@@ -63,5 +64,6 @@ how_tos/state_sharing.rst
 how_tos/entity_naming.rst
 how_tos/motion_manager.rst
 how_tos/communications.rst
+how_tos/typing.rst
 how_tos/random_numbers.rst
 ```
